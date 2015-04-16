@@ -11,7 +11,7 @@ end
     %Specific to albert data set! - riboch
     rl.ranges=scan';
     rl.start_angle=-pi/2;
-    rl.maximum_range=100;
+    rl.maximum_range=maxRange;
     rl.angular_resolution=pi/180;
     rl.laser_offset=[0 0 0];
     
