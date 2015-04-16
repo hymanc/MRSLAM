@@ -30,7 +30,7 @@ function [mapUpdate, robPoseMapFrame, laserEndPntsMapFrame] = inv_sensor_model(m
 
 % Compute the Cartesian coordinates of the laser beam endpoints.
 % Set the third argument to 'true' to use only half the beams for speeding up the algorithm when debugging.
-    laserEndPnts = robotlaser_as_cartesian(scan, 100, false);
+    laserEndPnts = robotlaser_as_cartesian(scan, 50, false);
 
 % Compute the endpoints of the laser beams in the world coordinates frame.
     laserEndPnts = robTrans*laserEndPnts;
