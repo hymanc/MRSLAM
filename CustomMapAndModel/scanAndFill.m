@@ -9,8 +9,8 @@ function scanAndFill()
     %NEWMAP=zeros(1139,1588);
     sNEWMAP=size(NEWMAP);
     
-    STEPS=10000;
-    NROBOTS=10;
+    STEPS=3000;
+    NROBOTS=2;
     x=zeros(STEPS,NROBOTS);
     y=zeros(STEPS,NROBOTS);
     theta=zeros(STEPS,NROBOTS);
@@ -93,7 +93,7 @@ function [xnew,ynew,thetanew]=walkThisWay(x,y,theta,MAP,a1,signum)
     thetanew=theta;
     c1=1;
     multiplier=1;
-    if (a1<1000 | a1>3000)
+    if (a1<500 | a1>2000)
         multiplier=0;
     end
     
