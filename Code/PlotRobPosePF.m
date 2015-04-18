@@ -1,6 +1,6 @@
 fontsize=14;
 fontname='Times';
-nParticles=100;
+nParticles=30;
 nRobots=10;
 
 

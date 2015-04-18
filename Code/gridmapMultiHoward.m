@@ -87,6 +87,7 @@ for t=1:(size(data(1).pose,2)-1)
         % Update Poses and odometery
         % Update Measurement model
         % Update OGM
+
         for a1=1:nRobots % For all robots, generate 
             if (size(data(a1).pose,2)>=t)
                 robPose=data(a1).pose(:,t);
