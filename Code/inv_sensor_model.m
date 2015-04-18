@@ -56,6 +56,7 @@ function [mapUpdate, robPoseMapFrame, laserEndPntsMapFrame] = inv_sensor_model(m
     lfree=prob_to_log_odds(probFree);
     freeCells=[];
     occpCells=[];
+    %MODIFIED=[];
     for sc=1:columns(laserEndPntsMapFrame)
         %TODO: compute the XY map coordinates of the free cells along the laser beam ending in laserEndPntsMapFrame(:,sc)
         try
@@ -71,6 +72,7 @@ function [mapUpdate, robPoseMapFrame, laserEndPntsMapFrame] = inv_sensor_model(m
         try
         freeCells=sub2ind(smap,X,Y);
         occpCells=sub2ind(smap,laserEndPntsMapFrame(1,sc),laserEndPntsMapFrame(2,sc));
+        %MODIFIED=[MODIFIED freeCells occpCells];%Does not result in desired effect.
         catch hell
             therewasanerror=true;
             %fprintf('Why am I here?\n');

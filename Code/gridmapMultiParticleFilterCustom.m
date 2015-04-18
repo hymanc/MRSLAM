@@ -5,23 +5,18 @@ more off
 close all
 %clear all
 
-myCluster = parcluster('local');
-myCluster.NumWorkers = 4;
-saveAsProfile(myCluster,'local');
-matlabpool(myCluster.NumWorkers);
+% myCluster = parcluster('local');
+% myCluster.NumWorkers = 4;
+% saveAsProfile(myCluster,'local');
+% matlabpool(myCluster.NumWorkers);
 
 
 % Load laser scans and robot poses.
 load('../Data/CustomData-10Robots.mat')
-%%%%%%NEED TO CLEAN UP
-% SENSOR.RADIUS=20;           %Limit of the sensor
-% SENSOR.AOS=[-90 90]*pi/180; %Sensor angle of sensitivity
-% SENSOR.AOSDIV=180;          %Division of AOS, important for ray tracing
+alphas = [0.05 0.01 0.01 0.02 0.01 0.05].^2;%Noise properties from Table 5.3 of ProbRob
 
-alphas = [0.05 0.001 0.005 0.01 0.01 0.01].^2;
-
-nParticles=100;
-nRobots=1;
+nParticles=30;          %The number of particles
+nRobots=10;             %Number of robots
 
 % Initial cell occupancy probability.
 probPrior = 0.50;
@@ -34,20 +29,9 @@ gridSize = 1;
 
 % Set up map boundaries and initialize map.
 border =10;
-%{
-%Known Pose
-pose=[];
-for a1=1:nRobots
-    pose=[pose data(a1).pose];
-    robPose(:,a1)=data(a1).pose(:,1);
-end
-robXMin = min(pose(1,:));
-robXMax = max(pose(1,:));
-robYMin = min(pose(2,:));
-robYMax = max(pose(2,:));
-%}
 
 %%{
+%Figure out the expected size of the grid.
 %figure(1)
 pose=repmat(data(1).pose(:,1),[1 nRobots]);
 for a1=1:nRobots
@@ -60,10 +44,10 @@ for a1=1:nRobots
 end
 %}
 
-robXMin = min(min(pose(2,:,:)));
-robXMax = max(max(pose(2,:,:)))+50;
-robYMin = min(min(pose(1,:,:)));
-robYMax = max(max(pose(1,:,:)))+50;
+robXMin = min(min(pose(1,:,:)));
+robXMax = max(max(pose(1,:,:)))+50;
+robYMin = min(min(pose(2,:,:)));
+robYMax = max(max(pose(2,:,:)))+50;
 
 mapBox = [robXMin-border robXMax+border robYMin-border robYMax+border];
 offsetX = mapBox(1);
@@ -89,11 +73,11 @@ offset = [offsetX; offsetY];
 robOdom=robPose;
 robOdom=repmat(robOdom,[1 1 nParticles]);
 robPoseMapFrame=zeros([2 size(data(1).pose,2) nRobots nParticles]);
-weight=1/nParticles*ones(nParticles,1);
+weight=1/nParticles*ones(nRobots,nParticles);
 for t=1:(size(data(1).pose,2)-1)
     t
     % Robot pose at time t.
-    parfor a2=1:nParticles
+    for a2=1:nParticles
         for a1=1:nRobots
             if (size(data(a1).pose,2)>=t)
                 robPose=data(a1).pose(:,t);
@@ -101,32 +85,36 @@ for t=1:(size(data(1).pose,2)-1)
                 robOdom(:,a1,a2)=SampleMotionModel(data(a1).v(t),data(a1).omega(t),dt,robOdom(:,a1,a2),M);
                 % Laser scan made at time t.
                 sc=data(a1).r{t};
-                weight(a2)=measurement_model_prob(sc,robOdom(:,a1,a2),map(:,:,a1,a2),SENSOR,Q);
+                weight(a1,a2)=measurement_model_prob(sc,robOdom(:,a1,a2),map(:,:,a1,a2),SENSOR,Q);
                 
                 % Compute the mapUpdate, which contains the log odds values to add to the map.
                 %[mapUpdate, robPoseMapFrame(:,t,a1,a2), laserEndPntsMapFrameInter] = inv_sensor_model(map(:,:,a1,a2), sc, robPose, gridSize, offset, probPrior, probOcc, probFree,SENSOR.RADIUS);
                 [mapUpdate, robPoseMapFrame(:,t,a1,a2), laserEndPntsMapFrameInter] = inv_sensor_model(map(:,:,a1,a2), sc, robOdom(:,a1,a2), gridSize, offset, probPrior, probOcc, probFree,SENSOR.RADIUS);
                 if (nParticles==1)
                     laserEndPntsMapFrame{a1,a2}=laserEndPntsMapFrameInter;
-                end
-                % TODO: Update the occupancy values of the map cells.
+                end                
+                %map(MODIFIED+mapSize(1)*mapSize(2)*(a1-1)+mapSize(1)*mapSize(2)*nRobots*(a2-1))=map(MODIFIED+nRobots*(a1-1)+nRobots*nParticles*(a2-1))+mapUpdate(MODIFIED);
                 map(:,:,a1,a2)=map(:,:,a1,a2)+mapUpdate;
                 %map(:,:,a1)=map(:,:,a1)+mapUpdate;
 
             end
-
         end
     end
     
     if (nParticles>1)
         
-        weight=exp(-weight/abs(min(weight)));
+        colours=lines(nRobots);
+        figure(1);
         for a1=1:nRobots
-            [robOdom(:,a1,:),map(:,:,a1,:),weight]=resample(robOdom(:,a1,:),map(:,:,a1,:),weight);
+            weight(a1,:)=exp(1+weight(a1,:)/abs(min(weight(a1,:))));
+            weight(a1,:)=weight(a1,:)/sum(weight(a1,:));
+            plot(weight(a1,:),'Color',colours(a1,:));
+            hold on;
+            [robOdom(:,a1,:),map(:,:,a1,:),weight(a1,:)]=resample(robOdom(:,a1,:),map(:,:,a1,:),weight(a1,:));
         end
+        hold off;
         
         figure(2)
-        colours=lines(nRobots);
         for a2=1:nParticles
             for a1=1:nRobots
                 plot(robPoseMapFrame(1,t,a1,a2),robPoseMapFrame(2,t,a1,a2),'x','Color',colours(a1,:))
@@ -150,7 +138,7 @@ end
 
 save(sprintf('%s-BIGDATA.mat',datestr(now,30)),'map','robPoseMapFrame')
 % system(sprintf('avconv -r 5 -b 0.5M -i plots/gridmap_%%03d.png %s-gridmap.mp4',datestr(now,30)))
-matlabpool('close');
+% matlabpool('close');
 
 
 
