@@ -3,20 +3,30 @@ function scanAndFill()
     close all;
     
     %[x,y,theta]=MYpath();
+    THEIMAGE='Small.png';
+    [MAP,PIXDIM]=getTheMAP(THEIMAGE);
+    SENSOR.RADIUS=50;           %Limit of the sensor
+    SENSOR.AOS=[-90 90]*pi/180; %Sensor angle of sensitivity
+    SENSOR.AOSDIV=180;          %Division of AOS, important for ray tracing
+    phi=linspace(SENSOR.AOS(1),SENSOR.AOS(2),SENSOR.AOSDIV);
     
     figure(1)    
-    NEWMAP=zeros(1000,1000);
+    NEWMAP=zeros(size(MAP));
     %NEWMAP=zeros(1139,1588);
     sNEWMAP=size(NEWMAP);
     
-    STEPS=3000;
-    NROBOTS=2;
+    STEPS=200;
+    NROBOTS=10;
     x=zeros(STEPS,NROBOTS);
     y=zeros(STEPS,NROBOTS);
     theta=zeros(STEPS,NROBOTS);
+    dt=0.1;
+    
+    R=diag([0.25,0.05]);
+    Q=diag([0.5]);
     %Test 1
-     x(1,:)=500;
-     y(1,:)=300;
+     x(1,:)=114;
+     y(1,:)=157;
     %Test 3
 %     x(1,:)=505;
 %     y(1,:)=610;
@@ -28,12 +38,15 @@ function scanAndFill()
     colours=lines(NROBOTS);
     
     c1=1;
-    while (c1<STEPS)
+    
+    
+    
+    while (c1<=STEPS)
         figure(1)
         hold off;
         for a1=1:NROBOTS
-            [r,phi]=customMapMeasurement(x(c1,a1),y(c1,a1),theta(c1,a1));
-
+            [r]=customMapMeasurement(x(c1,a1),y(c1,a1),theta(c1,a1),THEIMAGE,SENSOR);
+            
             
             if (~isempty(r))
                 MU=[];
@@ -61,14 +74,24 @@ function scanAndFill()
                 end
             end
             
-            [xnew,ynew,thetanew]=walkThisWay(x(c1,a1),y(c1,a1),theta(c1,a1),NEWMAP,c1,a1);
+            %[xnew,ynew,thetanew]=walkThisWay(x(c1,a1),y(c1,a1),theta(c1,a1),NEWMAP,c1,a1);
+            [xnew,ynew,thetanew,v,omega]=velocityMotionModel(x(c1,a1),y(c1,a1),theta(c1,a1),MAP,c1,a1,dt);
             x(c1+1,a1)=xnew;
             y(c1+1,a1)=ynew;
             theta(c1+1,a1)=thetanew;
+            
+            data(a1).r{c1}=r;
+            data(a1).r{c1}=r+Q(1,1)*randn(SENSOR.AOSDIV,1);
+            data(a1).vact(c1)=v;
+            data(a1).omegaact(c1)=omega;
+            data(a1).v(c1)=v+R(1,1)*randn(1);
+            data(a1).omega(c1)=omega+R(2,2)*randn(1);
         end
         
+        figure(1)
         imagesc(NEWMAP)
         colormap('gray')
+        title(num2str(c1))
         axis image;
         hold on;
         if (c1>10)
@@ -80,9 +103,15 @@ function scanAndFill()
                 plot(y(1:c1,a1),x(1:c1,a1),'Color',colours(a1,:))
             end
         end
-        c1=c1+1;
         drawnow;
+        fprintf('%d/%d\n',c1,STEPS);
+        c1=c1+1;
     end
+    for a1=1:NROBOTS
+        data(a1).pose=[x(:,a1)';y(:,a1)';theta(:,a1)'];
+    end
+        
+    save('CustomData-10Robots.mat','data','R','Q','dt','SENSOR')
 end
 
 
@@ -117,6 +146,36 @@ function [xnew,ynew,thetanew]=walkThisWay(x,y,theta,MAP,a1,signum)
 
     
 end
+
+
+
+function [xnew,ynew,thetanew,v,omega]=velocityMotionModel(x,y,theta,MAP,a1,signum,dt)
+
+
+    signum=(-1)^signum;
+    c1=1;
+    multiplier=1;
+    if (a1<25 | a1>2000)
+        multiplier=0;
+    end
+    omega=0;
+    
+    while (true)
+        v=100;%5*rand+1;
+        omega=-signum*(multiplier*pi/24+(multiplier-1)*pi/90+randn(1)/75)+omega;
+        dtheta=omega*dt;
+        
+        ds=v/omega;
+        xnew=x+ds*(-sin(theta)+sin(theta+dtheta));
+        ynew=y+ds*(cos(theta)-cos(theta+dtheta));
+        thetanew=theta+dtheta;
+        if (MAP(round(xnew),round(ynew))==0)
+            break;
+        end
+        c1=c1+1;
+    end 
+end
+
 
 
 function [x,y,theta]=MYpath()

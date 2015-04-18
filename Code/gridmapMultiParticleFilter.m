@@ -14,6 +14,7 @@ clear all
 % Load laser scans and robot poses.
 load('../Data/albert.mat')
 
+nParticles=10;
 nRobots=1;
 [data,mT]=partitionDataAlbert(nRobots,pose,odom,rad);
 
@@ -58,23 +59,24 @@ for t=1:mT
     t
     % Robot pose at time t.
     %parfor a1=1:nRobots
-    for a1=1:nRobots
-        if (size(data(a1).pose,2)>=t)
-            robPose=data(a1).odom(:,t);
+    for a2=1:nParticles
+        for a1=1:nRobots
+            if (size(data(a1).pose,2)>=t)
+                robPose=data(a1).odom(:,t);
+                % Laser scan made at time t.
+                sc=data(a1).rad(:,t);
 
-            % Laser scan made at time t.
-            sc=data(a1).rad(:,t);
 
-            
-            
-            % Compute the mapUpdate, which contains the log odds values to add to the map.
-            [mapUpdate, robPoseMapFrame(:,:,a1), laserEndPntsMapFrameInter] = inv_sensor_model(map(:,:,a1), sc, robPose, gridSize, offset, probPrior, probOcc, probFree);
-            laserEndPntsMapFrame{a1}=laserEndPntsMapFrameInter;
-            % TODO: Update the occupancy values of the map cells.
-            map(:,:,a1)=map(:,:,a1)+mapUpdate;
-            
+
+                % Compute the mapUpdate, which contains the log odds values to add to the map.
+                [mapUpdate, robPoseMapFrame(:,:,a1), laserEndPntsMapFrameInter] = inv_sensor_model(map(:,:,a1), sc, robPose, gridSize, offset, probPrior, probOcc, probFree);
+                laserEndPntsMapFrame{a1}=laserEndPntsMapFrameInter;
+                % TODO: Update the occupancy values of the map cells.
+                map(:,:,a1)=map(:,:,a1)+mapUpdate;
+
+            end
+
         end
-        
     end
     
     mapCombined=sum(map,3);

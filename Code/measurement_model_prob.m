@@ -1,27 +1,24 @@
-function [r]=customMapMeasurement(x,y,theta,THEIMAGE,SENSOR)
+function w=measurement_model_prob(sc,pose,MAP,SENSOR,Q)
 
-
-
-    persistent MAP;             %Bitmap
-    persistent PIXDIM;          %Dimension of pixel
+    r=rayTrace(pose(1),pose(2),pose(3),MAP>prob_to_log_odds(0.75),SENSOR);
     
+    %w=1/100;
+    w=-(-SENSOR.AOSDIV*log(2*pi*Q))*(-Q*sum((r-sc).^2));
+    
+end
+
+function r=rayTrace(x,y,theta,MAP,SENSOR)
+
     phi=linspace(SENSOR.AOS(1),SENSOR.AOS(2),SENSOR.AOSDIV);
     RR=1:SENSOR.RADIUS;
     
-    if (isempty(MAP))
-        [MAP,PIXDIM]=getTheMAP(THEIMAGE);
-        %MAP=MAP';
-    end
+    PIXDIM=1;
     
     sMAP=size(MAP);
     PIX=1/PIXDIM;
     X=round(x/PIX)+1;
     Y=round(y/PIX)+1;
     
-    
-%     figure(2)
-%         imagesc(MAP)
-%         hold on;
     vect=1:numel(RR);
     theones=ones(1,numel(RR));
     r=zeros(SENSOR.AOSDIV,1);
@@ -38,11 +35,8 @@ function [r]=customMapMeasurement(x,y,theta,THEIMAGE,SENSOR)
         
         ind=sub2ind(sMAP,Xray,Yray);
         xhit=Xray(min(vect(MAP(ind))));
-        yhit=Yray(min(vect(MAP(ind))));
-        
-%         plot(y+RR*sin(phi(a1)+theta),x+RR*cos(phi(a1)+theta),'y')
-%         %plot(Yray,Xray,'b.')
-%         plot(yhit,xhit,'ks')
+        yhit=Yray(min(vect(MAP(ind)))); 
+    
         
         if isempty(xhit)
             r(a1)=SENSOR.RADIUS;
@@ -50,6 +44,6 @@ function [r]=customMapMeasurement(x,y,theta,THEIMAGE,SENSOR)
             r(a1)=sqrt((x-xhit)^2+(y-yhit)^2);
         end
     end
-%      hold off;
+
 
 end

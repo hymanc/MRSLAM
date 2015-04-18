@@ -1,4 +1,4 @@
-function plot_map_multi(map, mapBox, robPoseMapFrame, data, laserEndPntsMapFrame, gridSize, offset, t)
+function plot_map_multi_PF(map, mapBox, robPoseMapFrame, data, laserEndPntsMapFrame, gridSize, offset, t)
 % plots the occupany map, current laser endpoints, robot, and trajectory
 
 figure(1);
@@ -19,8 +19,8 @@ for a1=1:numel(data)
     traj = data(a1).pose(1:2,1:t);
     traj = world_to_map_coordinates(traj, gridSize, offset);
     plot(traj(1,:),traj(2,:),'Color',colours(a1,:));
-    plot(robPoseMapFrame(1,1,a1),robPoseMapFrame(2,1,a1),'o','markersize',5,'linewidth',1,'Color',colours(a1,:));
-    plot(robPoseMapFrame(1,1,a1),robPoseMapFrame(2,1,a1),'.','markersize',2,'linewidth',1,'Color',colours(a1,:));
+    plot(robPoseMapFrame(1,a1),robPoseMapFrame(2,a1),'o','markersize',5,'linewidth',1,'Color',colours(a1,:));
+    plot(robPoseMapFrame(1,a1),robPoseMapFrame(2,a1),'.','markersize',2,'linewidth',1,'Color',colours(a1,:));
     plot(laserEndPntsMapFrame{a1}(1,:),laserEndPntsMapFrame{a1}(2,:),'rs','markersize',1);
 end
 hold off;

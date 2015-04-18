@@ -1,4 +1,4 @@
-function [mapUpdate, robPoseMapFrame, laserEndPntsMapFrame] = inv_sensor_model(map, scan, robPose, gridSize, offset, probPrior, probOcc, probFree)
+function [mapUpdate, robPoseMapFrame, laserEndPntsMapFrame] = inv_sensor_model(map, scan, robPose, gridSize, offset, probPrior, probOcc, probFree,maxRange)
 % Compute the log odds values that should be added to the map based on the inverse sensor model
 % of a laser range finder.
 
@@ -30,7 +30,7 @@ function [mapUpdate, robPoseMapFrame, laserEndPntsMapFrame] = inv_sensor_model(m
 
 % Compute the Cartesian coordinates of the laser beam endpoints.
 % Set the third argument to 'true' to use only half the beams for speeding up the algorithm when debugging.
-    laserEndPnts = robotlaser_as_cartesian(scan, 50, false);
+    laserEndPnts = robotlaser_as_cartesian(scan, maxRange, false);
 
 % Compute the endpoints of the laser beams in the world coordinates frame.
     laserEndPnts = robTrans*laserEndPnts;
@@ -51,6 +51,7 @@ function [mapUpdate, robPoseMapFrame, laserEndPntsMapFrame] = inv_sensor_model(m
 % [X,Y] = bresenham([p1_x, p1_y; p2_x, p2_y]);
 % You only need the X and Y outputs of this function.
 
+    therewasanerror=false;
     loccp=prob_to_log_odds(probOcc);
     lfree=prob_to_log_odds(probFree);
     freeCells=[];
@@ -71,7 +72,8 @@ function [mapUpdate, robPoseMapFrame, laserEndPntsMapFrame] = inv_sensor_model(m
         freeCells=sub2ind(smap,X,Y);
         occpCells=sub2ind(smap,laserEndPntsMapFrame(1,sc),laserEndPntsMapFrame(2,sc));
         catch hell
-            fprintf('Why am I here?\n');
+            therewasanerror=true;
+            %fprintf('Why am I here?\n');
         end
         
         %TODO: update the log odds values in mapUpdate for each free cell according to probFree.
@@ -81,4 +83,7 @@ function [mapUpdate, robPoseMapFrame, laserEndPntsMapFrame] = inv_sensor_model(m
         mapUpdate(occpCells)=loccp+mapUpdate(occpCells);
     end
 
+    if (therewasanerror)
+        fprintf('Outside of bounds.\n');
+    end
 end
