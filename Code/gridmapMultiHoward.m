@@ -28,10 +28,10 @@ load('../Data/CustomData-10Robots.mat')
 alphas = [0.05 0.001 0.005 0.01 0.01 0.01].^2;
 
 % Number of Maps/Particles
-nParticles=15;
+nParticles=10;
 
 % Number of robots
-nRobots=5;
+nRobots=2;
 
 % Initial cell occupancy probability.
 probPrior = 0.50;
@@ -111,7 +111,7 @@ robPoseMapFrame = zeros([2 size(data(1).pose,2) nRobots nParticles]);
 weight = 1/nParticles*ones(nParticles,1); % Initial weights
 % TODO: Update until all causal/non-causal data are exhausted
 %% Main SLAM loop
-for t=1:(size(data(1).pose,2)-1)
+for t=2:(size(data(1).pose,2)-1)
     t
     joinTemp = join; % Alias join to enforce wait for newly joined robots
     % Append queues
@@ -170,7 +170,6 @@ for t=1:(size(data(1).pose,2)-1)
             % Perform RBPF updates
             for p = 1:nParticles
                 if(size(dCaus)) % Causal update
-                    size(dCaus)
                     %robPose = data(rob).pose(:,t);
                     u = dCaus{1};
                     z = dCaus{2};
@@ -198,8 +197,14 @@ for t=1:(size(data(1).pose,2)-1)
                     [mapUpdate, robPoseMapFrame(:,t,rob,p), laserEndPntsMapFrameInter] = inv_sensor_model(map(:,:,p), z, xRa{rob}(:,p), gridSize, offset, probPrior, probOcc, probFree,SENSOR.RADIUS);
                     map(:,:,p) = map(:,:,p) + mapUpdate;% Update map
                     if(dAcaus{3} ~= 0) % Check if acausal join needed
-                        % TODO: handle relative pose
-                        joinTemp = horzcat(joinTemp, dAcaus{3}); % Acausal join
+                        encounters = dAcaus{3};
+                        for i = 1:length(encounters)
+                            rpose = dAcaus{4}(:,i);
+                            spose = xRa{rob}(:,p) + rpose;
+                            xRc{encounters(i)}(:,p) = spose;
+                            xRa{encounters(i)}(:,p) = spose;
+                        end
+                        joinTemp = horzcat(joinTemp, encounters); % Acausal join
                     end
                 end
             end
