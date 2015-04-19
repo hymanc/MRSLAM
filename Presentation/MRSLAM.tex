@@ -53,14 +53,15 @@
 \begin{itemize}
 \item Most papers solve 1 problem at a time
 \begin{itemize}
-\item Coordination
-\item Map Merging
+\item Coordination ([Juli{\'a} et. al, 2012])
+\item Map Merging ([Lazaro et. al., 2013], [Lee et. al., 2012],[Birk and Carpin, 2006], [Howard, 2006])
 \end{itemize}
-\item Focus: Howard, 2006
+\item Focus: [Howard, 2006]
 \begin{itemize}
-\item Answers map merging problem
+\item Answers merging problem
 \item All robots store sensor data for both odometry and measurements
 \item Starts with a single robot, stored data integrated transformed data into the map posterior post encounter
+\item Builds occupancy grid
 %\item Transforms relative poses using robot encounter information to create a single map posterior
 
 \end{itemize}
@@ -93,16 +94,11 @@ Connected & Not Connected
 \item Occupancy Grid FastSLAM 
 \item Store $(u_t,z_t,encounter_t)$ data
 \item On encounter, replay past data in reverse order
+\begin{center}
+\includegraphics[height=2cm]{../FiguresAndMovies/ForwardBackward}
+\end{center}
 \item Post encounter integrate stored information into the map posterior in an acausal update
 \item Continue communication to integrate future odometry and encounters
-\end{itemize}
-\end{frame}
-
-
-\begin{frame}
-\frametitle{[Howard, 2006] Algorithm}
-\begin{itemize}
-\item 
 \end{itemize}
 \end{frame}
 
@@ -112,4 +108,40 @@ Connected & Not Connected
 \begin{center}
 \includegraphics[height=6cm]{../FiguresAndMovies/HowardFig3}
 \end{center}
+\blfootnote{From [Howard, 2006]}
 \end{frame}
+
+\begin{frame}
+\frametitle{[Howard, 2006] Algorithm}
+\begin{itemize}
+\item Robot 1 observes robot 2
+\end{itemize}
+\begin{center}
+\includegraphics[height=5cm]{../FiguresAndMovies/Howard5a}
+\end{center}
+\blfootnote{From [Howard, 2006]}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{[Howard, 2006] Algorithm}
+\begin{itemize}
+\item Robot 2 observes robot 3, integrating robot 3 data
+\end{itemize}
+\begin{center}
+\includegraphics[height=5cm]{../FiguresAndMovies/Howard5b}
+\end{center}
+\blfootnote{From [Howard, 2006]}
+\end{frame}
+
+\begin{frame}
+\frametitle{[Howard, 2006] Algorithm}
+\begin{itemize}
+\item Data is propagated, now all data is used for map
+\end{itemize}
+\begin{center}
+\includegraphics[height=5cm]{../FiguresAndMovies/Howard5c}
+\end{center}
+\blfootnote{From [Howard, 2006]}
+\end{frame}
+
