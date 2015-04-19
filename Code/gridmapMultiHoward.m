@@ -25,7 +25,7 @@ close all
 load('../Data/CustomData5.mat')
 
 % Noise parameters
-alphas = [0.05 0.001 0.005 0.01 0.01 0.01].^2;
+alphas = [0.01 0.0005 0.001 0.002 0.002 0.002].^2;
 
 % Number of Maps/Particles
 nParticles=10;
@@ -71,7 +71,7 @@ mapBox = [robXMin-border robXMax+border robYMin-border robYMax+border];
 offsetX = mapBox(1);
 offsetY = mapBox(3);
 mapSizeMeters = [mapBox(2)-offsetX mapBox(4)-offsetY];
-mapSize = ceil(mapSizeMeters/gridSize);
+mapSize = ceil(mapSizeMeters./gridSize);
 
 % Used when updating the map. Assumes that prob_to_log_odds.m
 % has been implemented correctly.
@@ -83,7 +83,7 @@ mapCombined = logOddsPrior*ones(mapSize);
 disp('Map initialized. Map size:'), disp(size(map))
 
 % Map offset used when converting from world to map coordinates.
-offset = [offsetX; offsetY];
+offset = -ceil(mapSize./(2))';
 
 %% Pre/post encounter queues
 join = 1; % Joined/Post encounter list (initialize to at least one robot)
@@ -128,14 +128,16 @@ for t=2:(size(data(1).pose,2)-1)
                         % TODO: Check for occlusion
                         % Check for causal join
                         if(find(join==rob))
-                            disp 'JOINING'
-                            % Initialize pose
-                            for p = 1:nParticles
-                                spose = xRc{rob}(:,p) + rpose;
-                                xRc{sighting}(:,p) = spose;
-                                xRa{sighting}(:,p) = spose;
+                            if(size(find(join==sighting),2)==0)
+                                disp 'JOINING'
+                                % Initialize pose
+                                for p = 1:nParticles
+                                    spose = xRc{rob}(:,p) + rpose;
+                                    xRc{sighting}(:,p) = spose;
+                                    xRa{sighting}(:,p) = spose;
+                                end
+                                joinTemp = [joinTemp, sighting];
                             end
-                            joinTemp = [joinTemp, sighting];
                         end
                         update{3} = [update{3}, sighting]; % Sighting index
                         update{4} = [update{4}, rpose];    % Sighting rel. pose
@@ -214,7 +216,7 @@ for t=2:(size(data(1).pose,2)-1)
         %end
         
         figure(2)
-        mapCombined = mean(map,3);
+        mapCombined = mean(map,3)';
         %plot_map(mapCombined, mapBox, robPoseMapFrame, poses, laserEndPntsMapFrame, gridSize, offset, t);
         imshow(ones(size(mapCombined)) - log_odds_to_prob(mapCombined));
         hold on;
@@ -234,7 +236,8 @@ for t=2:(size(data(1).pose,2)-1)
     end
     
     if (nParticles==1)
-        mapCombined=sum(map,3);
+        mapCombined = sum(map,3);
+        mapCombined = mapCombined';
         % Plot current map and robot trajectory so far.
         plot_map_multi_PF(mapCombined, mapBox, robPoseMapFrame, data, laserEndPntsMapFrame, gridSize, offset, t);
         filename = sprintf('plots/gridmap_%03d.png', t);
