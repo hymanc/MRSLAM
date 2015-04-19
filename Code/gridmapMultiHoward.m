@@ -22,7 +22,7 @@ close all
 
 % Load laser scans and robot poses.
 %load('../Data/CustomData-10Robots.mat')
-load('../Data/CustomData5.mat')
+load('../Data/CustomData5_howard.mat')
 
 % Noise parameters
 alphas = [0.01 0.0005 0.001 0.002 0.002 0.002].^2;
@@ -105,8 +105,8 @@ end
 xRc{1} = repmat(pose(:,1,1), [1 nParticles]); % Initialize pioneer particles
 
 %robOdom = repmat(robOdom,[1 1 nParticles]);
-robPoseMapFrame = zeros([2 size(data(1).pose,2) nRobots nParticles]);
-
+robPoseMapFrameC = zeros([2 size(data(1).pose,2) nRobots nParticles]);
+robPoseMapFrameA = zeros([2 size(data(1).pose,2) nRobots nParticles]);
 weight = 1/nParticles*ones(nParticles,1); % Initial weights
 % TODO: Update until all causal/non-causal data are exhausted
 %% Main SLAM loop
@@ -176,7 +176,7 @@ for t=2:(size(data(1).pose,2)-1)
                     xRc{rob}(:,p) = OdometryMotion(u,xRc{rob}(:,p),alphas);%SampleMotionModel(u(1),u(2),dt,xRc{rob}(:,p),M);
                     weight(p) = weight(p) * measurement_model_prob(z,xRc{rob}(:,p),map(:,:,p),SENSOR,Q);
                     % Compute the mapUpdate, which contains the log odds values to add to the map.
-                    [mapUpdate, robPoseMapFrame(:,t,rob,p), laserEndPntsMapFrameInter] = inv_sensor_model(map(:,:,p), z, xRc{rob}(:,p), gridSize, offset, probPrior, probOcc, probFree,SENSOR.RADIUS);
+                    [mapUpdate, robPoseMapFrameC(:,t,rob,p), laserEndPntsMapFrameInter] = inv_sensor_model(map(:,:,p), z, xRc{rob}(:,p), gridSize, offset, probPrior, probOcc, probFree,SENSOR.RADIUS);
                     if (nParticles == 1)
                         laserEndPntsMapFrame{rob,p} = laserEndPntsMapFrameInter;
                     end
@@ -187,9 +187,9 @@ for t=2:(size(data(1).pose,2)-1)
                     u = dAcaus{1}; % Reverse odometry
                     z = dAcaus{2};
                     % Update prediction
-                    xRa{rob}(:,p) = OdometryMotion(u,xRa{rob}(:,p),alphas);%SampleMotionModel(u(1),u(2),dt, xRa{rob}(:,p),M);
+                    xRa{rob}(:,p) = OdometryMotionReverse(u,xRa{rob}(:,p),alphas);%SampleMotionModel(u(1),u(2),dt, xRa{rob}(:,p),M);
                     weight(p) = weight(p)*measurement_model_prob(z,xRa{rob}(:,p),map(:,:,p),SENSOR,Q);
-                    [mapUpdate, robPoseMapFrame(:,t,rob,p), laserEndPntsMapFrameInter] = inv_sensor_model(map(:,:,p), z, xRa{rob}(:,p), gridSize, offset, probPrior, probOcc, probFree,SENSOR.RADIUS);
+                    [mapUpdate, robPoseMapFrameA(:,t,rob,p), laserEndPntsMapFrameInter] = inv_sensor_model(map(:,:,p), z, xRa{rob}(:,p), gridSize, offset, probPrior, probOcc, probFree,SENSOR.RADIUS);
                     map(:,:,p) = map(:,:,p) + mapUpdate;% Update map
                     if(dAcaus{3} ~= 0) % Check if acausal join needed
                         encounters = dAcaus{3};
@@ -227,7 +227,9 @@ for t=2:(size(data(1).pose,2)-1)
         colors=lines(nRobots);
         for p=1:nParticles
             for rob=1:nRobots
-                plot(robPoseMapFrame(1,t,rob,p),robPoseMapFrame(2,t,rob,p),'x','Color',colors(rob,:))
+                % Plot 
+                plot(robPoseMapFrameC(1,t,rob,p),robPoseMapFrameC(2,t,rob,p),'x','Color',colors(rob,:)) % Plot PF estimates
+                plot(robPoseMapFrameA(1,t,rob,p),robPoseMapFrameA(2,t,rob,p),'o','Color',colors(rob,:))
                 hold on;
             end
         end
