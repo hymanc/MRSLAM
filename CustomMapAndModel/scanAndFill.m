@@ -15,7 +15,7 @@ function scanAndFill()
     NEWMAP=zeros(size(MAP));
     sNEWMAP=size(NEWMAP);
     
-    STEPS=200;
+    STEPS=250;
     NROBOTS=5;
     
     
@@ -26,8 +26,8 @@ function scanAndFill()
     
     R=diag([0.05,0.01]);
     Q=diag([0.5]);
-     x(1,:)=150;
-     y(1,:)=225;
+     x(1,:)=[25 25 275 275 150];
+     y(1,:)=[25 275 25 275 150];
     theta(1,:)=linspace(0,2*pi-2*pi/NROBOTS,NROBOTS);
     
     colours=lines(NROBOTS);
@@ -37,7 +37,8 @@ function scanAndFill()
         figure(1)
         hold off;
         for a1=1:NROBOTS
-            [r]=customMapMeasurement(x(c1,a1),y(c1,a1),theta(c1,a1),THEIMAGE,SENSOR);
+            %[r]=customMapMeasurement(x(c1,a1),y(c1,a1),theta(c1,a1),THEIMAGE,SENSOR);
+            [r]=customMapMeasurement(x(c1,a1),y(c1,a1),theta(c1,a1),MAP,PIXDIM,SENSOR);
             
             
             if (~isempty(r))
@@ -92,6 +93,7 @@ function scanAndFill()
         if (c1>10)
             for a1=1:NROBOTS
                 plot(y((c1-10):c1,a1),x((c1-10):c1,a1),'Color',colours(a1,:))
+                plot(y(c1,a1),x(c1,a1),'o','Color',colours(a1,:))
             end
         else
             for a1=1:NROBOTS
@@ -106,7 +108,8 @@ function scanAndFill()
         data(a1).pose=[x(:,a1)';y(:,a1)';theta(:,a1)'];
     end
         
-    save('CustomData.mat','data','R','Q','dt','SENSOR','OdometryModel')
+    save('CustomData.mat','data','R','Q','dt','SENSOR','OdometryModel','THEIMAGE')
+    %CheckConnectivity();
 end
 
 
@@ -117,7 +120,7 @@ function [xnew,ynew,thetanew,dx,dtheta]=odometryMotion(x,y,theta,MAP,a1,signum)
     thetanew=theta;
     c1=1;
     multiplier=1;
-    if (a1<50 | a1>150)
+    if (a1<50 | a1>500)
         multiplier=0;
     end
     
