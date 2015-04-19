@@ -3,7 +3,7 @@ function w=measurement_model_prob(sc,pose,MAP,SENSOR,Q)
     r=rayTrace(pose(1),pose(2),pose(3),MAP>prob_to_log_odds(0.75),SENSOR);
     
     %w=1/100;
-    w=Q*sum((r-sc).^2));
+    w=Q*sum((r-sc).^2);
     
 end
 
