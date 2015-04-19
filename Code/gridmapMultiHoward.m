@@ -125,7 +125,7 @@ for t=2:(size(data(1).pose,2)-1)
             for sighting = 1:nRobots % Check for encounter
                 if(sighting ~= rob)
                     rpose = pose(:,sighting,t)-pose(:,rob,t);
-                    if( sqrt(rpose(1).^2 + rpose(2).^2) < 2)
+                    if( sqrt(rpose(1).^2 + rpose(2).^2) < 20)
                         % TODO: Check for occlusion
                         % Check for causal join
                         if(find(join==rob))
