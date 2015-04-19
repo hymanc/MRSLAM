@@ -1,7 +1,7 @@
 fontsize=14;
 fontname='Times';
-nParticles=30;
-nRobots=10;
+% nParticles=10;
+% nRobots=10;
 
 
 figure(1)

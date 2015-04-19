@@ -3,7 +3,8 @@ function scanAndFill()
     close all;
     
     %[x,y,theta]=MYpath();
-    THEIMAGE='Small.png';
+    OdometryModel='OdometryMotion';
+    THEIMAGE='Test5.png';
     [MAP,PIXDIM]=getTheMAP(THEIMAGE);
     SENSOR.RADIUS=50;           %Limit of the sensor
     SENSOR.AOS=[-90 90]*pi/180; %Sensor angle of sensitivity
@@ -12,11 +13,12 @@ function scanAndFill()
     
     figure(1)    
     NEWMAP=zeros(size(MAP));
-    %NEWMAP=zeros(1139,1588);
     sNEWMAP=size(NEWMAP);
     
     STEPS=200;
-    NROBOTS=10;
+    NROBOTS=5;
+    
+    
     x=zeros(STEPS,NROBOTS);
     y=zeros(STEPS,NROBOTS);
     theta=zeros(STEPS,NROBOTS);
@@ -24,23 +26,13 @@ function scanAndFill()
     
     R=diag([0.25,0.05]);
     Q=diag([0.5]);
-    %Test 1
-     x(1,:)=114;
-     y(1,:)=157;
-    %Test 3
-%     x(1,:)=505;
-%     y(1,:)=610;
-    %Test 4
-%     x(1,:)=450;
-%     y(1,:)=975;
+     x(1,:)=150;
+     y(1,:)=225;
     theta(1,:)=linspace(0,2*pi-2*pi/NROBOTS,NROBOTS);
     
     colours=lines(NROBOTS);
     
     c1=1;
-    
-    
-    
     while (c1<=STEPS)
         figure(1)
         hold off;
@@ -69,23 +61,26 @@ function scanAndFill()
                     if (sNEWMAP(2)<=MU(2))
                        MU(2)=sNEWMAP(2); 
                     end
-                    %NEWMAP(MU(1),MU(2))=NEWMAP(MU(1),MU(2))+1;
                     NEWMAP(MU(1),MU(2))=1;
                 end
             end
             
-            %[xnew,ynew,thetanew]=walkThisWay(x(c1,a1),y(c1,a1),theta(c1,a1),NEWMAP,c1,a1);
-            [xnew,ynew,thetanew,v,omega]=velocityMotionModel(x(c1,a1),y(c1,a1),theta(c1,a1),MAP,c1,a1,dt);
+            switch lower(OdometryModel)
+                case 'odometrymotion'
+                    [xnew,ynew,thetanew,dx,dtheta]=odometryMotion(x(c1,a1),y(c1,a1),theta(c1,a1),MAP,c1,a1);
+                    data(a1).uact(:,c1)=[dx;dtheta];
+                    data(a1).u(:,c1)=[dx+R(1,1)*randn(1);dtheta+R(2,2)*randn(1)];
+                case 'velocitymotion'
+                    [xnew,ynew,thetanew,v,omega]=velocityMotionModel(x(c1,a1),y(c1,a1),theta(c1,a1),MAP,c1,a1,dt);
+                    data(a1).uact(:,c1)=[v;omega;dt];
+                    data(a1).u(:,c1)=[v+R(1,1)*randn(1);omega+R(2,2)*randn(1);dt];
+            end
+                    
+            data(a1).r{c1}=r;
+            data(a1).r{c1}=r+Q(1,1)*randn(SENSOR.AOSDIV,1);        
             x(c1+1,a1)=xnew;
             y(c1+1,a1)=ynew;
             theta(c1+1,a1)=thetanew;
-            
-            data(a1).r{c1}=r;
-            data(a1).r{c1}=r+Q(1,1)*randn(SENSOR.AOSDIV,1);
-            data(a1).vact(c1)=v;
-            data(a1).omegaact(c1)=omega;
-            data(a1).v(c1)=v+R(1,1)*randn(1);
-            data(a1).omega(c1)=omega+R(2,2)*randn(1);
         end
         
         figure(1)
@@ -111,18 +106,18 @@ function scanAndFill()
         data(a1).pose=[x(:,a1)';y(:,a1)';theta(:,a1)'];
     end
         
-    save('CustomData-10Robots.mat','data','R','Q','dt','SENSOR')
+    save('CustomData.mat','data','R','Q','dt','SENSOR','OdometryModel')
 end
 
 
-function [xnew,ynew,thetanew]=walkThisWay(x,y,theta,MAP,a1,signum)
+function [xnew,ynew,thetanew,dx,dtheta]=odometryMotion(x,y,theta,MAP,a1,signum)
 
 
     signum=(-1)^signum;
     thetanew=theta;
     c1=1;
     multiplier=1;
-    if (a1<500 | a1>2000)
+    if (a1<50 | a1>150)
         multiplier=0;
     end
     
@@ -144,6 +139,7 @@ function [xnew,ynew,thetanew]=walkThisWay(x,y,theta,MAP,a1,signum)
         
     end
 
+    dtheta=thetanew-theta;
     
 end
 

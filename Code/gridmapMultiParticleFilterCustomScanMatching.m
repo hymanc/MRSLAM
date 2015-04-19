@@ -61,6 +61,7 @@ logOddsPrior = prob_to_log_odds(probPrior);
 
 % The occupancy value of each cell in the map is initialized with the prior.
 map = logOddsPrior*ones([mapSize nRobots nParticles]);
+%mapUpdate = zeros([mapSize nRobots nParticles]);
 mapCombined = logOddsPrior*ones(mapSize);
 disp('Map initialized. Map size:'), disp(size(map))
 
@@ -85,10 +86,12 @@ for t=1:(size(data(1).pose,2)-1)
                 robOdom(:,a1,a2)=SampleMotionModel(data(a1).v(t),data(a1).omega(t),dt,robOdom(:,a1,a2),M);
                 % Laser scan made at time t.
                 sc=data(a1).r{t};
+                %weight(a1,a2)=measurement_model_prob(sc,robOdom(:,a1,a2),map(:,:,a1,a2)+mapUpdate(:,:,a1,a2),SENSOR,Q);
                 weight(a1,a2)=measurement_model_prob(sc,robOdom(:,a1,a2),map(:,:,a1,a2),SENSOR,Q);
                 
                 % Compute the mapUpdate, which contains the log odds values to add to the map.
                 %[mapUpdate, robPoseMapFrame(:,t,a1,a2), laserEndPntsMapFrameInter] = inv_sensor_model(map(:,:,a1,a2), sc, robPose, gridSize, offset, probPrior, probOcc, probFree,SENSOR.RADIUS);
+                %[mapUpdate(:,:,a1,a2), robPoseMapFrame(:,t,a1,a2), laserEndPntsMapFrameInter] = inv_sensor_model(map(:,:,a1,a2), sc, robOdom(:,a1,a2), gridSize, offset, probPrior, probOcc, probFree,SENSOR.RADIUS);
                 [mapUpdate, robPoseMapFrame(:,t,a1,a2), laserEndPntsMapFrameInter] = inv_sensor_model(map(:,:,a1,a2), sc, robOdom(:,a1,a2), gridSize, offset, probPrior, probOcc, probFree,SENSOR.RADIUS);
                 if (nParticles==1)
                     laserEndPntsMapFrame{a1,a2}=laserEndPntsMapFrameInter;
@@ -101,28 +104,43 @@ for t=1:(size(data(1).pose,2)-1)
         end
     end
     
-    if (nParticles>1)
-        
-        colours=lines(nRobots);
-        figure(1);
-        for a1=1:nRobots
-            weight(a1,:)=exp(1+weight(a1,:)/abs(min(weight(a1,:))));
-            weight(a1,:)=weight(a1,:)/sum(weight(a1,:));
-            plot(weight(a1,:),'Color',colours(a1,:));
-            hold on;
-            [robOdom(:,a1,:),map(:,:,a1,:),weight(a1,:)]=resample(robOdom(:,a1,:),map(:,:,a1,:),weight(a1,:));
-        end
-        hold off;
+    %map=map+mapUpdate;
+    
+    if (nParticles>1 & t>1)
         
         figure(2)
-        for a2=1:nParticles
-            for a1=1:nRobots
-                plot(robPoseMapFrame(1,t,a1,a2),robPoseMapFrame(2,t,a1,a2),'x','Color',colours(a1,:))
-                hold on;
+            for a2=1:nParticles
+                for a1=1:nRobots
+                    plot(robPoseMapFrame(1,t,a1,a2),robPoseMapFrame(2,t,a1,a2),'x','Color',colours(a1,:))
+                    hold on;
+                end
+            end
+            hold off;
+            drawnow;
+        
+        
+        for a1=1:nRobots
+            %Check if there are loop closures
+            mupose=mean(robOdom(:,a1,:),3);         
+            robTrans = v2t(mupose);
+            muPoseMap=world_to_map_coordinates(mupose(1:2),gridSize,offset);
+            mupastpose=mean(robPoseMapFrame(1:2,1:(t-1),a1,:),4);
+            mydelta=repmat(muPoseMap,[1 t-1])-mupastpose;
+            mydist=sum(mydelta(1:2,:).*mydelta(1:2,:),1);
+            if (sum(mydist<9)) %If loop closure, resample.
+                colours=lines(nRobots);
+                
+                weight(a1,:)=exp(1+weight(a1,:)/abs(min(weight(a1,:))));
+                weight(a1,:)=weight(a1,:)/sum(weight(a1,:));
+%                 figure(1);
+%                 plot(weight(a1,:),'Color',colours(a1,:));
+%                 hold on;
+                [robOdom(:,a1,:),map(:,:,a1,:),weight(a1,:)]=resample(robOdom(:,a1,:),map(:,:,a1,:),weight(a1,:));
+%                 hold off;
+                fprintf('Robot %d: loop closure detected.\n',a1);
             end
         end
-        hold off;
-        drawnow;
+        
     end
     
     if (nParticles==1)
@@ -132,6 +150,7 @@ for t=1:(size(data(1).pose,2)-1)
         filename = sprintf('plots/gridmap_%03d.png', t);
         cropBackground(filename)
     end
+    
     
     
 end
