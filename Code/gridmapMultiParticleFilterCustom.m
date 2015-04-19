@@ -10,7 +10,6 @@ myCluster.NumWorkers = 4;
 saveAsProfile(myCluster,'local');
 matlabpool(myCluster.NumWorkers);
 
-
 % Load laser scans and robot poses.
 load('../Data/CustomData-10Robots.mat')
 %alphas = [0.05 0.01 0.01 0.02 0.01 0.05].^2;%Noise properties from Table 5.3 of ProbRob

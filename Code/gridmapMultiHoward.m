@@ -20,9 +20,9 @@ close all
 %saveAsProfile(myCluster,'local');
 %parpool(myCluster.NumWorkers);
 
-
 % Load laser scans and robot poses.
-load('../Data/CustomData-10Robots.mat')
+%load('../Data/CustomData-10Robots.mat')
+load('../Data/CustomData5.mat')
 
 % Noise parameters
 alphas = [0.05 0.001 0.005 0.01 0.01 0.01].^2;
@@ -31,7 +31,7 @@ alphas = [0.05 0.001 0.005 0.01 0.01 0.01].^2;
 nParticles=10;
 
 % Number of robots
-nRobots=2;
+nRobots=5;
 
 % Initial cell occupancy probability.
 probPrior = 0.50;
@@ -61,7 +61,6 @@ for rob = 1:nRobots % Build ground truth pose
     %plot(squeeze(pose(1,a1,:)),squeeze(pose(2,a1,:)),'k')
     %hold on;
 end
-
 
 robXMin = min(min(pose(2,:,:)));
 robXMax = max(max(pose(2,:,:)))+50;
@@ -118,14 +117,14 @@ for t=2:(size(data(1).pose,2)-1)
     for rob = 1:nRobots
         if(size(data(rob).pose,2)>=t)
             update = cell(4,1);
-            update{1} = [data(rob).vact(t) ; data(rob).omegaact(t)]; % u
+            update{1} = data(rob).u(:,t); %[data(rob).vact(t) ; data(rob).omegaact(t)]; % u
             update{2} = data(rob).r{t}; % z
             update{3} = 0; % rob
-            update{4} = zeros(3,1); % Delta (relative pose
+            update{4} = zeros(3,1);  % Delta (relative pose
             for sighting = 1:nRobots % Check for encounter
                 if(sighting ~= rob)
                     rpose = pose(:,sighting,t)-pose(:,rob,t);
-                    if( sqrt(rpose(1).^2 + rpose(2).^2) < 2)
+                    if( sqrt(rpose(1).^2 + rpose(2).^2) < 20)
                         % TODO: Check for occlusion
                         % Check for causal join
                         if(find(join==rob))
@@ -172,7 +171,7 @@ for t=2:(size(data(1).pose,2)-1)
                     u = dCaus{1};
                     z = dCaus{2};
                     M = [alphas(1:2);alphas(3:4);alphas(5:6)]*u;
-                    xRc{rob}(:,p) = SampleMotionModel(u(1),u(2),dt,xRc{rob}(:,p),M);
+                    xRc{rob}(:,p) = OdometryMotion(u,xRc{rob}(:,p),alphas);%SampleMotionModel(u(1),u(2),dt,xRc{rob}(:,p),M);
                     weight(p) = weight(p) * measurement_model_prob(z,xRc{rob}(:,p),map(:,:,p),SENSOR,Q);
                     % Compute the mapUpdate, which contains the log odds values to add to the map.
                     [mapUpdate, robPoseMapFrame(:,t,rob,p), laserEndPntsMapFrameInter] = inv_sensor_model(map(:,:,p), z, xRc{rob}(:,p), gridSize, offset, probPrior, probOcc, probFree,SENSOR.RADIUS);
@@ -186,7 +185,7 @@ for t=2:(size(data(1).pose,2)-1)
                     u = dAcaus{1}; % Reverse odometry
                     z = dAcaus{2};
                     % Update prediction
-                    xRa{rob}(:,p) = SampleMotionModel(u(1),u(2),dt, xRa{rob}(:,p),M);
+                    xRa{rob}(:,p) = OdometryMotion(u,xRa{rob}(:,p),alphas);%SampleMotionModel(u(1),u(2),dt, xRa{rob}(:,p),M);
                     weight(p) = weight(p)*measurement_model_prob(z,xRa{rob}(:,p),map(:,:,p),SENSOR,Q);
                     [mapUpdate, robPoseMapFrame(:,t,rob,p), laserEndPntsMapFrameInter] = inv_sensor_model(map(:,:,p), z, xRa{rob}(:,p), gridSize, offset, probPrior, probOcc, probFree,SENSOR.RADIUS);
                     map(:,:,p) = map(:,:,p) + mapUpdate;% Update map
@@ -215,7 +214,7 @@ for t=2:(size(data(1).pose,2)-1)
         %end
         
         figure(2)
-        mapCombined = mean(map,3)';
+        mapCombined = mean(map,3);
         %plot_map(mapCombined, mapBox, robPoseMapFrame, poses, laserEndPntsMapFrame, gridSize, offset, t);
         imshow(ones(size(mapCombined)) - log_odds_to_prob(mapCombined));
         hold on;
