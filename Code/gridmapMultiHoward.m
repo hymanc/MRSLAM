@@ -9,7 +9,7 @@ close all
 myCluster = parcluster('local');
 myCluster.NumWorkers = 4;
 saveAsProfile(myCluster,'local');
-matlabpool(myCluster.NumWorkers);
+parpool(myCluster.NumWorkers);
 
 
 % Load laser scans and robot poses.
@@ -22,7 +22,7 @@ alphas = [0.05 0.001 0.005 0.01 0.01 0.01].^2;
 nParticles=10;
 
 % Number of robots
-nRobots=2;
+nRobots=5;
 
 % Initial cell occupancy probability.
 probPrior = 0.50;
@@ -118,26 +118,20 @@ for t=1:(size(data(1).pose,2)-1)
         end
     end
     
-    for a1 = 1:nRobots % Enqueue odometry and scan data
-        
-        if (size(data(a1).pose,2)>=t)
-            % Check for joined
-            if(find(joined == a1))
-                
-                M = [alphas(1:2);alphas(3:4);alphas(5:6)]*[data(a1).v(t);data(a1).omega(t)];
-                
+    % Update filter from queues
+    for rob = 1:nRobots
+        if(find(join == rob)) % Only update joined robots
+            if(size(cQ{rob},2) >= 1)
+                dCaus = cQ{rob}{:,1};
+                cQ{rob}(:,1) = []; % Dequeue data
             end
-            % Laser scan made at time t.
-        end
-    end
-    
-    
-    parfor a2=1:nParticles
-        for rob=1:nRobots % For all robots, update poses and odometry
-            if(find(join==rob)) % Handle
+            if(size(aQ{rob},2) >= 1)
+                dAcaus = aQ{rob}{:,1};
+                aQ{rob}(:,1) = [];
+            end
+            parfor a2=1:nParticles
                 if(size(cQ{rob},2) >= 1)
-                %if (size(data(a1).pose,2)>=t)
-                    % Check join
+                    % Causal update
                     robPose = data(rob).pose(:,t);
                     d = cQ{rob}{:,1};
                     M = [alphas(1:2);alphas(3:4);alphas(5:6)]*[data(a1).v(t);data(a1).omega(t)];
@@ -151,10 +145,10 @@ for t=1:(size(data(1).pose,2)-1)
                     % Update the occupancy values of the map cells.
                     map(:,:,a1,a2) = map(:,:,a1,a2) + mapUpdate;
                 end
-            end
+                if(size(aQ{rob,2}) >= 1)
+                    % Acausal update
+                end
         end
-        % Process queue
-        
     end
     
     % Resample
@@ -190,7 +184,7 @@ end
 
 save(sprintf('%s-BIGDATA.mat',datestr(now,30)),'map','robPoseMapFrame')
 % system(sprintf('avconv -r 5 -b 0.5M -i plots/gridmap_%%03d.png %s-gridmap.mp4',datestr(now,30)))
-matlabpool('close');
+parpool('close');
 
 
 %for a1=1:size(map,3);figure(a1);imshow(ones(size(map(:,:,a1))) - log_odds_to_prob(map(:,:,a1)));axis ij equal tight;end
