@@ -15,10 +15,10 @@ close all
 %clear all
 
 % Parallel PF execution cluster
-myCluster = parcluster('local');
-myCluster.NumWorkers = 4;
-saveAsProfile(myCluster,'local');
-parpool(myCluster.NumWorkers);
+%myCluster = parcluster('local');
+%myCluster.NumWorkers = 4;
+%saveAsProfile(myCluster,'local');
+%parpool(myCluster.NumWorkers);
 
 
 % Load laser scans and robot poses.
@@ -82,9 +82,9 @@ disp('Map initialized. Map size:'), disp(size(map))
 offset = [offsetX; offsetY];
 
 %% Pre/post encounter queues
-joined = [1]; % Joined/Post encounter list (initialize to at least one robot)
-aQ = cell(nRobot,1);
-cQ = cell(nRobot,1);
+join = [1]; % Joined/Post encounter list (initialize to at least one robot)
+aQ = cell(nRobots,1);
+cQ = cell(nRobots,1);
 % For each enqueued cell (4x1):
 % Param 1: actions (u)
 % Param 2: measurements (z)
@@ -102,12 +102,12 @@ weight=1/nParticles*ones(nParticles,1); % Initial weights
 %% Main SLAM loop
 for t=1:(size(data(1).pose,2)-1)
     t
-    jointTemp = join; % Alias join to enforce wait for newly joined robots
+    joinTemp = join; % Alias join to enforce wait for newly joined robots
     % Append queues
     for rob = 1:nRobots
         if(size(data(rob).pose,2)>=t)
             update = cell(4,1);
-            update{1} = [data(rob).v{t};data(rob).omega{t}]; % u
+            update{1} = [data(rob).v(t) ; data(rob).omega(t)]; % u
             update{2} = data(rob).r{t}; % z
             update{3} = 0; % rob
             update{4} = 0; % Delta (relative pose
@@ -118,7 +118,7 @@ for t=1:(size(data(1).pose,2)-1)
                 end
             end
 
-            if(find(joined==rob)) % Robot post-encounter, add to causal queue
+            if(find(join==rob)) % Robot post-encounter, add to causal queue
                 cQ{rob} = horzcat(cQ{rob}, update); % Append
             else % Robot before encounter, add to non-causal queue
                 aQ{rob} = horzcat(update, aQ{rob}); % Prepend(reverse order)
@@ -141,30 +141,31 @@ for t=1:(size(data(1).pose,2)-1)
             
             % Perform RBPF updates
             for p = 1:nParticles
-                if(dCaus) % Causal update
+                if(size(dCaus)) % Causal update
                     robPose = data(rob).pose(:,t);
-                    u = dCaus{1}; 
+                    u = dCaus{1};
                     z = dCaus{2};
                     M = [alphas(1:2);alphas(3:4);alphas(5:6)]*u;
                     robOdom(:,rob,p) = SampleMotionModel(u(1),u(2),dt,robOdom(:,rob,p),M);
-                    weight(p) = weight(p)*measurement_model_prob(z,robOdom(:,rob,p),map(:,:,p),SENSOR,Q);
+                    weight(p) = weight(p) * measurement_model_prob(z,robOdom(:,rob,p),map(:,:,p),SENSOR,Q);
                     % Compute the mapUpdate, which contains the log odds values to add to the map.
-                    [mapUpdate, robPoseMapFrame(:,t,rob,p), laserEndPntsMapFrameInter] = inv_sensor_model(map(:,:,rob,p), z, robOdom(:,rob,p), gridSize, offset, probPrior, probOcc, probFree,SENSOR.RADIUS);
+                    [mapUpdate, robPoseMapFrame(:,t,rob,p), laserEndPntsMapFrameInter] = inv_sensor_model(map(:,:,p), z, robOdom(:,rob,p), gridSize, offset, probPrior, probOcc, probFree,SENSOR.RADIUS);
                     if (nParticles == 1)
                         laserEndPntsMapFrame{rob,p} = laserEndPntsMapFrameInter;
                     end
                     % Update the occupancy values of the map cells.
                     map(:,:,p) = map(:,:,p) + mapUpdate;
                 end
-                if(dAcaus) % Acausal update
+                if(size(dAcaus)) % Acausal update
                     u = dAcaus{1};
                     z = dAcaus{2};
                     % Update prediction
                     robOdom(:,rob,p) = SampleMotionModel(u(1),u(2),dt,robOdom(:,rob,p),M); % Update measurement
                     weight(p) = weight(p)*measurement_model_prob(z,robOdom(:,rob,p),map(:,:,p),SENSOR,Q);
-                    [mapUpdate, robPoseMapFrame(:,t,rob,p), laserEndPntsMapFrameInter] = inv_sensor_model(map(:,:,rob,p), z, robOdom(:,rob,p), gridSize, offset, probPrior, probOcc, probFree,SENSOR.RADIUS);
+                    [mapUpdate, robPoseMapFrame(:,t,rob,p), laserEndPntsMapFrameInter] = inv_sensor_model(map(:,:,p), z, robOdom(:,rob,p), gridSize, offset, probPrior, probOcc, probFree,SENSOR.RADIUS);
                     map(:,:,p) = map(:,:,p) + mapUpdate;% Update map
                     if(dAcaus{3} ~= 0) % Check if acausal join needed
+                        % TODO: handle relative pose
                         joinTemp = horzcat(joinTemp, dAcaus{3}); % Acausal join
                     end
                 end
@@ -177,18 +178,21 @@ for t=1:(size(data(1).pose,2)-1)
     if (nParticles>1)
         
         weight=exp(-weight/abs(min(weight)));
-        for a1=1:nRobots
-            [robOdom(:,a1,:),map(:,:,a1,:),weight]=resample(robOdom(:,a1,:),map(:,:,a1,:),weight);
-        end
+        %for a1=1:nRobots
+        %    [robOdom(:,a1,:),map(:,:,a1,:),weight]=resample(robOdom(:,a1,:),map(:,:,a1,:),weight);
+        %end
         
         figure(2)
-        colours=lines(nRobots);
-        for a2=1:nParticles
-            for a1=1:nRobots
-                plot(robPoseMapFrame(1,t,a1,a2),robPoseMapFrame(2,t,a1,a2),'x','Color',colours(a1,:))
-                hold on;
-            end
-        end
+        mapCombined = mean(map,3);
+        %plot_map(mapCombined, mapBox, robPoseMapFrame, poses, laserEndPntsMapFrame, gridSize, offset, t);
+        imshow(ones(size(mapCombined)) - log_odds_to_prob(mapCombined));
+        %colours=lines(nRobots);
+        %for a2=1:nParticles
+        %    for a1=1:nRobots
+        %        plot(robPoseMapFrame(1,t,a1,a2),robPoseMapFrame(2,t,a1,a2),'x','Color',colours(a1,:))
+        %        hold on;
+        %    end
+        %end
         hold off;
         drawnow;
     end
@@ -206,7 +210,7 @@ end
 
 save(sprintf('%s-BIGDATA.mat',datestr(now,30)),'map','robPoseMapFrame')
 % system(sprintf('avconv -r 5 -b 0.5M -i plots/gridmap_%%03d.png %s-gridmap.mp4',datestr(now,30)))
-parpool('close');
+%parpool('close');
 
 
 %for a1=1:size(map,3);figure(a1);imshow(ones(size(map(:,:,a1))) - log_odds_to_prob(map(:,:,a1)));axis ij equal tight;end
