@@ -1,0 +1,69 @@
+%\newcommand\md{\ }
+%\DeclareSymbolFont{AMSb}{U}{msb}{m}{n}
+%\DeclareMathSymbol{\R}{\mathbin}{AMSb}{"52}
+%\DeclareMathSymbol{\Z}{\mathbin}{AMSb}{"5A}
+%\DeclareMathSymbol{\Q}{\mathbin}{AMSb}{"51}
+%\DeclareMathSymbol{\F}{\mathbin}{AMSb}{"46}
+%\DeclareMathSymbol{\C}{\mathbin}{AMSb}{"43}
+%\DeclareMathSymbol{\B}{\mathbin}{AMSb}{"42}
+
+
+
+\newcommand{\bernNTensor}[2]{\overset{#2\rightharpoonup}{#1}}
+\newcommand{\bernMatrix}[1]{\overset{\rightharpoonup}{\overset{\rightharpoonup}{#1}}}
+%\newcommand{\bernmatrixfull}[3]{\left.\overset{\rightharpoonup}{\overset{\rightharpoonup}{#1}_{#2}\right|_{#3}}
+\newcommand{\bernVector}[1]{\overset{\rightharpoonup}{#1}}
+\newcommand{\bernVectorFull}[3]{\left.\overset{\rightharpoonup}{#1}_{#2}\right|_{#3}}
+
+\newcommand{\myHat}[2]{\hat{#1}_{#2}}
+\newcommand{\rowVector}[3]{\left[\begin{array}{c} #1\\ #2\\ #3\end{array}\right]}
+\newcommand{\columnVector}[3]{\left[\begin{array}{c c c} #1 & #2 & #3 \end{array}\right]}
+
+
+
+
+
+
+
+\newcommand{\boxedeqn}[1]{%
+  \[\fbox{%
+      \addtolength{\linewidth}{-2\fboxsep}%
+      \addtolength{\linewidth}{-2\fboxrule}%
+      \begin{minipage}{\linewidth}%
+      \begin{equation}#1\end{equation}%
+      \end{minipage}%
+    }\]%
+}
+
+
+\newcommand{\eulerX}[1]{%
+\left[\begin{array}{c c c}
+1 & 0 &0\\
+0 & \cos\left(#1\right) & \sin\left(#1\right)\\
+ 0 & -\sin\left(#1\right)& \cos\left(#1\right) 
+\end{array}\right]}
+
+
+\newcommand{\eulerY}[1]{%
+\left[\begin{array}{c c c}
+\cos\left(#1\right) &0& -\sin\left(#1\right) \\
+0 & 1 & 0\\
+ \sin\left(#1\right)& 0 &\cos\left(#1\right)
+\end{array}\right]}
+
+\newcommand{\eulerZ}[1]{%
+\left[\begin{array}{c c c}
+\cos\left(#1\right) & \sin\left(#1\right)& 0 \\
+ -\sin\left(#1\right)& \cos\left(#1\right)& 0 \\
+0 & 0& 1 
+\end{array}\right]}
+
+\newcommand{\myNorm}[2]{%
+\left\|#1\right\|_{#2}
+}
+
+\newcommand{\diag}{{\rm diag}}
+\newcommand{\myspan}{{\rm span}}
+\newcommand{\Mat}{{\rm Mat}}
+\newcommand{\Ker}{{\rm Ker}}
+\newcommand{\myImage}{{\rm Im}}

@@ -1,0 +1,184 @@
+\documentclass[14pt]{beamer}
+%\documentclass[14pt,handout]{beamer}
+
+%\usepackage{pgfpages}
+%\pgfpagesuselayout{4 on 1}[letterpaper, border shrink = 10mm, landscape]
+%\pgfpagesuselayout{2 on 1}[letterpaper, border shrink = 10mm, portrait]
+
+\mode<presentation> {
+
+% The Beamer class comes with a number of default slide themes
+% which change the colors and layouts of slides. Below this is a list
+% of all the themes, uncomment each in turn to see what they look like.
+
+%\usetheme{default}
+\usetheme{AnnArbor}
+%\usetheme{Antibes}
+%\usetheme{Bergen}
+%\usetheme{Berkeley}
+%\usetheme{Berlin}
+%\usetheme{Boadilla}
+%\usetheme{CambridgeUS}
+%\usetheme{Copenhagen}
+%\usetheme{Darmstadt}
+%\usetheme{Dresden}
+%\usetheme{Frankfurt}
+%\usetheme{Goettingen}
+%\usetheme{Hannover}
+%\usetheme{Ilmenau}
+%\usetheme{JuanLesPins}
+%\usetheme{Luebeck}
+%\usetheme{Madrid}
+%\usetheme{Malmoe}
+%\usetheme{Marburg}
+%\usetheme{Montpellier}
+%\usetheme{PaloAlto}
+%\usetheme{Pittsburgh}
+%\usetheme{Rochester}
+%\usetheme{Singapore}
+%\usetheme{Szeged}
+%\usetheme{Warsaw}
+
+% As well as themes, the Beamer class has a number of color themes
+% for any slide theme. Uncomment each of these in turn to see how it
+% changes the colors of your current slide theme.
+
+%\usecolortheme{albatross}
+%\usecolortheme{beaver}
+%\usecolortheme{beetle}
+%\usecolortheme{crane}
+%\usecolortheme{dolphin}
+%\usecolortheme{dove}
+%\usecolortheme{fly}
+%\usecolortheme{lily}
+%\usecolortheme{orchid}
+%\usecolortheme{rose}
+%\usecolortheme{seagull}
+%\usecolortheme{seahorse}
+%\usecolortheme{whale}
+\usecolortheme{wolverine}
+
+%\setbeamertemplate{footline} % To remove the footer line in all slides uncomment this line
+%\setbeamertemplate{footline}[page number] % To replace the footer line in all slides with a simple slide count uncomment this line
+
+%\setbeamertemplate{navigation symbols}{} % To remove the navigation symbols from the bottom of all slides uncomment this line
+}
+
+
+\include{PresentationSetup}
+\include{CommandLibrary}
+
+
+\title[EECS 568]{Multi-Robot/Coordinated SLAM with Particle Filters} % The short title appears at the bottom of every slide, the full title is only on the title page
+
+\author{R Choroszucha, A Collier, and C Hyman}
+%\institute[EECS 568] % Your institution as it will appear on the bottom of every slide, may be shorthand to save space
+%{
+%}
+%\date{\today} % Date, can be changed to a custom date
+\date{2015-04-20} % Date, can be changed to a custom date
+
+\usepackage{enumerate}
+\setlength{\parindent}{0in}
+
+
+%\begin{frame}
+%\frametitle{}
+%\end{frame}
+
+\newcommand\blfootnote[1]{%
+  \begingroup
+  \renewcommand\thefootnote{}\footnote{#1}%
+  \addtocounter{footnote}{-1}%
+  \endgroup
+}
+%\setbeamercovered{transparent}
+%\setbeamercovered{transparent=20}
+%\setbeamertemplate{bibliography item}{}
+
+\usepackage[backend=biber]{biblatex} 
+%\usepackage{multimedia}
+%\usepackage[3D]{movie15}
+%\usepackage{media9}
+ 
+\begin{document}
+
+\begin{frame}
+\titlepage % Print the title page as the first slide
+\end{frame}
+
+
+%\begin{frame}
+%\frametitle{Overview}
+%\tableofcontents 
+%\end{frame}
+
+\frame{\frametitle{Overview}\tableofcontents}
+
+\section{Multi-Robot SLAM}
+%\frame{\frametitle{Overview}\tableofcontents[currentsection]}
+\input{MRSLAM}
+
+
+\section{Experimental Validation}
+%\frame{\frametitle{Overview}\tableofcontents[currentsection]}
+\input{Validation}
+
+
+%\section{Nonlinear MPC Simulation Question}
+%\frame{\frametitle{Overview}\tableofcontents[currentsection]}
+
+\section{Conclusions and Future Work}
+%\frame{\frametitle{Overview}\tableofcontents[currentsection]}
+\input{Conclusions}
+
+
+%\begin{frame}[allowframebreaks]
+%\nocite{*}
+%        \frametitle{References}
+%        \bibliographystyle{plain}
+%        %\bibliography{../../Journal/Citations-MPCConstraintTightening}
+%        \bibliography{Citations-MPCConstraintTightening}
+%\end{frame}
+
+\begin{frame}[t]
+\nocite{*}
+        \frametitle{References}
+        %\vspace{-0.5cm}
+        %\tiny{\bibliographystyle{abbrv}}
+        %\bibliography{../../Journal/Citations-MPCConstraintTightening}
+        %\bibliography{Citations-Prospectus.bib}
+        \tiny{\input{BibStuff}}
+		%\printbibliography 
+\end{frame}
+
+\begin{frame}
+\frametitle{}
+\begin{center}
+{ \Huge Questions...}
+\end{center}
+\end{frame}
+
+%\section*{Extra}
+%
+%\begin{frame}
+%\frametitle{}
+%\begin{center}
+%{ \Huge Extra Slides}
+%\end{center}
+%\end{frame}
+%
+%\input{Extra}
+
+
+
+\end{document}
+
+
+%\lstset{
+%basicstyle=\tiny,
+%keywordstyle=\color{blue},
+%commentstyle=\color{green},
+%stringstyle=\ttfamily,
+%numbers=left,
+%}
