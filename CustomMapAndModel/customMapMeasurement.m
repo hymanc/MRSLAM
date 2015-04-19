@@ -1,17 +1,17 @@
-function [r]=customMapMeasurement(x,y,theta,THEIMAGE,SENSOR)
+function r=customMapMeasurement(x,y,theta,MAP,PIXDIM,SENSOR)
 
 
-
-    persistent MAP;             %Bitmap
-    persistent PIXDIM;          %Dimension of pixel
+% 
+%     persistent MAP;             %Bitmap
+%     persistent PIXDIM;          %Dimension of pixel
     
     phi=linspace(SENSOR.AOS(1),SENSOR.AOS(2),SENSOR.AOSDIV);
     RR=1:SENSOR.RADIUS;
     
-    if (isempty(MAP))
-        [MAP,PIXDIM]=getTheMAP(THEIMAGE);
-        %MAP=MAP';
-    end
+%     if (isempty(MAP))
+%         [MAP,PIXDIM]=getTheMAP(THEIMAGE);
+%         %MAP=MAP';
+%     end
     
     sMAP=size(MAP);
     PIX=1/PIXDIM;
