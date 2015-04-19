@@ -166,17 +166,13 @@ for t=2:(size(data(1).pose,2)-1)
                 aQ{rob}(:,1) = [];
             end
             
-            
             % Perform RBPF updates
             for p = 1:nParticles
                 if(size(dCaus)) % Causal update
-                    %robPose = data(rob).pose(:,t);
                     u = dCaus{1};
                     z = dCaus{2};
                     M = [alphas(1:2);alphas(3:4);alphas(5:6)]*u;
-                    %robOdom(:,rob,p) = SampleMotionModel(u(1),u(2),dt,robOdom(:,rob,p),M);
                     xRc{rob}(:,p) = SampleMotionModel(u(1),u(2),dt,xRc{rob}(:,p),M);
-                    %weight(p) = weight(p) * measurement_model_prob(z,robOdom(:,rob,p),map(:,:,p),SENSOR,Q);
                     weight(p) = weight(p) * measurement_model_prob(z,xRc{rob}(:,p),map(:,:,p),SENSOR,Q);
                     % Compute the mapUpdate, which contains the log odds values to add to the map.
                     [mapUpdate, robPoseMapFrame(:,t,rob,p), laserEndPntsMapFrameInter] = inv_sensor_model(map(:,:,p), z, xRc{rob}(:,p), gridSize, offset, probPrior, probOcc, probFree,SENSOR.RADIUS);
@@ -187,12 +183,10 @@ for t=2:(size(data(1).pose,2)-1)
                     map(:,:,p) = map(:,:,p) + mapUpdate;
                 end
                 if(size(dAcaus)) % Acausal update
-                    u = -dAcaus{1}; % Reverse odometry
+                    u = dAcaus{1}; % Reverse odometry
                     z = dAcaus{2};
                     % Update prediction
-                    %robOdom(:,rob,p) = SampleMotionModel(u(1),u(2),dt,robOdom(:,rob,p),M); % Update measurement
                     xRa{rob}(:,p) = SampleMotionModel(u(1),u(2),dt, xRa{rob}(:,p),M);
-                    %weight(p) = weight(p)*measurement_model_prob(z,robOdom(:,rob,p),map(:,:,p),SENSOR,Q);
                     weight(p) = weight(p)*measurement_model_prob(z,xRa{rob}(:,p),map(:,:,p),SENSOR,Q);
                     [mapUpdate, robPoseMapFrame(:,t,rob,p), laserEndPntsMapFrameInter] = inv_sensor_model(map(:,:,p), z, xRa{rob}(:,p), gridSize, offset, probPrior, probOcc, probFree,SENSOR.RADIUS);
                     map(:,:,p) = map(:,:,p) + mapUpdate;% Update map
@@ -221,16 +215,21 @@ for t=2:(size(data(1).pose,2)-1)
         %end
         
         figure(2)
-        mapCombined = mean(map,3);
+        mapCombined = mean(map,3)';
         %plot_map(mapCombined, mapBox, robPoseMapFrame, poses, laserEndPntsMapFrame, gridSize, offset, t);
         imshow(ones(size(mapCombined)) - log_odds_to_prob(mapCombined));
-        %colours=lines(nRobots);
-        %for a2=1:nParticles
-        %    for a1=1:nRobots
-        %        plot(robPoseMapFrame(1,t,a1,a2),robPoseMapFrame(2,t,a1,a2),'x','Color',colours(a1,:))
-        %        hold on;
-        %    end
-        %end
+        hold on;
+        %plot_map_Howard(mapCombined, mapBox, robPoseMapFrame, data, laserEndPntsMapFrame, gridSize, offset, t)
+        
+        % Plot ground truth robots
+        
+        colors=lines(nRobots);
+        for p=1:nParticles
+            for rob=1:nRobots
+                plot(robPoseMapFrame(1,t,rob,p),robPoseMapFrame(2,t,rob,p),'x','Color',colors(rob,:))
+                hold on;
+            end
+        end
         hold off;
         drawnow;
     end
@@ -250,6 +249,4 @@ save(sprintf('%s-BIGDATA.mat',datestr(now,30)),'map','robPoseMapFrame')
 % system(sprintf('avconv -r 5 -b 0.5M -i plots/gridmap_%%03d.png %s-gridmap.mp4',datestr(now,30)))
 %parpool('close');
 
-g = @(x,u) [];
-gr = @(x,u) [];
 %for a1=1:size(map,3);figure(a1);imshow(ones(size(map(:,:,a1))) - log_odds_to_prob(map(:,:,a1)));axis ij equal tight;end
