@@ -27,6 +27,10 @@ function [MAP,PIXDIM]=getTheMAP(THEIMAGE)
             A=imread(THEIMAGE);
             MAP=A(:,:,1)~=255 & A(:,:,2)~=255 & A(:,:,3)~=255;
             PIXDIM=1;%1 meter/1 Pixel
+        case 'Test5.png'
+            A=imread(THEIMAGE);
+            MAP=A(:,:,1)~=255 & A(:,:,2)~=255 & A(:,:,3)~=255;
+            PIXDIM=1;%1 meter/1 Pixel
         otherwise
 
     end
