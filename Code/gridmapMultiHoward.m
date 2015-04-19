@@ -1,3 +1,12 @@
+% gridmapMultiHoward.m
+% Multi-Robot FastSLAM Implementation based on 
+% "Multi-robot Simultaneous Localization and Mapping using Particle
+% Filters"
+% 18 APR 2015
+% R. Choroszucha, A. Collier, C. Hyman
+% EECS 568
+% University of Michigan
+
 addpath('tools')
 
 mkdir plots
@@ -65,20 +74,18 @@ mapSize = ceil(mapSizeMeters/gridSize);
 logOddsPrior = prob_to_log_odds(probPrior);
 
 % The occupancy value of each cell in the map is initialized with the prior.
-map = logOddsPrior*ones([mapSize nRobots nParticles]);
+map = logOddsPrior*ones([mapSize nParticles]); 
 mapCombined = logOddsPrior*ones(mapSize);
 disp('Map initialized. Map size:'), disp(size(map))
 
 % Map offset used when converting from world to map coordinates.
 offset = [offsetX; offsetY];
 
-% Pre/post encounter queues
+%% Pre/post encounter queues
 joined = [1]; % Joined/Post encounter list (initialize to at least one robot)
 aQ = cell(nRobot,1);
 cQ = cell(nRobot,1);
-
-%aQ = cell(nRobot,4); % Acausal queue {rob#, param, index}
-%cQ = cell(nRobot,4); % Causal queue {rob#, param, index}
+% For each enqueued cell (4x1):
 % Param 1: actions (u)
 % Param 2: measurements (z)
 % Param 3: observed robots
@@ -90,22 +97,23 @@ robOdom=robPose;
 robOdom=repmat(robOdom,[1 1 nParticles]);
 robPoseMapFrame=zeros([2 size(data(1).pose,2) nRobots nParticles]);
 weight=1/nParticles*ones(nParticles,1); % Initial weights
+
+% TODO: Update until all causal/non-causal data is exhausted
+%% Main SLAM loop
 for t=1:(size(data(1).pose,2)-1)
     t
-    % Robot pose at time t.
-    
+    jointTemp = join; % Alias join to enforce wait for newly joined robots
     % Append queues
     for rob = 1:nRobots
         if(size(data(rob).pose,2)>=t)
             update = cell(4,1);
-            update{1} = [data(rob).v{t};data(rob).omega{t}];
-            update{2} = data(rob).r{t};% Check for encounter
-            % TODO Check for encounter
-            update{3} = 0;
-            update{4} = 0;
-            for sighting = 1:nRobots
+            update{1} = [data(rob).v{t};data(rob).omega{t}]; % u
+            update{2} = data(rob).r{t}; % z
+            update{3} = 0; % rob
+            update{4} = 0; % Delta (relative pose
+            for sighting = 1:nRobots % TODO Check for encounter
                 if(sighting ~= rob)
-                    % Check if robot is within perceptual radius and not
+                    % TODO: Check if robot is within perceptual radius and not
                     % occluded
                 end
             end
@@ -121,33 +129,47 @@ for t=1:(size(data(1).pose,2)-1)
     % Update filter from queues
     for rob = 1:nRobots
         if(find(join == rob)) % Only update joined robots
-            if(size(cQ{rob},2) >= 1)
-                dCaus = cQ{rob}{:,1};
-                cQ{rob}(:,1) = []; % Dequeue data
+            dCaus = []; dAcaus = [];
+            if(size(cQ{rob},2) >= 1)  % Check causal queue
+                dCaus = cQ{rob}(:,1); % Read next data from queue
+                cQ{rob}(:,1) = [];    % Dequeue data
             end
-            if(size(aQ{rob},2) >= 1)
-                dAcaus = aQ{rob}{:,1};
+            if(size(aQ{rob},2) >= 1) % Check acausal queue
+                dAcaus = aQ{rob}(:,1);
                 aQ{rob}(:,1) = [];
             end
-            parfor a2=1:nParticles
-                if(size(cQ{rob},2) >= 1)
-                    % Causal update
+            
+            % Perform RBPF updates
+            for p = 1:nParticles
+                if(dCaus) % Causal update
                     robPose = data(rob).pose(:,t);
-                    d = cQ{rob}{:,1};
-                    M = [alphas(1:2);alphas(3:4);alphas(5:6)]*[data(a1).v(t);data(a1).omega(t)];
-                    robOdom(:,a1,a2) = SampleMotionModel(data(a1).v(t),data(a1).omega(t),dt,robOdom(:,a1,a2),M);
-                    weight(a2) = measurement_model_prob(sc,robOdom(:,a1,a2),map(:,:,a1,a2),SENSOR,Q);
+                    u = dCaus{1}; 
+                    z = dCaus{2};
+                    M = [alphas(1:2);alphas(3:4);alphas(5:6)]*u;
+                    robOdom(:,rob,p) = SampleMotionModel(u(1),u(2),dt,robOdom(:,rob,p),M);
+                    weight(p) = weight(p)*measurement_model_prob(z,robOdom(:,rob,p),map(:,:,p),SENSOR,Q);
                     % Compute the mapUpdate, which contains the log odds values to add to the map.
-                    [mapUpdate, robPoseMapFrame(:,t,a1,a2), laserEndPntsMapFrameInter] = inv_sensor_model(map(:,:,a1,a2), sc, robOdom(:,a1,a2), gridSize, offset, probPrior, probOcc, probFree,SENSOR.RADIUS);
+                    [mapUpdate, robPoseMapFrame(:,t,rob,p), laserEndPntsMapFrameInter] = inv_sensor_model(map(:,:,rob,p), z, robOdom(:,rob,p), gridSize, offset, probPrior, probOcc, probFree,SENSOR.RADIUS);
                     if (nParticles == 1)
-                        laserEndPntsMapFrame{a1,a2} = laserEndPntsMapFrameInter;
+                        laserEndPntsMapFrame{rob,p} = laserEndPntsMapFrameInter;
                     end
                     % Update the occupancy values of the map cells.
-                    map(:,:,a1,a2) = map(:,:,a1,a2) + mapUpdate;
+                    map(:,:,p) = map(:,:,p) + mapUpdate;
                 end
-                if(size(aQ{rob,2}) >= 1)
-                    % Acausal update
+                if(dAcaus) % Acausal update
+                    u = dAcaus{1};
+                    z = dAcaus{2};
+                    % Update prediction
+                    robOdom(:,rob,p) = SampleMotionModel(u(1),u(2),dt,robOdom(:,rob,p),M); % Update measurement
+                    weight(p) = weight(p)*measurement_model_prob(z,robOdom(:,rob,p),map(:,:,p),SENSOR,Q);
+                    [mapUpdate, robPoseMapFrame(:,t,rob,p), laserEndPntsMapFrameInter] = inv_sensor_model(map(:,:,rob,p), z, robOdom(:,rob,p), gridSize, offset, probPrior, probOcc, probFree,SENSOR.RADIUS);
+                    map(:,:,p) = map(:,:,p) + mapUpdate;% Update map
+                    if(dAcaus{3} ~= 0) % Check if acausal join needed
+                        joinTemp = horzcat(joinTemp, dAcaus{3}); % Acausal join
+                    end
                 end
+            end
+            
         end
     end
     
@@ -179,7 +201,7 @@ for t=1:(size(data(1).pose,2)-1)
         cropBackground(filename)
     end
     
-    
+    join = joinTemp;
 end
 
 save(sprintf('%s-BIGDATA.mat',datestr(now,30)),'map','robPoseMapFrame')
