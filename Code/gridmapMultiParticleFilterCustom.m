@@ -13,10 +13,11 @@ matlabpool(myCluster.NumWorkers);
 
 % Load laser scans and robot poses.
 load('../Data/CustomData-10Robots.mat')
-alphas = [0.05 0.01 0.01 0.02 0.01 0.05].^2;%Noise properties from Table 5.3 of ProbRob
+%alphas = [0.05 0.01 0.01 0.02 0.01 0.05].^2;%Noise properties from Table 5.3 of ProbRob
+alphas = [0.05 0.001 0.005 0.01 0.01 0.01].^2;
 
-nParticles=30;          %The number of particles
-nRobots=10;             %Number of robots
+nParticles=10;          %The number of particles
+nRobots=2;             %Number of robots
 
 % Initial cell occupancy probability.
 probPrior = 0.50;
@@ -139,8 +140,6 @@ end
 save(sprintf('%s-BIGDATA.mat',datestr(now,30)),'map','robPoseMapFrame')
 % system(sprintf('avconv -r 5 -b 0.5M -i plots/gridmap_%%03d.png %s-gridmap.mp4',datestr(now,30)))
 matlabpool('close');
-
-
 
 
 %for a1=1:size(map,3);figure(a1);imshow(ones(size(map(:,:,a1))) - log_odds_to_prob(map(:,:,a1)));axis ij equal tight;end

@@ -86,6 +86,6 @@ function [mapUpdate, robPoseMapFrame, laserEndPntsMapFrame] = inv_sensor_model(m
     end
 
     if (therewasanerror)
-        fprintf('Outside of bounds.\n');
+        %fprintf('Outside of bounds.\n');
     end
 end
