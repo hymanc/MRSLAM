@@ -58,7 +58,7 @@ mapBox = [robXMin-border robXMax+border robYMin-border robYMax+border];
 offsetX = mapBox(1);
 offsetY = mapBox(3);
 mapSizeMeters = [mapBox(2)-offsetX mapBox(4)-offsetY];
-mapSize = ceil([mapSizeMeters/gridSize]);
+mapSize = ceil(mapSizeMeters/gridSize);
 
 % Used when updating the map. Assumes that prob_to_log_odds.m
 % has been implemented correctly.
@@ -72,7 +72,17 @@ disp('Map initialized. Map size:'), disp(size(map))
 % Map offset used when converting from world to map coordinates.
 offset = [offsetX; offsetY];
 
-joined = {1};
+% Pre/post encounter queues
+joined = [1]; % Joined/Post encounter list (initialize to at least one robot)
+aQ = cell(nRobot,1);
+cQ = cell(nRobot,1);
+
+%aQ = cell(nRobot,4); % Acausal queue {rob#, param, index}
+%cQ = cell(nRobot,4); % Causal queue {rob#, param, index}
+% Param 1: actions (u)
+% Param 2: measurements (z)
+% Param 3: observed robots
+% Param 4: observed robot poses
 
 % Main loop for updating map cells.
 % You can also take every other point when debugging to speed up the loop (t=1:2:size(poses,1))
@@ -83,32 +93,65 @@ weight=1/nParticles*ones(nParticles,1); % Initial weights
 for t=1:(size(data(1).pose,2)-1)
     t
     % Robot pose at time t.
-    parfor a2=1:nParticles
-        % Update Poses and odometery
-        % Update Measurement model
-        % Update OGM
-
-        for a1=1:nRobots % For all robots, generate 
-            if (size(data(a1).pose,2)>=t)
-                robPose=data(a1).pose(:,t);
-                M=[alphas(1:2);alphas(3:4);alphas(5:6)]*[data(a1).v(t);data(a1).omega(t)];
-                robOdom(:,a1,a2)=SampleMotionModel(data(a1).v(t),data(a1).omega(t),dt,robOdom(:,a1,a2),M);
-                % Laser scan made at time t.
-                sc=data(a1).r{t};
-                weight(a2)=measurement_model_prob(sc,robOdom(:,a1,a2),map(:,:,a1,a2),SENSOR,Q);
-                
-                % Compute the mapUpdate, which contains the log odds values to add to the map.
-                %[mapUpdate, robPoseMapFrame(:,t,a1,a2), laserEndPntsMapFrameInter] = inv_sensor_model(map(:,:,a1,a2), sc, robPose, gridSize, offset, probPrior, probOcc, probFree,SENSOR.RADIUS);
-                [mapUpdate, robPoseMapFrame(:,t,a1,a2), laserEndPntsMapFrameInter] = inv_sensor_model(map(:,:,a1,a2), sc, robOdom(:,a1,a2), gridSize, offset, probPrior, probOcc, probFree,SENSOR.RADIUS);
-                if (nParticles==1)
-                    laserEndPntsMapFrame{a1,a2}=laserEndPntsMapFrameInter;
+    
+    % Append queues
+    for rob = 1:nRobots
+        if(size(data(rob).pose,2)>=t)
+            update = cell(4,1);
+            update{1} = [data(rob).v{t};data(rob).omega{t}];
+            update{2} = data(rob).r{t};% Check for encounter
+            % TODO Check for encounter
+            update{3} = 0;
+            update{4} = 0;
+            for sighting = 1:nRobots
+                if(sighting ~= rob)
+                    % Check if robot is within perceptual radius and not
+                    % occluded
                 end
-                % TODO: Update the occupancy values of the map cells.
-                map(:,:,a1,a2)=map(:,:,a1,a2)+mapUpdate;
-                %map(:,:,a1)=map(:,:,a1)+mapUpdate;
-
             end
 
+            if(find(joined==rob)) % Robot post-encounter, add to causal queue
+                cQ{rob} = horzcat(cQ{rob}, update); % Append
+            else % Robot before encounter, add to non-causal queue
+                aQ{rob} = horzcat(update, aQ{rob}); % Prepend(reverse order)
+            end
+        end
+    end
+    
+    for a1 = 1:nRobots % Enqueue odometry and scan data
+        
+        if (size(data(a1).pose,2)>=t)
+            % Check for joined
+            if(find(joined == a1))
+                
+                M = [alphas(1:2);alphas(3:4);alphas(5:6)]*[data(a1).v(t);data(a1).omega(t)];
+                
+            end
+            % Laser scan made at time t.
+        end
+    end
+    
+    
+    parfor a2=1:nParticles
+        for rob=1:nRobots % For all robots, update poses and odometry
+            if(find(join==rob)) % Handle
+                if(size(cQ{rob},2) >= 1)
+                %if (size(data(a1).pose,2)>=t)
+                    % Check join
+                    robPose = data(rob).pose(:,t);
+                    d = cQ{rob}{:,1};
+                    M = [alphas(1:2);alphas(3:4);alphas(5:6)]*[data(a1).v(t);data(a1).omega(t)];
+                    robOdom(:,a1,a2) = SampleMotionModel(data(a1).v(t),data(a1).omega(t),dt,robOdom(:,a1,a2),M);
+                    weight(a2) = measurement_model_prob(sc,robOdom(:,a1,a2),map(:,:,a1,a2),SENSOR,Q);
+                    % Compute the mapUpdate, which contains the log odds values to add to the map.
+                    [mapUpdate, robPoseMapFrame(:,t,a1,a2), laserEndPntsMapFrameInter] = inv_sensor_model(map(:,:,a1,a2), sc, robOdom(:,a1,a2), gridSize, offset, probPrior, probOcc, probFree,SENSOR.RADIUS);
+                    if (nParticles == 1)
+                        laserEndPntsMapFrame{a1,a2} = laserEndPntsMapFrameInter;
+                    end
+                    % Update the occupancy values of the map cells.
+                    map(:,:,a1,a2) = map(:,:,a1,a2) + mapUpdate;
+                end
+            end
         end
         % Process queue
         

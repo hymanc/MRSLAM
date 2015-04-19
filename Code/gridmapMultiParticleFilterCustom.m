@@ -13,17 +13,11 @@ close all
 
 % Load laser scans and robot poses.
 load('../Data/CustomData-10Robots.mat')
-alphas = [0.05 0.01 0.01 0.02 0.01 0.05].^2;%Noise properties from Table 5.3 of ProbRob
-
-<<<<<<< HEAD
+%alphas = [0.05 0.01 0.01 0.02 0.01 0.05].^2;%Noise properties from Table 5.3 of ProbRob
 alphas = [0.05 0.001 0.005 0.01 0.01 0.01].^2;
 
-nParticles=30;
-nRobots=1;
-=======
 nParticles=30;          %The number of particles
 nRobots=10;             %Number of robots
->>>>>>> 3c798f3b5417a91b231be060b84dc2d3556dbc84
 
 % Initial cell occupancy probability.
 probPrior = 0.50;
