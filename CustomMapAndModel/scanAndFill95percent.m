@@ -1,4 +1,4 @@
-function scanAndFill()
+function scanAndFill95percent()
 
     close all;
     
@@ -10,22 +10,6 @@ function scanAndFill()
     SENSOR.AOS=[-90 90]*pi/180; %Sensor angle of sensitivity
     SENSOR.AOSDIV=180;          %Division of AOS, important for ray tracing
     phi=linspace(SENSOR.AOS(1),SENSOR.AOS(2),SENSOR.AOSDIV);
-    
-    %Map dilation to keep the robot off the wall.
-    MAPdil=MAP;
-    MAP0=MAP;
-    for a1=1:3
-        for a2=2:(size(MAP0,1)-1)
-            for a3=2:(size(MAP0,2)-1)
-                A=MAP0((a2-1):(a2+1),(a3-1):(a3+1));
-                if(sum(A(:))>=1)
-                   MAPdil(a2,a3)=1;
-                end
-            end
-        end
-        MAP0=MAPdil;
-    end
-    
     
     figure(1)    
     NEWMAP=zeros(size(MAP));
@@ -49,7 +33,8 @@ function scanAndFill()
     colours=lines(NROBOTS);
     
     c1=1;
-    while (c1<=STEPS)
+    pcom=0;
+    while (pcom<0.95)
         figure(1)
         hold off;
         for a1=1:NROBOTS
@@ -84,7 +69,7 @@ function scanAndFill()
             
             switch lower(OdometryModel)
                 case 'odometrymotion'
-                    [xnew,ynew,thetanew,dx,dtheta]=odometryMotion(x(c1,a1),y(c1,a1),theta(c1,a1),MAPdil,c1,a1);
+                    [xnew,ynew,thetanew,dx,dtheta]=odometryMotion(x(c1,a1),y(c1,a1),theta(c1,a1),MAP,c1,a1);
                     data(a1).uact(:,c1)=[dx;dtheta];
                     data(a1).u(:,c1)=[dx+R(1,1)*randn(1);dtheta+R(2,2)*randn(1)];
                 case 'velocitymotion'
@@ -117,17 +102,11 @@ function scanAndFill()
             end
         end
         drawnow;
-        fprintf('%d/%d\n',c1,STEPS);
+        if (mod(c1,100)==0)
+            fprintf('%d\n',c1);
+        end
         c1=c1+1;
     end
-    for a1=1:NROBOTS
-        data(a1).pose=[x(:,a1)';y(:,a1)';theta(:,a1)'];
-    end
-    
-    mapEncounters=CheckConnectivity(data,MAP,PIXDIM,SENSOR);
-    save('CustomData.mat','data','R','Q','dt','SENSOR','OdometryModel','THEIMAGE','mapEncounters');
-    
-
 end
 
 
