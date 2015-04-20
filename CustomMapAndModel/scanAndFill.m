@@ -24,7 +24,7 @@ function scanAndFill()
     theta=zeros(STEPS,NROBOTS);
     dt=0.1;
     
-    R=diag([0.05,0.01]);
+    R=diag([0.01,0.001]);
     Q=diag([0.5]);
      x(1,:)=[25 25 275 275 150];
      y(1,:)=[25 275 25 275 150];

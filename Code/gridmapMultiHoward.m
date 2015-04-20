@@ -22,13 +22,13 @@ close all
 
 % Load laser scans and robot poses.
 %load('../Data/CustomData-10Robots.mat')
-load('../Data/CustomData5_howard.mat')
+load('../Data/CustomData5_howard2.mat')
 
 % Noise parameters
-alphas = [0.05 0.001 0.005 0.01 0.01 0.01].^2;
+alphas = [0.05 0.01 0.05 0.01 0.01 0.01].^2;
 
 % Number of Maps/Particles
-nParticles=3;
+nParticles=30;
 
 % Number of robots
 nRobots=5;
@@ -43,7 +43,7 @@ probFree = 0.35;
 gridSize = 1;
 
 % Set up map boundaries and initialize map.
-border = 10;
+border = 30;
 
 %%{
 %figure(1)
@@ -63,9 +63,9 @@ for rob = 1:nRobots % Build ground truth pose
 end
 
 robXMin = min(min(pose(2,:,:)));
-robXMax = max(max(pose(2,:,:)))+50;
+robXMax = max(max(pose(2,:,:)));%+50;
 robYMin = min(min(pose(1,:,:)));
-robYMax = max(max(pose(1,:,:)))+50;
+robYMax = max(max(pose(1,:,:)));%+50;
 
 mapBox = [robXMin-border robXMax+border robYMin-border robYMax+border];
 %offsetX = mapBox(1);
