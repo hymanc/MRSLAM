@@ -22,10 +22,10 @@ close all
 
 % Load laser scans and robot poses.
 %load('../Data/CustomData-10Robots.mat')
-load('../Data/CustomData5.mat')
+load('../Data/CustomData5_howard.mat')
 
 % Noise parameters
-alphas = [0.05 0.001 0.005 0.01 0.01 0.01].^2;
+alphas = [0.01 0.0005 0.001 0.002 0.002 0.002].^2;
 
 % Number of Maps/Particles
 nParticles=10;
@@ -71,7 +71,7 @@ mapBox = [robXMin-border robXMax+border robYMin-border robYMax+border];
 offsetX = mapBox(1);
 offsetY = mapBox(3);
 mapSizeMeters = [mapBox(2)-offsetX mapBox(4)-offsetY];
-mapSize = ceil(mapSizeMeters/gridSize);
+mapSize = ceil(mapSizeMeters./gridSize);
 
 % Used when updating the map. Assumes that prob_to_log_odds.m
 % has been implemented correctly.
@@ -83,7 +83,7 @@ mapCombined = logOddsPrior*ones(mapSize);
 disp('Map initialized. Map size:'), disp(size(map))
 
 % Map offset used when converting from world to map coordinates.
-offset = [offsetX; offsetY];
+offset = -ceil(mapSize./(2))';
 
 %% Pre/post encounter queues
 join = 1; % Joined/Post encounter list (initialize to at least one robot)
@@ -105,8 +105,8 @@ end
 xRc{1} = repmat(pose(:,1,1), [1 nParticles]); % Initialize pioneer particles
 
 %robOdom = repmat(robOdom,[1 1 nParticles]);
-robPoseMapFrame = zeros([2 size(data(1).pose,2) nRobots nParticles]);
-
+robPoseMapFrameC = zeros([2 size(data(1).pose,2) nRobots nParticles]);
+robPoseMapFrameA = zeros([2 size(data(1).pose,2) nRobots nParticles]);
 weight = 1/nParticles*ones(nParticles,1); % Initial weights
 % TODO: Update until all causal/non-causal data are exhausted
 %% Main SLAM loop
@@ -128,14 +128,16 @@ for t=2:(size(data(1).pose,2)-1)
                         % TODO: Check for occlusion
                         % Check for causal join
                         if(find(join==rob))
-                            disp 'JOINING'
-                            % Initialize pose
-                            for p = 1:nParticles
-                                spose = xRc{rob}(:,p) + rpose;
-                                xRc{sighting}(:,p) = spose;
-                                xRa{sighting}(:,p) = spose;
+                            if(size(find(join==sighting),2)==0)
+                                disp 'JOINING'
+                                % Initialize pose
+                                for p = 1:nParticles
+                                    spose = xRc{rob}(:,p) + rpose;
+                                    xRc{sighting}(:,p) = spose;
+                                    xRa{sighting}(:,p) = spose;
+                                end
+                                joinTemp = [joinTemp, sighting];
                             end
-                            joinTemp = [joinTemp, sighting];
                         end
                         update{3} = [update{3}, sighting]; % Sighting index
                         update{4} = [update{4}, rpose];    % Sighting rel. pose
@@ -174,7 +176,7 @@ for t=2:(size(data(1).pose,2)-1)
                     xRc{rob}(:,p) = OdometryMotion(u,xRc{rob}(:,p),alphas);%SampleMotionModel(u(1),u(2),dt,xRc{rob}(:,p),M);
                     weight(p) = weight(p) * measurement_model_prob(z,xRc{rob}(:,p),map(:,:,p),SENSOR,Q);
                     % Compute the mapUpdate, which contains the log odds values to add to the map.
-                    [mapUpdate, robPoseMapFrame(:,t,rob,p), laserEndPntsMapFrameInter] = inv_sensor_model(map(:,:,p), z, xRc{rob}(:,p), gridSize, offset, probPrior, probOcc, probFree,SENSOR.RADIUS);
+                    [mapUpdate, robPoseMapFrameC(:,t,rob,p), laserEndPntsMapFrameInter] = inv_sensor_model(map(:,:,p), z, xRc{rob}(:,p), gridSize, offset, probPrior, probOcc, probFree,SENSOR.RADIUS);
                     if (nParticles == 1)
                         laserEndPntsMapFrame{rob,p} = laserEndPntsMapFrameInter;
                     end
@@ -185,9 +187,9 @@ for t=2:(size(data(1).pose,2)-1)
                     u = dAcaus{1}; % Reverse odometry
                     z = dAcaus{2};
                     % Update prediction
-                    xRa{rob}(:,p) = OdometryMotion(u,xRa{rob}(:,p),alphas);%SampleMotionModel(u(1),u(2),dt, xRa{rob}(:,p),M);
+                    xRa{rob}(:,p) = OdometryMotionReverse(u,xRa{rob}(:,p),alphas);%SampleMotionModel(u(1),u(2),dt, xRa{rob}(:,p),M);
                     weight(p) = weight(p)*measurement_model_prob(z,xRa{rob}(:,p),map(:,:,p),SENSOR,Q);
-                    [mapUpdate, robPoseMapFrame(:,t,rob,p), laserEndPntsMapFrameInter] = inv_sensor_model(map(:,:,p), z, xRa{rob}(:,p), gridSize, offset, probPrior, probOcc, probFree,SENSOR.RADIUS);
+                    [mapUpdate, robPoseMapFrameA(:,t,rob,p), laserEndPntsMapFrameInter] = inv_sensor_model(map(:,:,p), z, xRa{rob}(:,p), gridSize, offset, probPrior, probOcc, probFree,SENSOR.RADIUS);
                     map(:,:,p) = map(:,:,p) + mapUpdate;% Update map
                     if(dAcaus{3} ~= 0) % Check if acausal join needed
                         encounters = dAcaus{3};
@@ -214,7 +216,7 @@ for t=2:(size(data(1).pose,2)-1)
         %end
         
         figure(2)
-        mapCombined = mean(map,3);
+        mapCombined = mean(map,3)';
         %plot_map(mapCombined, mapBox, robPoseMapFrame, poses, laserEndPntsMapFrame, gridSize, offset, t);
         imshow(ones(size(mapCombined)) - log_odds_to_prob(mapCombined));
         hold on;
@@ -225,7 +227,9 @@ for t=2:(size(data(1).pose,2)-1)
         colors=lines(nRobots);
         for p=1:nParticles
             for rob=1:nRobots
-                plot(robPoseMapFrame(1,t,rob,p),robPoseMapFrame(2,t,rob,p),'x','Color',colors(rob,:))
+                % Plot 
+                plot(robPoseMapFrameC(1,t,rob,p),robPoseMapFrameC(2,t,rob,p),'x','Color',colors(rob,:)) % Plot PF estimates
+                plot(robPoseMapFrameA(1,t,rob,p),robPoseMapFrameA(2,t,rob,p),'o','Color',colors(rob,:))
                 hold on;
             end
         end
@@ -234,7 +238,8 @@ for t=2:(size(data(1).pose,2)-1)
     end
     
     if (nParticles==1)
-        mapCombined=sum(map,3);
+        mapCombined = sum(map,3);
+        mapCombined = mapCombined';
         % Plot current map and robot trajectory so far.
         plot_map_multi_PF(mapCombined, mapBox, robPoseMapFrame, data, laserEndPntsMapFrame, gridSize, offset, t);
         filename = sprintf('plots/gridmap_%03d.png', t);
