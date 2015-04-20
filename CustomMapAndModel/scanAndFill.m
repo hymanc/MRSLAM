@@ -107,9 +107,26 @@ function scanAndFill()
     for a1=1:NROBOTS
         data(a1).pose=[x(:,a1)';y(:,a1)';theta(:,a1)'];
     end
+    
+    mapEncounters=CheckConnectivity(data,MAP,PIXDIM,SENSOR);
+    save('CustomData.mat','data','R','Q','dt','SENSOR','OdometryModel','THEIMAGE','mapEncounters');
+    
+    figure(103)
+        imagesc(1-MAP)
+        axis image;
+        colormap gray;
+        hold on;
+        for a2=1:NROBOTS
+            plot(data(a2).pose(2,:),data(a2).pose(1,:),'Color',colours(a2,:))
+            hold on;
+        end
         
-    save('CustomData.mat','data','R','Q','dt','SENSOR','OdometryModel','THEIMAGE')
-    %CheckConnectivity();
+        for a1=1:size(mapEncounters)
+            x=[data(mapEncounters(a1,2)).pose(1,mapEncounters(a1,1)) data(mapEncounters(a1,3)).pose(1,mapEncounters(a1,1))];
+            y=[data(mapEncounters(a1,2)).pose(2,mapEncounters(a1,1)) data(mapEncounters(a1,3)).pose(2,mapEncounters(a1,1))];
+            plot(y,x,'y--')
+        end
+        hold off;
 end
 
 
