@@ -25,7 +25,7 @@ close all
 load('../Data/CustomData-Straighter.mat')
 
 % Noise parameters
-alphas = [0.025 0.025 0.025 0.025 0.01 0.01].^2;
+alphas = [0.02 0.02 0.02 0.02 0.1 0.1].^2;
 
 % Number of Maps/Particles
 nParticles=30;
