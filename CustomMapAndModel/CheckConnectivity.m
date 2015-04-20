@@ -22,13 +22,6 @@ function encounterMAP=CheckConnectivity(data,MAP,PIXDIM,SENSOR)
         end
     end
     
-    z=exp(2*pi*1i*((1:numel(data))-1)/numel(data));
-    figure(102)
-        plot(real(z),imag(z),'o');
-        hold on;
-        for a1=1:size(encounterMAP,1);
-            plot(real(z(encounterMAP(a1,2:3))),imag(z(encounterMAP(a1,2:3))),'-');
-        end
-    
-    
+    plotConnectivity(MAP,encounterMAP,data);
+        
 end
