@@ -25,10 +25,10 @@ close all
 load('../Data/CustomData5_howard.mat')
 
 % Noise parameters
-alphas = [0.01 0.0005 0.001 0.002 0.002 0.002].^2;
+alphas = [0.05 0.001 0.005 0.01 0.01 0.01].^2;
 
 % Number of Maps/Particles
-nParticles=10;
+nParticles=3;
 
 % Number of robots
 nRobots=5;
@@ -51,7 +51,7 @@ border = 10;
 T = size(data(1).pose,2)-1;
 pose = zeros([3,nRobots,T]);
 for rob = 1:nRobots % Build ground truth pose
-    for t = 2:(size(data(1).pose,2)-1)
+    for t = 1:T
         %pose(:,rob,t) = Odometry(data(rob).v(t),data(rob).omega(t),dt,pose(:,rob,t-1));
         size(data(rob).pose)
         pose(:,rob,t) = data(rob).pose(:,t);
@@ -68,9 +68,9 @@ robYMin = min(min(pose(1,:,:)));
 robYMax = max(max(pose(1,:,:)))+50;
 
 mapBox = [robXMin-border robXMax+border robYMin-border robYMax+border];
-offsetX = mapBox(1);
-offsetY = mapBox(3);
-mapSizeMeters = [mapBox(2)-offsetX mapBox(4)-offsetY];
+%offsetX = mapBox(1);
+%offsetY = mapBox(3);
+mapSizeMeters = [mapBox(2)-mapBox(1) mapBox(4)-mapBox(3)];
 mapSize = ceil(mapSizeMeters./gridSize);
 
 % Used when updating the map. Assumes that prob_to_log_odds.m
@@ -83,7 +83,12 @@ mapCombined = logOddsPrior*ones(mapSize);
 disp('Map initialized. Map size:'), disp(size(map))
 
 % Map offset used when converting from world to map coordinates.
-offset = -ceil(mapSize./(2))';
+offset = [mapBox(1);mapBox(3)];%-ceil(mapSize./(4))';
+
+poseMap = cell(nRobots,1);
+for rob = 1:nRobots
+    poseMap{rob} = world_to_map_coordinates(squeeze(pose(1:2,rob,:)), gridSize, offset);
+end
 
 %% Pre/post encounter queues
 join = 1; % Joined/Post encounter list (initialize to at least one robot)
@@ -102,7 +107,7 @@ for rob = 1:nRobots
     xRc{rob} = zeros(3,nParticles);
     xRa{rob} = zeros(3,nParticles);
 end
-xRc{1} = repmat(pose(:,1,1), [1 nParticles]); % Initialize pioneer particles
+xRc{1} = repmat(pose(:,1,2), [1 nParticles]); % Initialize pioneer particles
 
 %robOdom = repmat(robOdom,[1 1 nParticles]);
 robPoseMapFrameC = zeros([2 size(data(1).pose,2) nRobots nParticles]);
@@ -160,7 +165,6 @@ for t=2:(size(data(1).pose,2)-1)
             if(size(cQ{rob},2) >= 1)  % Check causal queue
                 dCaus = cQ{rob}(:,1); % Read next data from queue
                 cQ{rob}(:,1) = [];    % Dequeue data
-                
             end
             if(size(aQ{rob},2) >= 1) % Check acausal queue
                 dAcaus = aQ{rob}(:,1);
@@ -211,10 +215,7 @@ for t=2:(size(data(1).pose,2)-1)
     if (nParticles>1)
         
         weight=exp(-weight/abs(min(weight)));
-        %for a1=1:nRobots
-        %    [robOdom(:,a1,:),map(:,:,a1,:),weight]=resample(robOdom(:,a1,:),map(:,:,a1,:),weight);
-        %end
-        
+
         figure(2)
         mapCombined = mean(map,3)';
         %plot_map(mapCombined, mapBox, robPoseMapFrame, poses, laserEndPntsMapFrame, gridSize, offset, t);
@@ -228,8 +229,10 @@ for t=2:(size(data(1).pose,2)-1)
         for p=1:nParticles
             for rob=1:nRobots
                 % Plot 
-                plot(robPoseMapFrameC(1,t,rob,p),robPoseMapFrameC(2,t,rob,p),'x','Color',colors(rob,:)) % Plot PF estimates
-                plot(robPoseMapFrameA(1,t,rob,p),robPoseMapFrameA(2,t,rob,p),'o','Color',colors(rob,:))
+                plot(poseMap{rob}(1,2:t),poseMap{rob}(2,2:t),'--','Color',colors(rob,:));
+                plot(poseMap{rob}(1,t+1),poseMap{rob}(2,t+1),'o','Color',colors(rob,:));
+                plot(robPoseMapFrameC(1,t,rob,p),robPoseMapFrameC(2,t,rob,p),'+','Color',colors(rob,:)) % Plot PF estimates
+                plot(robPoseMapFrameA(1,t,rob,p),robPoseMapFrameA(2,t,rob,p),'X','Color',colors(rob,:))
                 hold on;
             end
         end
@@ -249,8 +252,6 @@ for t=2:(size(data(1).pose,2)-1)
     join = joinTemp;
 end
 
-save(sprintf('%s-BIGDATA.mat',datestr(now,30)),'map','robPoseMapFrame')
+%save(sprintf('%s-BIGDATA.mat',datestr(now,30)),'map','robPoseMapFrame')
 % system(sprintf('avconv -r 5 -b 0.5M -i plots/gridmap_%%03d.png %s-gridmap.mp4',datestr(now,30)))
 %parpool('close');
-
-%for a1=1:size(map,3);figure(a1);imshow(ones(size(map(:,:,a1))) - log_odds_to_prob(map(:,:,a1)));axis ij equal tight;end
