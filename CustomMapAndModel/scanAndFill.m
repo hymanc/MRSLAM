@@ -6,7 +6,7 @@ function scanAndFill()
     OdometryModel='OdometryMotion';
     THEIMAGE='Test5.png';
     [MAP,PIXDIM]=getTheMAP(THEIMAGE);
-    SENSOR.RADIUS=50;           %Limit of the sensor
+    SENSOR.RADIUS=75;           %Limit of the sensor
     SENSOR.AOS=[-90 90]*pi/180; %Sensor angle of sensitivity
     SENSOR.AOSDIV=180;          %Division of AOS, important for ray tracing
     phi=linspace(SENSOR.AOS(1),SENSOR.AOS(2),SENSOR.AOSDIV);
@@ -40,11 +40,11 @@ function scanAndFill()
     theta=zeros(STEPS,NROBOTS);
     dt=0.1;
     
-    R=diag([0.01,0.001]);
+    R=diag([0.1,0.01]);
     Q=diag([0.5]);
      x(1,:)=[25 25 275 275 150];
      y(1,:)=[25 275 25 275 150];
-    theta(1,:)=linspace(0,2*pi-2*pi/NROBOTS,NROBOTS);
+    theta(1,:)=linspace(0,2*pi-2*pi/NROBOTS,NROBOTS)+pi/6;
     
     colours=lines(NROBOTS);
     
@@ -124,10 +124,11 @@ function scanAndFill()
         data(a1).pose=[x(:,a1)';y(:,a1)';theta(:,a1)'];
     end
     
-    mapEncounters=CheckConnectivity(data,MAP,PIXDIM,SENSOR);
-    save('CustomData.mat','data','R','Q','dt','SENSOR','OdometryModel','THEIMAGE','mapEncounters');
     
-
+    save('CustomData1.mat','data','R','Q','dt','SENSOR','OdometryModel','THEIMAGE');
+    
+    mapEncounters=CheckConnectivity(data,MAP,PIXDIM,SENSOR);
+    save('CustomData1.mat','data','R','Q','dt','SENSOR','OdometryModel','THEIMAGE','mapEncounters');
 end
 
 

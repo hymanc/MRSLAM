@@ -2,7 +2,7 @@
 % Multi-Robot FastSLAM Implementation based on 
 % "Multi-robot Simultaneous Localization and Mapping using Particle
 % Filters"
-% 20 APR 2015
+% 19 APR 2015
 % R. Choroszucha, A. Collier, C. Hyman
 % EECS 568
 % University of Michigan
@@ -22,10 +22,12 @@ close all
 
 % Load laser scans and robot poses.
 %load('../Data/CustomData-10Robots.mat')
+%load('../Data/CustomData5_howard.mat')
+%load('../Data/CustomData-Straighter.mat')
 load('../CustomMapAndModel/CustomData.mat')
 
 % Noise parameters
-alphas = [0.02 0.02 0.02 0.02 0.1 0.1].^2;
+alphas = [0.05 0.001 0.005 0.01 0.01 0.01].^2;
 
 % Number of Maps/Particles
 nParticles=30;
@@ -43,7 +45,7 @@ probFree = 0.35;
 gridSize = 1;
 
 % Set up map boundaries and initialize map.
-border = 30;
+border = 10;
 
 %%{
 %figure(1)
@@ -51,17 +53,25 @@ border = 30;
 T = size(data(1).pose,2)-1;
 pose = zeros([3,nRobots,T]);
 for rob = 1:nRobots % Build ground truth pose
-    for t = 1:T+1
+    for t = 1:T
+        %pose(:,rob,t) = Odometry(data(rob).v(t),data(rob).omega(t),dt,pose(:,rob,t-1));
+        size(data(rob).pose)
         pose(:,rob,t) = data(rob).pose(:,t);
+        %robPose(:,rob) = data(rob).pose(:,1);
+        %pose(:,rob,:) = data(rob).pose;
     end
+    %plot(squeeze(pose(1,a1,:)),squeeze(pose(2,a1,:)),'k')
+    %hold on;
 end
 
 robXMin = min(min(pose(2,:,:)));
-robXMax = max(max(pose(2,:,:)));%+50;
+robXMax = max(max(pose(2,:,:)))+50;
 robYMin = min(min(pose(1,:,:)));
-robYMax = max(max(pose(1,:,:)));%+50;
+robYMax = max(max(pose(1,:,:)))+50;
 
 mapBox = [robXMin-border robXMax+border robYMin-border robYMax+border];
+%offsetX = mapBox(1);
+%offsetY = mapBox(3);
 mapSizeMeters = [mapBox(2)-mapBox(1) mapBox(4)-mapBox(3)];
 mapSize = ceil(mapSizeMeters./gridSize);
 
@@ -75,7 +85,7 @@ mapCombined = logOddsPrior*ones(mapSize);
 disp('Map initialized. Map size:'), disp(size(map))
 
 % Map offset used when converting from world to map coordinates.
-offset = [mapBox(1);mapBox(3)];
+offset = [mapBox(1);mapBox(3)];%-ceil(mapSize./(4))';
 
 poseMap = cell(nRobots,1);
 for rob = 1:nRobots
@@ -99,7 +109,7 @@ for rob = 1:nRobots
     xRc{rob} = zeros(3,nParticles);
     xRa{rob} = zeros(3,nParticles);
 end
-xRc{1} = repmat(pose(:,1,1), [1 nParticles]); % Initialize pioneer particles
+xRc{1} = repmat(pose(:,1,2), [1 nParticles]); % Initialize pioneer particles
 
 %robOdom = repmat(robOdom,[1 1 nParticles]);
 robPoseMapFrameC = zeros([2 size(data(1).pose,2) nRobots nParticles]);
@@ -107,7 +117,9 @@ robPoseMapFrameA = zeros([2 size(data(1).pose,2) nRobots nParticles]);
 weight = 1/nParticles*ones(nParticles,1); % Initial weights
 % TODO: Update until all causal/non-causal data are exhausted
 %% Main SLAM loop
-for t=1:T%(size(data(1).pose,2)-1)
+vectEncounters=1:size(mapEncounters,1);
+
+for t=2:(size(data(1).pose,2)-1)
     t
     joinTemp = join; % Alias join to enforce wait for newly joined robots
     % Append queues
@@ -118,10 +130,32 @@ for t=1:T%(size(data(1).pose,2)-1)
             update{2} = data(rob).r{t}; % z
             update{3} = 0; % rob
             update{4} = zeros(3,1);  % Delta (relative pose
+            
+%             encounterInds=(t==mapEncounters(:,1) & 1==mapEncounters(:,2));
+%             sumEncounters=sum(encounterInds);
+%             if (sumEncounters)
+%                 vvv=vectEncounters(encounterInds);
+%                 for b1=1:sumEncounters
+%                     disp 'JOINING'
+%                     % Initialize pose
+%                     sighting=mapEncounters(vvv(b1),3);
+%                     rpose = pose(:,sighting,t)-pose(:,rob,t);
+%                     for p = 1:nParticles
+%                         spose = xRc{rob}(:,p) + rpose;
+%                         xRc{sighting}(:,p) = spose;
+%                         xRa{sighting}(:,p) = spose;
+%                     end
+%                     joinTemp = [joinTemp, sighting];
+%                     update{3} = [update{3}, sighting]; % Sighting index
+%                     update{4} = [update{4}, rpose];    % Sighting rel. pose
+%                 end
+%             end
+            
+            
             for sighting = 1:nRobots % Check for encounter
                 if(sighting ~= rob)
-                    rpose = pose(:,sighting,t+1)-pose(:,rob,t+1);
-                    if( sqrt(rpose(1).^2 + rpose(2).^2) < 30)
+                    rpose = pose(:,sighting,t)-pose(:,rob,t);
+                    if( sqrt(rpose(1).^2 + rpose(2).^2) < 20)
                         % TODO: Check for occlusion
                         % Check for causal join
                         if(find(join==rob))
@@ -141,6 +175,7 @@ for t=1:T%(size(data(1).pose,2)-1)
                     end
                 end
             end
+            
             % Add data to causal/acausal queues
             if(find(join==rob)) % Robot post-encounter, add to causal queue
                 cQ{rob} = horzcat(cQ{rob}, update); % Append
@@ -170,7 +205,7 @@ for t=1:T%(size(data(1).pose,2)-1)
                     z = dCaus{2};
                     M = [alphas(1:2);alphas(3:4);alphas(5:6)]*u;
                     xRc{rob}(:,p) = OdometryMotion(u,xRc{rob}(:,p),alphas);%SampleMotionModel(u(1),u(2),dt,xRc{rob}(:,p),M);
-                    weight(p) = weight(p) * measurement_model_prob(z,xRc{rob}(:,p),map(:,:,p),SENSOR,Q,R,gridSize,offset);
+                    weight(p) = weight(p) * measurement_model_prob(z,xRc{rob}(:,p),map(:,:,p),SENSOR,Q);
                     % Compute the mapUpdate, which contains the log odds values to add to the map.
                     [mapUpdate, robPoseMapFrameC(:,t,rob,p), laserEndPntsMapFrameInter] = inv_sensor_model(map(:,:,p), z, xRc{rob}(:,p), gridSize, offset, probPrior, probOcc, probFree,SENSOR.RADIUS);
                     if (nParticles == 1)
@@ -184,7 +219,7 @@ for t=1:T%(size(data(1).pose,2)-1)
                     z = dAcaus{2};
                     % Update prediction
                     xRa{rob}(:,p) = OdometryMotionReverse(u,xRa{rob}(:,p),alphas);%SampleMotionModel(u(1),u(2),dt, xRa{rob}(:,p),M);
-                    weight(p) = weight(p)*measurement_model_prob(z,xRa{rob}(:,p),map(:,:,p),SENSOR,Q,R,gridSize,offset);
+                    weight(p) = weight(p)*measurement_model_prob(z,xRa{rob}(:,p),map(:,:,p),SENSOR,Q);
                     [mapUpdate, robPoseMapFrameA(:,t,rob,p), laserEndPntsMapFrameInter] = inv_sensor_model(map(:,:,p), z, xRa{rob}(:,p), gridSize, offset, probPrior, probOcc, probFree,SENSOR.RADIUS);
                     map(:,:,p) = map(:,:,p) + mapUpdate;% Update map
                     if(dAcaus{3} ~= 0) % Check if acausal join needed
@@ -205,14 +240,13 @@ for t=1:T%(size(data(1).pose,2)-1)
     
     % Resample
     if (nParticles>1)
-        %weight = exp(1+weight/abs(max(weight))); % Filter weights
-        weight = weight/sum(weight); % Normalize weight
-        %plot(weight,'Color',colours(p,:)); 
-        %hold on;
-        [xRc, xRa, map, weight] = resampleHoward(xRc, xRa, map, weight, nRobots);
+        
+        %weight=exp(-weight/abs(min(weight)));
+        weight=weight/abs(max(weight));
+        [~,inddd]=max(weight);
         
         figure(2)
-        mapCombined = mean(map,3)';
+        mapCombined = map(:,:,inddd)';%mean(map,3)';
         %plot_map(mapCombined, mapBox, robPoseMapFrame, poses, laserEndPntsMapFrame, gridSize, offset, t);
         imshow(ones(size(mapCombined)) - log_odds_to_prob(mapCombined));
         hold on;
@@ -220,11 +254,13 @@ for t=1:T%(size(data(1).pose,2)-1)
         
         % Plot ground truth robots
         
+        [weight,map,xRc,xRa]=resample_Howard(weight,map,xRc,xRa);
+        
         colors=lines(nRobots);
         for p=1:nParticles
             for rob=1:nRobots
                 % Plot 
-                plot(poseMap{rob}(1,1:t+1),poseMap{rob}(2,1:t+1),'.','Color',colors(rob,:));
+                plot(poseMap{rob}(1,2:t),poseMap{rob}(2,2:t),'--','Color',colors(rob,:));
                 plot(poseMap{rob}(1,t+1),poseMap{rob}(2,t+1),'o','Color',colors(rob,:));
                 plot(robPoseMapFrameC(1,t,rob,p),robPoseMapFrameC(2,t,rob,p),'+','Color',colors(rob,:)) % Plot PF estimates
                 plot(robPoseMapFrameA(1,t,rob,p),robPoseMapFrameA(2,t,rob,p),'X','Color',colors(rob,:))
@@ -233,9 +269,6 @@ for t=1:T%(size(data(1).pose,2)-1)
         end
         hold off;
         drawnow;
-    filename = sprintf('plots/howard_%03d.png', t);
-    print(gcf,filename, '-dpng');
-        cropBackground(filename)
     end
     
     if (nParticles==1)

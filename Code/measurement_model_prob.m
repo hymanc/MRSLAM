@@ -1,9 +1,30 @@
-function w=measurement_model_prob(sc,pose,MAP,SENSOR,Q)
+function w=measurement_model_prob(sc,pose,MAP,SENSOR,Q,R,gridSize,offset)
 
     r=rayTrace(pose(1),pose(2),pose(3),MAP>prob_to_log_odds(0.75),SENSOR);
     
-    %w=1/100;
-    w=Q*sum((r-sc).^2);
+    smap=size(MAP);
+    
+    robTrans = v2t(pose);
+    robPoseMapFrame=world_to_map_coordinates(pose(1:2),gridSize,offset);
+    laserEndPnts = robotlaser_as_cartesian(sc, SENSOR.RADIUS, false);
+    laserEndPnts = robTrans*laserEndPnts;
+    laserEndPntsMapFrame=world_to_map_coordinates(laserEndPnts(1:2,:),gridSize,offset);
+    
+    MAP=log_odds_to_prob(MAP)>1E-1;
+    
+    w0=0;
+    for sc=1:columns(laserEndPntsMapFrame)
+        [X,Y] = bresenham([robPoseMapFrame(1:2)';laserEndPntsMapFrame(1,sc) laserEndPntsMapFrame(2,sc)]);
+        freeCells=sub2ind(smap,X,Y);
+        occpCells=sub2ind(smap,laserEndPntsMapFrame(1,sc),laserEndPntsMapFrame(2,sc));
+        
+        FREE=1.0*(MAP(freeCells)==1);%Yes, 1 to avoid subtracting later on, gets the mismatched free cells.
+        OCCP=1.0*(MAP(occpCells)==0);%Yes, 0 to avoid subtracting later on, gets the mismatched occupied cells. 
+        
+        w0=w0+0.1*(FREE*FREE'+OCCP*OCCP');
+    end
+    
+    w=Q^-1*sum((r-sc).^2)+w0;
     
 end
 

@@ -1,7 +1,7 @@
 function encounterMAP=CheckConnectivity(data,MAP,PIXDIM,SENSOR)
 
     if (nargin~=4)
-        load('CustomData.mat')
+        load('CustomData1.mat')
         [MAP,PIXDIM]=getTheMAP(THEIMAGE);
     end
     
@@ -15,12 +15,14 @@ function encounterMAP=CheckConnectivity(data,MAP,PIXDIM,SENSOR)
                 ry=round(data(a3).pose(2,a1));
                 MAPplusrobot((rx-2):(rx+2),(ry-2):(ry+2))=1;
                 r2=customMapMeasurement(data(a2).pose(1,a1),data(a2).pose(2,a1),data(a2).pose(3,a1),MAPplusrobot,PIXDIM,SENSOR);
+                
                 if (~(sum(abs(r2-r1))<1E-9))
-                    encounterMAP=[encounterMAP;a1 a2 a3];%Time, Robot Sensing, Robot Sensed
+                    encounterMAP=[encounterMAP;a1 a2 a3 data(a3).pose(:,a1)'-data(a2).pose(:,a1)'];%Time, Robot Sensing, Robot Sensed
                 end
             end
         end
     end
+    
     
     plotConnectivity(MAP,encounterMAP,data);
         
