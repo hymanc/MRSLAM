@@ -1,11 +1,11 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2014.12.31)  19 APR 2015 18:49
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2014.9.3)  20 APR 2015 10:15
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
 **GoGoGadget-MultiRobotSLAM.tex
 (./GoGoGadget-MultiRobotSLAM.tex
 LaTeX2e <2011/06/27>
-Babel <3.9h> and hyphenation patterns for 78 languages loaded.
+Babel <3.9f> and hyphenation patterns for 78 languages loaded.
 (/usr/share/texmf/tex/latex/beamer/base/beamer.cls
 (/usr/share/texmf/tex/latex/beamer/base/beamerbasercs.sty
 Package: beamerbasercs 2012/11/13 (rcs-revision cb16a617839f)
@@ -398,7 +398,7 @@ Package hyperref Info: Bookmarks ON on input line 4688.
 
 (/usr/share/texlive/texmf-dist/tex/latex/url/url.sty
 \Urlmuskip=\muskip10
-Package: url 2013/09/16  ver 3.4  Verb mode for urls, etc.
+Package: url 2006/04/12  ver 3.3  Verb mode for urls, etc.
 )
 LaTeX Info: Redefining \url on input line 5041.
 \XeTeXLinkMargin=\dimen162
@@ -685,8 +685,8 @@ Package: beamercolorthemewolverine 2010/06/17  (rcs-revision d02a7cf4d8ae)
 catcodes, docmode, (/usr/share/texlive/texmf-dist/tex/generic/xypic/xyrecat.tex
 ) (/usr/share/texlive/texmf-dist/tex/generic/xypic/xyidioms.tex)
 
- Xy-pic version 3.8.9 <2013/10/06>
- Copyright (c) 1991-2013 by Kristoffer H. Rose <krisrose@tug.org> and others
+ Xy-pic version 3.8.8 <2012/05/24>
+ Copyright (c) 1991-2011 by Kristoffer H. Rose <krisrose@tug.org>
  Xy-pic is free software: see the User's Guide for details.
 
 Loading kernel: messages; fonts; allocations: state,
@@ -738,7 +738,7 @@ utility macros; pictures: \xy, positions,
  decorations;
 kernel objects: directionals, circles, text; options; algorithms: directions,
 edges, connections;  Xy-pic loaded)
-Package: xy 2013/10/06 Xy-pic version 3.8.9
+Package: xy 2012/05/24 Xy-pic version 3.8.8
 
 (/usr/share/texlive/texmf-dist/tex/generic/xypic/xyall.tex
  Xy-pic option: All features v.3.8
@@ -759,7 +759,7 @@ Package: xy 2013/10/06 Xy-pic version 3.8.9
 (/usr/share/texlive/texmf-dist/tex/generic/xypic/xycmtip.tex
  Xy-pic option: Computer Modern tip extension v.3.7
 (/usr/share/texlive/texmf-dist/tex/generic/xypic/xytips.tex
- Xy-pic option: More Tips extension v.3.11 loaded) loaded)
+ Xy-pic option: More Tips extension v.3.9 loaded) loaded)
 (/usr/share/texlive/texmf-dist/tex/generic/xypic/xyline.tex
  Xy-pic option: Line styles extension v.3.10
 \xylinethick@=\dimen218
@@ -892,7 +892,7 @@ LaTeX Font Info:    Overwriting symbol font `lasy' in version `bold'
 (Font)                  U/lasy/m/n --> U/lasy/b/n on input line 47.
 )
 (/usr/share/texlive/texmf-dist/tex/latex/cancel/cancel.sty
-Package: cancel 2013/04/12 v2.2 Cancel math terms
+Package: cancel 2000/03/12 v2.1 Cancel math terms
 )
 (/usr/share/texlive/texmf-dist/tex/latex/etex-pkg/etex.sty
 Package: etex 1998/03/26 v2.0 eTeX basic definition package (PEB)
@@ -917,10 +917,10 @@ Package: array 2008/09/09 v2.4c Tabular extension package (FMi)
 
 (./CommandLibrary.tex)
 (/usr/share/texlive/texmf-dist/tex/latex/biblatex/biblatex.sty
-Package: biblatex 2013/11/25 v2.8a programmable bibliographies (PK/JW/AB)
+Package: biblatex 2013/07/15 v2.7a programmable bibliographies (PK/JW/AB)
 
 (/usr/share/texlive/texmf-dist/tex/latex/biblatex/biblatex2.sty
-Package: biblatex2 2013/11/25 v2.8a programmable bibliographies (biber) (PK/JW/
+Package: biblatex2 2013/07/15 v2.7a programmable bibliographies (biber) (PK/JW/
 AB)
 
 (/usr/share/texlive/texmf-dist/tex/latex/etoolbox/etoolbox.sty
@@ -1063,7 +1063,7 @@ Package biblatex Info: Trying to load compatibility code...
 Package biblatex Info: ... file 'blx-compat.def' found.
 
 (/usr/share/texlive/texmf-dist/tex/latex/biblatex/blx-compat.def
-File: blx-compat.def 2013/11/25 v2.8a biblatex compatibility (PK/JW/AB)
+File: blx-compat.def 2013/07/15 v2.7a biblatex compatibility (PK/JW/AB)
 )
 Package biblatex Info: Trying to load generic definitions...
 Package biblatex Info: ... file 'biblatex.def' found.
@@ -1082,12 +1082,12 @@ Package biblatex Info: Trying to load bibliography style 'numeric'...
 Package biblatex Info: ... file 'numeric.bbx' found.
 
 (/usr/share/texlive/texmf-dist/tex/latex/biblatex/bbx/numeric.bbx
-File: numeric.bbx 2013/11/25 v2.8a biblatex bibliography style (PK/JW/AB)
+File: numeric.bbx 2013/07/15 v2.7a biblatex bibliography style (PK/JW/AB)
 Package biblatex Info: Trying to load bibliography style 'standard'...
 Package biblatex Info: ... file 'standard.bbx' found.
 
 (/usr/share/texlive/texmf-dist/tex/latex/biblatex/bbx/standard.bbx
-File: standard.bbx 2013/11/25 v2.8a biblatex bibliography style (PK/JW/AB)
+File: standard.bbx 2013/07/15 v2.7a biblatex bibliography style (PK/JW/AB)
 \c@bbx:relatedcount=\count337
 \c@bbx:relatedtotal=\count338
 ))
@@ -1095,7 +1095,7 @@ Package biblatex Info: Trying to load citation style 'numeric'...
 Package biblatex Info: ... file 'numeric.cbx' found.
 
 (/usr/share/texlive/texmf-dist/tex/latex/biblatex/cbx/numeric.cbx
-File: numeric.cbx 2013/11/25 v2.8a biblatex citation style (PK/JW/AB)
+File: numeric.cbx 2013/07/15 v2.7a biblatex citation style (PK/JW/AB)
 Package biblatex Info: Redefining '\cite'.
 Package biblatex Info: Redefining '\parencite'.
 Package biblatex Info: Redefining '\footcite'.
@@ -1118,7 +1118,7 @@ Package biblatex Info: Trying to load language 'english'...
 Package biblatex Info: ... file 'english.lbx' found.
 
 (/usr/share/texlive/texmf-dist/tex/latex/biblatex/lbx/english.lbx
-File: english.lbx 2013/11/25 v2.8a biblatex localization (PK/JW/AB)
+File: english.lbx 2013/07/15 v2.7a biblatex localization (PK/JW/AB)
 )
 
 Package biblatex Warning: Patching footnotes failed.
@@ -1368,8 +1368,8 @@ e 87.
  <../FiguresAndMovies/ConnectedGraph.pdf> <../FiguresAndMovies/NonConnected.pdf
 
 
-pdfTeX warning: pdflatex (file ../FiguresAndMovies/NonConnected.pdf): PDF inclu
-sion: multiple pdfs with page group included in a single page
+pdfTeX warning: /usr/bin/pdflatex (file ../FiguresAndMovies/NonConnected.pdf): 
+PDF inclusion: multiple pdfs with page group included in a single page
 >] <../FiguresAndMovies/ForwardBackward.pdf, id=217, 264.87256pt x 61.29115pt>
 File: ../FiguresAndMovies/ForwardBackward.pdf Graphic file (type pdf)
 
@@ -1492,11 +1492,11 @@ Package logreq Info: Writing requests to 'GoGoGadget-MultiRobotSLAM.run.xml'.
 Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 175.
  ) 
 Here is how much of TeX's memory you used:
- 24270 strings out of 493304
- 427895 string characters out of 6139870
- 884992 words of memory out of 5000000
- 27094 multiletter control sequences out of 15000+600000
- 19526 words of font info for 82 fonts, out of 8000000 for 9000
+ 24255 strings out of 493307
+ 427559 string characters out of 6139906
+ 882552 words of memory out of 5000000
+ 27076 multiletter control sequences out of 15000+600000
+ 19502 words of font info for 82 fonts, out of 8000000 for 9000
  957 hyphenation exceptions out of 8191
  49i,17n,60p,3264b,660s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></us

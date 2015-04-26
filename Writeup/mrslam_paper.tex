@@ -180,7 +180,8 @@
 
 % correct bad hyphenation here
 \hyphenation{op-tical net-works semi-conduc-tor}
-
+\renewcommand\thesubsection{\thesection.\arabic{subsection}}
+\def\thesubsection{\arabic{subsection}}
 
 \begin{document}
 %
@@ -247,9 +248,10 @@ amcollie@umich.edu}
 
 
 \begin{abstract}
-%\boldmath
-The abstract goes here.
+
+
 \end{abstract}
+
 % IEEEtran.cls defaults to using nonbold math in the Abstract.
 % This preserves the distinction between vectors and scalars. However,
 % if the conference you are submitting to favors bold math in the abstract,
@@ -274,15 +276,17 @@ The abstract goes here.
 
 
 \section{Introduction}
-% no \IEEEPARstart
-
-\subsection{Subsection Heading Here}
-Subsection text here.
 
 
-\subsubsection{Subsubsection Heading Here}
-Subsubsection text here.
+\section{Background}
+\subsection{Review of Previous Work}
+\subsection{Additions to Previous Work}
 
+\section{Overview of MRSLAM Solution}
+\subsection{Algorithm Overview}
+\subsection{Algorithm Details}
+
+\section{Experimental Validation}
 
 % An example of a floating figure using the graphicx package.
 % Note that \label must occur AFTER (or within) \caption.
@@ -369,16 +373,7 @@ Subsubsection text here.
 
 
 \section{Conclusion}
-The conclusion goes here.
 
-
-
-% use section* for acknowledgement
-\section*{Acknowledgment}
-
-
-The authors would like to thank Andrew Howard for his prior
-work on multi-robot SLAM that directly influenced this paper.
 
 
 % references section
@@ -397,9 +392,7 @@ work on multi-robot SLAM that directly influenced this paper.
 % (used to reserve space for the reference number labels box)
 \begin{thebibliography}{1}
 
-\bibitem{IEEEhowto:kopka}
-H.~Kopka and P.~W. Daly, \emph{A Guide to \LaTeX}, 3rd~ed.\hskip 1em plus
-  0.5em minus 0.4em\relax Harlow, England: Addison-Wesley, 1999.
+\bibitem{}
 
 \end{thebibliography}
 
