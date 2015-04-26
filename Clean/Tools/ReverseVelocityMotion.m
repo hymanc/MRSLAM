@@ -1,4 +1,4 @@
-function pose=VelocityMotion(u,pose0,alphas)
+function pose=ReverseVelocityMotion(u,pose0,alphas)
 
 %Table 5.3
 
@@ -15,7 +15,7 @@ function pose=VelocityMotion(u,pose0,alphas)
         vo=0;
     end
 
-    pose=pose0+[vo*(-sin(pose0(3))+sin(pose0(3)+omega*dt));...
+    pose=pose0-[vo*(-sin(pose0(3))+sin(pose0(3)+omega*dt));...
         vo*(cos(pose0(3))-cos(pose0(3)+omega*dt))+M(2)*randn(1);...
         omega*dt+gamma*dt];
 

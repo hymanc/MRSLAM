@@ -1,6 +1,6 @@
 function w=measurement_model_prob(scan,pose,MAP,SENSOR,Q,R,gridSize,offset)
 
-    logica=MAP>prob_to_log_odds(0.75);
+    logica=MAP>prob_to_log_odds(0.5);
 
     r=rayTrace(pose(1)-offset(1),pose(2)-offset(2),pose(3),logica,SENSOR);
     %r=rayTrace(pose(1),pose(2),pose(3),logica,SENSOR);
@@ -32,7 +32,7 @@ function w=measurement_model_prob(scan,pose,MAP,SENSOR,Q,R,gridSize,offset)
     
     w1=Q^-1*sum((r-scan).^2);
     w=w1+10^(round(log10(w1)))*w0;
-    w=1/w;%Large error is bad.
+    w=1/w;%Large error is bad, so we want it weighted small.
 end
 
 function r=rayTrace(x,y,theta,MAP,SENSOR)

@@ -9,12 +9,6 @@ function pose=ReverseOdometryMotion(u,pose,alphas)
     pose(2)=pose(2)-dx*sin(pose(3));
     pose(3)=pose(3)-dtheta;
     
+    pose(3)=normalizeTheta(pose(3));
 
-    if (abs(pose(3))>pi)
-        if (pose(3)>pi)
-            pose(3)=pose(3)-2*pi;
-        else
-            pose(3)=pose(3)+2*pi;
-        end
-    end
 end
