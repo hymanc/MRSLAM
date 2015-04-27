@@ -32,16 +32,36 @@
                 print(gcf,sprintf('plots/PFBest-%03d.png',t),'-dpng');
         end
 
-        weight=weight/sum(weight);
-        if (plotStuff.weight)
-            figure(plotStuff.weightfig)
+        figure(plotStuff.weightfig)
+        for a1=1:nRobots
+            weight(:,a1)=weight(:,a1)/sum(weight(:,a1));
+            weightReverse(:,a1)=weightReverse(:,a1)/sum(weightReverse(:,a1));
+            if (plotStuff.weight)        
                 plot(weight,'-o','Color',colours(a1,:))
-                xlabel('Particles [n]');
-                ylabel('Weight []')
+                hold on
+                plot(weightReverse,'--o','Color',colours(a1,:))
+                
+            end
+            
+            %[robOdom(:,a1,:),robOdomReverse(:,a1,:),map,robPoseMapFrame(:,:,a1,:),robPoseMapFrameReverse(:,:,a1,:),weight(:,a1)]=resample(robOdom(:,a1,:),robOdomReverse(:,a1,:),map,robPoseMapFrame(:,:,a1,:),robPoseMapFrameReverse(:,:,a1,:),weight(:,a1));
+            [robOdom(:,a1,:),map,robPoseMapFrame(:,:,a1,:),weight(:,a1)]=resampleSingle(robOdom(:,a1,:),map,robPoseMapFrame(:,:,a1,:),weight(:,a1));
+            try
+            [robOdomReverse(:,a1,:),~,robPoseMapFrameReverse(:,:,a1,:),weightReverse(:,a1)]=resampleSingle(robOdomReverse(:,a1,:),map,robPoseMapFrameReverse(:,:,a1,:),weightReverse(:,a1));
+            catch hell;
+                rethrow(hell)
+            end
         end
         
-        if (max(weight)>0.80)
-            [robOdom,robOdomReverse,map,robPoseMapFrame,robPoseMapFrameReverse,weight]=resample(robOdom,robOdomReverse,map,robPoseMapFrame,robPoseMapFrameReverse,weight);
-        end
+        xlabel('Particles [n]');
+        ylabel('Weight []')
+        hold off;
         
+%         if (max(weight)>0.80)
+%             [robOdom,robOdomReverse,map,robPoseMapFrame,robPoseMapFrameReverse,weight]=resample(robOdom,robOdomReverse,map,robPoseMapFrame,robPoseMapFrameReverse,weight);
+%         end
+        
+        
+        
+            
+
     end

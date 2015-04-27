@@ -7,7 +7,7 @@
     mkdir plots
     more off
     close all
-    clear all
+%    clear all
 
 %Load Data
     load('../CustomMapAndModel/CustomData1.mat')
@@ -28,8 +28,8 @@
     
     useOdometry=true;
     
-    
     colours=lines(nRobots);
+    
     plotStuff.fontsize=14;
     plotStuff.fontname='Times';
     
@@ -101,6 +101,8 @@
     robPoseMapFrame=NaN([2 size(data(1).pose,2) nRobots nParticles]);
     robPoseMapFrameReverse=NaN([2 size(data(1).pose,2) nRobots nParticles]);
     weight=1/nParticles*ones(nParticles,nRobots);
+    weightReverse=1/nParticles*ones(nParticles,nRobots);
+    
     
     DONE=false;
     counters=ones(nRobots,1);
@@ -136,12 +138,12 @@
         end
         
         for a1=1:nRobots
-            script_ForwardQueue;
-            script_ReverseQueue;
+            script_ForwardQueue_MultiPF;
+            script_ReverseQueue_MultiPF;
         end
         
         
-        script_PFResample;
+        script_PFResample_MultiPF;
         
         
         %Check if all the data has been integrated.
