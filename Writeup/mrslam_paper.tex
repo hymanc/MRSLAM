@@ -1,3 +1,5 @@
+<<<<<<< HEAD
+
 %% bare_conf.tex
 %% V1.3
 %% 2007/01/11
@@ -179,8 +181,8 @@
 
 % correct bad hyphenation here
 \hyphenation{op-tical net-works semi-conduc-tor}
-\renewcommand\thesubsection{\thesection.\arabic{subsection}}
-\def\thesubsection{\arabic{subsection}}
+%\renewcommand\thesubsection{\thesection.\arabic{subsection}}
+%\def\thesubsection{\arabic{subsection}}
 
 \begin{document}
 %
@@ -283,10 +285,28 @@ amcollie@umich.edu}
 
 \section{Overview of MRSLAM Solution}
 \subsection{Algorithm Overview}
-\subsection{Algorithm Details}
+\label{SS:Alg:Overview}
+Howard’s multi-robot SLAM algorithm generates a single map and pose posterior much in the same way an occupancy grid map SLAM algorithm based 
+on a Rao-Blackwellized particle filter (RBPF) would, but with additions to accommodate multiple robots. Mapping begins with a set consisting of a 
+single robot with known pose and an occupancy grid map of the environment is built as this robot traverses and measures it.
+
+The odometry and measurement data of all other robots is stored as it is collected, as it cannot contribute to the global map without a known relative 
+pose linking it to the frame of the first robot. As the first robot encounters additional robots via a mutual pose observation, the newly observed robot 
+is added to the set of mapping robots and its actions and the map is sequentially conditioned by its actions and measurements. From the point of observation, 
+all future actions and measurements of the new robot are used to condition the map posterior, and likewise all of its previously stored actions and 
+measurements are played back in reverse order from that point as a virtual robot. 
+
+As further encounters occur between any robot, real or virtual, in the mapping set and a previously unseen robot, the previously unseen robot is added to 
+the set of mapping robots and its measured relative pose is again used to establish a reference point with which its actions and measurements can condition 
+the map posterior. Further mutual observations of two robots already in the mapping set are ignored for the sake of simplicity. This encounter-add process 
+is continued recursively for all robots until all stored and future odometry and measurements are exhausted or all possible mapping robots have made an 
+encounter with the mapping set. Beyond this point, the algorithm behaves as a normal RBPF with a stacked state containing pose posteriors of all robots in 
+addition to the map.
+
+\subsection{Algorithm and Implentation Details}
 
 \section{Experimental Validation}
-
+\subsection{Test Framework}
 % An example of a floating figure using the graphicx package.
 % Note that \label must occur AFTER (or within) \caption.
 % For figures, \caption should occur after the \includegraphics.
@@ -398,5 +418,6 @@ amcollie@umich.edu}
 
 
 
-% that's all folks
 \end{document}
+
+
