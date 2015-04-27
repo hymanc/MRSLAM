@@ -1,0 +1,46 @@
+\begin{thebibliography}{1}
+
+\bibitem{bailey2006simultaneous}
+Tim Bailey and Hugh Durrant-Whyte.
+\newblock Simultaneous localization and mapping (slam): Part ii.
+\newblock {\em IEEE Robotics \& Automation Magazine}, 13(3):108--117, 2006.
+
+\bibitem{birk2006merging}
+Andreas Birk and Stefano Carpin.
+\newblock Merging occupancy grid maps from multiple robots.
+\newblock {\em Proceedings of the IEEE}, 94(7):1384--1397, 2006.
+
+\bibitem{burgard2005coordinated}
+Wolfram Burgard, Mark Moors, Cyrill Stachniss, and Frank~E Schneider.
+\newblock Coordinated multi-robot exploration.
+\newblock {\em Robotics, IEEE Transactions on}, 21(3):376--386, 2005.
+
+\bibitem{durrant2006simultaneous}
+Hugh Durrant-Whyte and Tim Bailey.
+\newblock Simultaneous localization and mapping: part i.
+\newblock {\em Robotics \& Automation Magazine, IEEE}, 13(2):99--110, 2006.
+
+\bibitem{fox2006distributed}
+Dieter Fox, Jonathan Ko, Kurt Konolige, Benson Limketkai, Dirk Schulz, and
+  Benjamin Stewart.
+\newblock Distributed multirobot exploration and mapping.
+\newblock {\em Proceedings of the IEEE}, 94(7):1325--1339, 2006.
+
+\bibitem{howard2006multi}
+Andrew Howard.
+\newblock Multi-robot simultaneous localization and mapping using particle
+  filters.
+\newblock {\em The International Journal of Robotics Research},
+  25(12):1243--1256, 2006.
+
+\bibitem{Radish}
+Andrew Howard and Nicholas Roy.
+\newblock The robotics data set repository (radish), 2003.
+
+\bibitem{thrun2001probabilistic}
+Sebastian Thrun.
+\newblock A probabilistic on-line mapping algorithm for teams of mobile robots.
+\newblock {\em The International Journal of Robotics Research}, 20(5):335--363,
+  2001.
+
+\end{thebibliography}

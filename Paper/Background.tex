@@ -1,0 +1,12 @@
+\section{Background}
+\label{S:Back}
+
+\subsection{State of the Art}
+\label{SS:Back:SOA}
+    
+    In the case where all relative robot poses are known, merging maps is a trivial problem using small modifications to existing SLAM techniques \cite{thrun2001probabilistic}. In the general MRSLAM problem, however, robots may start with unknown absolute and relative poses, and therefore merging of maps requires the discovery of relative relationships between different robot trajectories to build a single map. This is often a costly process, which in general can be solved for robots sharing a search space by estimating each robot's relative pose given a partial map, but this leads to exponential complexity with respect to the number of exploring robots\cite{fox2006distributed}. Nevertheless, several practical algorithms exist to circumvent this naive and inefficient approach,  including coarse topological matching and stitching techniques borrowed from computer vision \cite{birk2006merging}.
+
+
+\subsection{Extension to Original Work\cite{howard2006multi}}
+\label{SS:Back:Contributions}
+    <Independent weights per pose: Richard>
