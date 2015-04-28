@@ -4,9 +4,29 @@
 \subsection{State of the Art}
 \label{SS:Back:SOA}
     
-    In the case where all relative robot poses are known, merging maps is a trivial problem using small modifications to existing SLAM techniques \cite{thrun2001probabilistic}. In the general MRSLAM problem, however, robots may start with unknown absolute and relative poses, and therefore merging of maps requires the discovery of relative relationships between different robot trajectories to build a single map. This is often a costly process, which in general can be solved for robots sharing a search space by estimating each robot's relative pose given a partial map, but this leads to exponential complexity with respect to the number of exploring robots\cite{fox2006distributed}. Nevertheless, several practical algorithms exist to circumvent this naive and inefficient approach,  including coarse topological matching and stitching techniques borrowed from computer vision \cite{birk2006merging}.
+In the literature there are two problems that are often addressed when dealing with MRSLAM:
+\begin{enumerate}
+\item robot coordination, i.e., how to cover the most area given an unknown environment \cite{julia2012comparison}, and
+\item merging the data to create one global map posterior, which is the topic of this paper.
+\end{enumerate}
+
+In the case where all relative robot poses are known, merging maps is a trivial problem using small modifications to existing SLAM techniques \cite{thrun2001probabilistic}. In the general MRSLAM problem, however, robots may start with unknown absolute and relative poses, and therefore merging of maps requires the discovery of relative relationships between different robot trajectories to build a single map. This is often a costly process, which in general can be solved for robots sharing a search space by estimating each robot's relative pose given a partial map, but this leads to exponential complexity with respect to the number of exploring robots \cite{fox2006distributed}. Nevertheless, several practical algorithms exist to circumvent this naive and inefficient approach,  including coarse topological matching and stitching techniques borrowed from computer vision \cite{birk2006merging}.
 
 
-\subsection{Extension to Original Work\cite{howard2006multi}}
+A majority of the papers employ a Rao-Blackwellized particle filter (RBPF) for building occupancy grids.  
+
+
+\cite{howard2006multi,birk2006merging,lazaro2013multi,lee2012probabilistic}
+
+
+-What does the literature cover?
+
+-Where did it begin, what did it progress to?
+
+
+
+
+\subsection{\cite{howard2006multi} Extension to Original Work}
 \label{SS:Back:Contributions}
-    <Independent weights per pose: Richard>
+
+While \cite{howard2006multi}

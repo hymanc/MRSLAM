@@ -1,4 +1,4 @@
-\begin{thebibliography}{1}
+\begin{thebibliography}{10}
 
 \bibitem{bailey2006simultaneous}
 Tim Bailey and Hugh Durrant-Whyte.
@@ -33,9 +33,24 @@ Andrew Howard.
 \newblock {\em The International Journal of Robotics Research},
   25(12):1243--1256, 2006.
 
-\bibitem{Radish}
-Andrew Howard and Nicholas Roy.
-\newblock The robotics data set repository (radish), 2003.
+\bibitem{julia2012comparison}
+Miguel Juli{\'a}, Arturo Gil, and Oscar Reinoso.
+\newblock A comparison of path planning strategies for autonomous exploration
+  and mapping of unknown environments.
+\newblock {\em Autonomous Robots}, 33(4):427--444, 2012.
+
+\bibitem{lazaro2013multi}
+Maria~Teresa Lazaro, Lina~Mar{\'\i}a Paz, Pedro Pinies, Jos{\'e}~A Castellanos,
+  and G~Grisetti.
+\newblock Multi-robot slam using condensed measurements.
+\newblock In {\em Intelligent Robots and Systems (IROS), 2013 IEEE/RSJ
+  International Conference on}, pages 1069--1076. IEEE, 2013.
+
+\bibitem{lee2012probabilistic}
+Heon-Cheol Lee, Seung-Hwan Lee, Myoung~Hwan Choi, and Beom-Hee Lee.
+\newblock Probabilistic map merging for multi-robot rbpf-slam with unknown
+  initial poses.
+\newblock {\em Robotica}, 30(02):205--220, 2012.
 
 \bibitem{thrun2001probabilistic}
 Sebastian Thrun.

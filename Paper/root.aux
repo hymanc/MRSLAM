@@ -8,10 +8,7 @@
 \citation{howard2006multi}
 \citation{howard2006multi}
 \citation{howard2006multi}
-\citation{Radish}
-\citation{thrun2001probabilistic}
-\citation{fox2006distributed}
-\citation{birk2006merging}
+\citation{julia2012comparison}
 \@writefile{toc}{\contentsline {section}{\numberline {I}Introduction}{1}}
 \newlabel{S:Intro}{{I}{1}}
 \@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Depiction of data integration. Taken from \cite  {howard2006multi}.}}{1}}
@@ -20,30 +17,79 @@
 \newlabel{S:Back}{{II}{1}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {II-A}State of the Art}{1}}
 \newlabel{SS:Back:SOA}{{II-A}{1}}
+\citation{thrun2001probabilistic}
+\citation{fox2006distributed}
+\citation{birk2006merging}
+\citation{howard2006multi}
+\citation{birk2006merging}
+\citation{lazaro2013multi}
+\citation{lee2012probabilistic}
 \citation{howard2006multi}
 \citation{howard2006multi}
 \citation{howard2006multi}
-\bibstyle{plain}
-\bibdata{Citations}
-\bibcite{bailey2006simultaneous}{1}
-\bibcite{birk2006merging}{2}
-\bibcite{burgard2005coordinated}{3}
-\bibcite{durrant2006simultaneous}{4}
-\bibcite{fox2006distributed}{5}
-\bibcite{howard2006multi}{6}
-\bibcite{Radish}{7}
-\bibcite{thrun2001probabilistic}{8}
-\@writefile{toc}{\contentsline {subsection}{\numberline {II-B}Extension to Original Work\cite  {howard2006multi}}{2}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {II-B}\cite  {howard2006multi} Extension to Original Work}{2}}
 \newlabel{SS:Back:Contributions}{{II-B}{2}}
 \@writefile{toc}{\contentsline {section}{\numberline {III}The Algorithm}{2}}
 \newlabel{S:Alg}{{III}{2}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {III-A}Overview}{2}}
 \newlabel{SS:Alg:Overview}{{III-A}{2}}
-\@writefile{toc}{\contentsline {section}{\numberline {IV}Experimental Validation}{2}}
-\newlabel{S:Exp}{{IV}{2}}
-\newlabel{eq:OdometryMotion}{{1}{2}}
-\@writefile{toc}{\contentsline {section}{\numberline {V}Conclusion}{2}}
-\@writefile{toc}{\contentsline {section}{References}{2}}
-\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces }}{3}}
-\@writefile{lof}{\contentsline {subfigure}{\numberline{(a)}{\ignorespaces {The test geometry, robot paths, and encounters (gray).}}}{3}}
-\@writefile{lof}{\contentsline {subfigure}{\numberline{(b)}{\ignorespaces {Robot encounters at a given time.}}}{3}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {III-B}Algorithm Details}{2}}
+\newlabel{SS:Alg:Details}{{III-B}{2}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {III-B.1}Data Queueing}{2}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {III-B.2}Encounters}{3}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {III-B.3}FastSLAM Updates}{3}}
+\@writefile{toc}{\contentsline {section}{\numberline {IV}Experimental Validation}{3}}
+\newlabel{S:Exp}{{IV}{3}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Example of Robot Encounters in this MRSLAM Implementation}}{3}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {IV-A}The Data Set}{3}}
+\newlabel{S:Exp:DataSet}{{IV-A}{3}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Comparison between Howard's implementation and the proposed implementation.}}{4}}
+\@writefile{lof}{\contentsline {subfigure}{\numberline{(a)}{\ignorespaces {Pure Odometry}}}{4}}
+\@writefile{lof}{\contentsline {subfigure}{\numberline{(b)}{\ignorespaces {Known Poses}}}{4}}
+\@writefile{lof}{\contentsline {subfigure}{\numberline{(c)}{\ignorespaces {Howard Implementation: Unknown Poses, low noise.}}}{4}}
+\@writefile{lof}{\contentsline {subfigure}{\numberline{(d)}{\ignorespaces {Proposed Implementation: Unknown Poses, low noise.}}}{4}}
+\@writefile{lof}{\contentsline {subfigure}{\numberline{(e)}{\ignorespaces {Howard Implementation: Unknown Poses, High noise.}}}{4}}
+\@writefile{lof}{\contentsline {subfigure}{\numberline{(f)}{\ignorespaces {Proposed Implementation: Unknown Poses, High noise.}}}{4}}
+\newlabel{fig:Comp}{{3}{4}}
+\citation{Grisetti2007}
+\bibstyle{plain}
+\bibdata{Citations}
+\bibcite{bailey2006simultaneous}{1}
+\bibcite{birk2006merging}{2}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {IV-A.1}Ray-Circle Intersection}{5}}
+\newlabel{eq:Isemi}{{1}{5}}
+\newlabel{eq:ray}{{2}{5}}
+\newlabel{subfig:raycirc}{{4(a)}{5}}
+\newlabel{sub@subfig:raycirc}{{(a)}{5}}
+\newlabel{subfig:rstar}{{4(b)}{5}}
+\newlabel{sub@subfig:rstar}{{(b)}{5}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Visualization of Ray-Circle Intersection}}{5}}
+\@writefile{lof}{\contentsline {subfigure}{\numberline{(a)}{\ignorespaces {$I_{filled}$ and the intersection with the ray $\textbf {v}_k$.}}}{5}}
+\@writefile{lof}{\contentsline {subfigure}{\numberline{(b)}{\ignorespaces {The selection of $r_k^*$.}}}{5}}
+\newlabel{fig:raycirc}{{4}{5}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {IV-A.2}Wall Following}{5}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {IV-A.3}The Odometry Motion Model}{5}}
+\newlabel{eq:OdometryMotion}{{5}{5}}
+\newlabel{eq:ReverseOdometryMotion}{{8}{5}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {IV-A.4}Encounter Detection and Relative Pose}{5}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {IV-A.5}The Environment, Robot Trajectories, and Encounters}{5}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {IV-B}The Results}{5}}
+\newlabel{S:Exp:DataSet}{{IV-B}{5}}
+\@writefile{toc}{\contentsline {section}{\numberline {V}Conclusions and Future Work}{5}}
+\bibcite{burgard2005coordinated}{3}
+\bibcite{durrant2006simultaneous}{4}
+\bibcite{fox2006distributed}{5}
+\bibcite{howard2006multi}{6}
+\bibcite{julia2012comparison}{7}
+\bibcite{lazaro2013multi}{8}
+\bibcite{lee2012probabilistic}{9}
+\bibcite{thrun2001probabilistic}{10}
+\newlabel{subfig:Encvst}{{5(a)}{6}}
+\newlabel{sub@subfig:Encvst}{{(a)}{6}}
+\newlabel{subfig:Enc}{{5(b)}{6}}
+\newlabel{sub@subfig:Enc}{{(b)}{6}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Environment geometry, robot paths, and encounters.}}{6}}
+\@writefile{lof}{\contentsline {subfigure}{\numberline{(a)}{\ignorespaces {Robot encounters versus time.}}}{6}}
+\@writefile{lof}{\contentsline {subfigure}{\numberline{(b)}{\ignorespaces {The test geometry, robot paths (colored lines), and encounters (dashed gray lines).}}}{6}}
+\newlabel{fig:EnvEnc}{{5}{6}}
+\@writefile{toc}{\contentsline {section}{References}{6}}
