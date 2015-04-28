@@ -6,10 +6,64 @@
 
 
 Howard’s multi-robot SLAM algorithm generates a single map and pose posterior much in the same way an occupancy grid map SLAM algorithm based on a Rao-Blackwellized particle filter (RBPF) would, but with additions to accommodate multiple robots. Mapping begins with a set consisting of a single robot with known pose and an occupancy grid map of the environment is built as this robot traverses and measures it. The ultimate goal of the algorithm is to simultaneously compute for time $t$, the full SLAM posterior containing all robot pose trajectories $x_{1:t}^i$ and the global map $m_{1:t}$, given only a single known initial pose and sets of measurements
-$$p(x_{1:t}^1,x_{1:t}^2,...,x_{1:t}^M,m_{1:t}|x_0^1,z_{1:t}^1,u_{0:t}^1,\Delta_s^2,z_{1:t}^2,u_{0:t}^2,\Delta_s^3,...,\Delta_s^M,z_{1:t}^M,u_{0:t}^M)$$
+\begin{align*}
+p(x_{1:t}^1,x_{1:t}^2&,...,x_{1:t}^M,m_{1:t}|\\&x_0^1,z_{1:t}^1,u_{0:t}^1,\Delta_s^2,z_{1:t}^2,u_{0:t}^2,\Delta_s^3,...,\Delta_s^M,z_{1:t}^M,u_{0:t}^M)
+\end{align*}
 
 The odometry and measurement data of all other robots is stored as it is collected, as it cannot contribute to the global map without a known relative pose linking it to the frame of the first robot. As the first robot encounters additional robots via a mutual pose observation, the newly observed robot is added to the set of mapping robots and its actions and the map is sequentially conditioned by its actions and measurements. From the point of observation, all future actions and measurements of the new robot are used to condition the map posterior, and likewise all of its previously stored actions and measurements are played back in reverse order from that point as a virtual robot. This information is then passed to a pair of new particle filters for the pose of these robots that contribute to the same global map. 
+
 As further encounters occur between any robot, real or virtual, in the mapping set and a previously unseen robot, the previously unseen robot is added to the set of mapping robots and its measured relative pose is again used to establish a reference point with which its actions and measurements can condition the map posterior. Further mutual observations of two robots already in the mapping set are ignored for the sake of simplicity. This encounter-add process is continued recursively for all robots until all stored and future odometry and measurements are exhausted or all possible mapping robots have made an encounter with the mapping set. Beyond this point, the algorithm behaves as a normal RBPF with a stacked state containing pose posteriors of all robots in addition to the map.
 
 
-    This algorithm relies on a number of assumptions that are requisite for it to effectively solve the MRSLAM problem. Firstly, for all explored regions to count towards the map, each mapping robot must have encountered a robot that is an element of the mapping set in order to make a fully connected graph of robot poses, and therefore maximally complete map. Additionally, each robot pose trajectory is independent of all other trajectories such that motion or observation from one robot does not affect another outside of encounter events \cite{howard2006multi}.
+This algorithm relies on a number of assumptions that are requisite for it to effectively solve the MRSLAM problem. Firstly, for all explored regions to count towards the map, each mapping robot must have encountered a robot that is an element of the mapping set in order to make a fully connected graph of robot poses, and therefore maximally complete map. Additionally, each robot pose trajectory is independent of all other trajectories such that motion or observation from one robot does not affect another outside of encounter events \cite{howard2006multi}.
+
+	
+\subsection{Algorithm Details}
+\label{SS:Alg:Details}
+Howard’s MRSLAM algorithm follows the basic structure of the below steps that perform data queueing, robot encounter management, and SLAM filter updates.
+\begin{enumerate}
+\item Queue measurement, odometry, and mutual observation (encounter) data
+\item For all robots in the mapping set, take first element from queue and update SLAM filter
+\item For all new encounters, split encountered queue at present time into causal and acausal queues and instantiate a new set of particles for the causal and acausal trajectory of the observed robot.
+\item For all available acausal queues, remove last element and use it to update the SLAM filter for the corresponding acausal robot
+\item If data includes a prior encounter with a robot not in the mapping set, instantiate a new set of particle for this robot and its acausal virtual self at its location and split the queue for that robot into a causal and acausal queues
+\item Repeat until all data is consumed
+\end{enumerate}
+
+\subsubsection{Data Queueing}
+As each robot $R$ collects data, its current odometry $u_t^R$ and measurements $z_t^R$ are added to a running queue data structure before processing. An encounter flag $E_t^R$ and relative pose $\Delta_t^R$, if available, are also added to this queue. 
+$$queue_{0:t}^R = append(queue_{0:t-1}^R, \{ u_t^R, z_t^R, E_t^R, \Delta_t^R \})$$
+The storing of this data allows for either immediate use by particle filters for robots in the mapping set, or later joining or SLAM filtering after a future encounter with a mapping robot.
+
+\subsubsection{Encounters}
+An encounter in this sense is defined as the observation of one robot by another mapping robot that produces a relative pose estimate between the robots of $\Delta$. For this implementation, it was assumed that the estimation of $\Delta$ was deterministic for the sake of demonstration and simplicity.
+
+Upon an encounter at time $s$ between robot $A$ in the mapping set with a pose $x_s^A$ and a robot $B$ not in the set with a measured relative pose $\Delta_s^{AB}$, a reference frame pose for each particle $i$ of the newly observed robot is instantiated as causal particle posterior $x_s^{B(i)}$ and acausal particle pose posterior $\bar{x}_s^{B(i)}$ as:
+\begin{align*}
+x_s^{B(i)} &= x_s^{A(i)} \oplus \Delta_s^{AB} \\
+\bar{x}_s^{B(i)} &= x_s^{A(i)} \oplus \Delta_s^{AB}
+\end{align*}
+Where $\oplus$ is the pose composition operator. <SSC reference?>
+At this time, the stored data queue for robot B is also split into a causal queue $queue^B$ and acausal queue $\bar{queue}^B$.
+\begin{align*}
+\bar{queue_{t+1:}^B} = reverse(queue_{0:t-1}^B) \\
+queue^B = queue_{t+1:}^B
+\end{align*}
+
+If neither robot is within the mapping set and an encounter occurs, this encounter and the associated measured relative pose is stored for later use. In the event that one of these robots later encounters a robot in the mapping set, its virtual acausal robot will spawn another robot pair of the unencountered robot upon backtracking to the location of this initial encounter. At this acausal encounter, the same method of adding relative pose and splitting the queues used in the causal join is used to generate the causal and acausal virtual robots created by this encounter.
+
+The following figure explains the joining process graphically. The scenario starts with three robots $x^1$, $x^2$, and $x^3$, with $x^1$ being the sole robot in the initial mapping set. The actual robots are represented as white circles, the causal particles as red circles, the acausal particles as blue circles, and encounters as purple arrows. At timestep $T_1$, an encounter occurs between $x^2$ and $x^3$, but neither is in the mapping set at this time, so this encounter is stored. At timestep 2, robots $x^1$ and $x^2$ encounter each other, spawning a causal and acausal pair of pose particles $x^{2+}$ and $x^{2-}$ respectively. $x^{1+}$ and $x^{2+}$ continue propagating forward with new data (not shown) while $x^{2-}$ propagates backwards in time using stored odometry and measurements. The stored encounter between $x^2$ and $x^3$ that was previously stored is then incorporated at time $T_3$ when the acausal particles $x^{2-}$ reach the location of the encounter. This spawns a set of particles for the previously encounter robot $x^3$. As the original encounter happened on the first step, no acausal particles are spawned at this time. As $x^{2-}$ reaches the last remaining pose in the acausal queue, the particles are removed as the past data is exhausted.
+
+\begin{figure}[ht!]
+\centering
+	\includegraphics[width=3in]{../FinalFigures/multiencounter_1.pdf} \\
+	\includegraphics[width=3in]{../FinalFigures/multiencounter_2.pdf} \\
+	\includegraphics[width=3in]{../FinalFigures/multiencounter_3.pdf} \\
+	\includegraphics[width=3in]{../FinalFigures/multiencounter_4.pdf} \\
+\caption{Example of Robot Encounters in this MRSLAM Implementation}
+\end{figure}
+
+
+
+\subsubsection{FastSLAM Updates}
+
