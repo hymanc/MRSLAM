@@ -53,12 +53,22 @@ If neither robot is within the mapping set and an encounter occurs, this encount
 
 The following figure explains the joining process graphically. The scenario starts with three robots $x^1$, $x^2$, and $x^3$, with $x^1$ being the sole robot in the initial mapping set. The actual robots are represented as white circles, the causal particles as red circles, the acausal particles as blue circles, and encounters as purple arrows. At timestep $T_1$, an encounter occurs between $x^2$ and $x^3$, but neither is in the mapping set at this time, so this encounter is stored. At timestep 2, robots $x^1$ and $x^2$ encounter each other, spawning a causal and acausal pair of pose particles $x^{2+}$ and $x^{2-}$ respectively. $x^{1+}$ and $x^{2+}$ continue propagating forward with new data (not shown) while $x^{2-}$ propagates backwards in time using stored odometry and measurements. The stored encounter between $x^2$ and $x^3$ that was previously stored is then incorporated at time $T_3$ when the acausal particles $x^{2-}$ reach the location of the encounter. This spawns a set of particles for the previously encounter robot $x^3$. As the original encounter happened on the first step, no acausal particles are spawned at this time. As $x^{2-}$ reaches the last remaining pose in the acausal queue, the particles are removed as the past data is exhausted.
 
+%\begin{figure}[ht!]
+%\centering
+	%\includegraphics[width=3in]{../FinalFigures/multiencounter_1.pdf} \\
+	%\includegraphics[width=3in]{../FinalFigures/multiencounter_2.pdf} \\
+	%\includegraphics[width=3in]{../FinalFigures/multiencounter_3.pdf} \\
+	%\includegraphics[width=3in]{../FinalFigures/multiencounter_4.pdf} \\
+%\caption{Example of Robot Encounters in this MRSLAM Implementation}
+%\end{figure}
+
+\newcommand{\codymult}{0.75}
 \begin{figure}[ht!]
 \centering
-	\includegraphics[width=3in]{../FinalFigures/multiencounter_1.pdf} \\
-	\includegraphics[width=3in]{../FinalFigures/multiencounter_2.pdf} \\
-	\includegraphics[width=3in]{../FinalFigures/multiencounter_3.pdf} \\
-	\includegraphics[width=3in]{../FinalFigures/multiencounter_4.pdf} \\
+    \subfigure[Timstep 1]{\includegraphics[width=\codymult\columnwidth]{../FinalFigures/multiencounter_1.pdf}} \\
+    \subfigure[Timestep 2]{\includegraphics[width=\codymult\columnwidth]{../FinalFigures/multiencounter_2.pdf}} \\
+    \subfigure[Timestep 3]{\includegraphics[width=\codymult\columnwidth]{../FinalFigures/multiencounter_3.pdf}} \\
+    \subfigure[Timestep 4]{\includegraphics[width=\codymult\columnwidth]{../FinalFigures/multiencounter_4.pdf}} \\
 \caption{Example of Robot Encounters in this MRSLAM Implementation}
 \end{figure}
 
@@ -70,4 +80,26 @@ At each time-step, the pose posterior is updated for all pose states within the 
 x_{t+1}^{r(i)} &= g(x_{t}^{r(i)},u_{t+1}^{r(i)})\\
 \bar{x}_{t+1}^{r(i)} &= g_r(\bar{x}_t^{r(i)}, \bar{u}_{t+1}^{r(i)})
 \end{align*}
+
+The odometry prediction step was followed by an occupancy grid map update for each real or virtual robot particle based on current or stored measurements. For each robot $R$, whether it represents causal or acausal particles, the next measurement in the queue, $z_t^R$ is removed and used to update the map for each particle according to a simplified occupancy grid measurement model.
+
+For each particle in $x_t^R$,  the particle’s associated map $m_i$, and associated measurement $z_t^R$ is used with the simplified inverse sensor model to compute the log-odds of a particular cell’s occupancy. Our chosen model simulated a typical range,bearing LIDAR type sensor, with a fixed occupied (black) and free (white) probability and simple sensor cone model similar to the one shown in Figure \ref{fig:invsensor}.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=\columnwidth]{../FinalFigures/invsensormodel.pdf}
+\caption{Example Inverse Sensor Model Pattern}
+\label{fig:invsensor}
+\end{figure}
+
+For each cell augmented by the inverse sensor model, the log-odds was updated as:
+$$l_{t,i}=l_{t-1,i}+l_{sensor,t,i}-\log\frac{p(m_i)}{1-p(m_i)}$$
+
+After incorporating the the next measurement for all particles to each map particle, the last portion of the SLAM update consists of updating each pose particle’s weight and resampling to prevent weighting degeneracy.
+
+The weighting of each particle in this step was adjusted using the measurement likelihood given the robot’s estimated pose and the current map 
+$$w^{(i)}=p(z_t^{1(i)}|x_t^{1(i)},m_t)p(z_t^{2(i)}|x_t^{2(i)},m_t)...p(z_t^{M(i)}|x_t^{M(i)},m_t)$$. 
+
+We also implemented an algorithm that assigns an independent particle weighting for each independent pose particle set. For robot R, this weight was computed as:
+$$w^{R(i)}=p(z_t^{R(i)}|x_t^{R(i)},m_t)$$
 
