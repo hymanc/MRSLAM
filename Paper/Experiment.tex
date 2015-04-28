@@ -3,11 +3,12 @@
 
 
 
-\begin{figure}[H]
+\begin{figure*}[ht]
 \centering
-\subfigure[The test geometry, robot paths, and encounters (gray).]{\includegraphics{../FinalFigures/Encounters}}
-\subfigure[Robot encounters at a given time.]{\includegraphics{../FinalFigures/EncountersTimes}}
-\end{figure}
+\subfigure[The test geometry, robot paths, and encounters (gray).]{\includegraphics[width=\columnwidth]{../FinalFigures/Encounters}}
+\subfigure[Robot encounters at a given time.]{\includegraphics[width=\columnwidth]{../FinalFigures/EncountersTimes}}
+\caption{}
+\end{figure*}
 
 
 
@@ -21,21 +22,22 @@ x_{t-1}\\
 y_{t-1}
 \theta_{t-1}
 \end{bmatrix}+\begin{bmatrix}
-dx_t \cos(\theta_t+d\theta_t)
-dy_{t}\sin(\theta_t+d\theta_t)
+dx_t \cos(\theta_t+d\theta_t)\\
+dy_{t}\sin(\theta_t+d\theta_t)\\
 \theta_{t-1}+d\theta_t
 \end{bmatrix}
+\label{eq:OdometryMotion}
 \end{equation}
 
-%\begin{figure*}[h]
-%\centering
-%\subfigure[Howard Implementation: Known Poses.]{\includegraphics[width=3in]{../FiguresAndMovies/Howard-NoNoise}}
-%\subfigure[Proposed Implementation: Known Poses]{\includegraphics[width=3in]{../FiguresAndMovies/Our-NoNoise}}\\
-%\subfigure[Howard Implementation: Unknown Poses, low noise.]{\includegraphics[width=3in]{../FiguresAndMovies/Howard-LowNoise}}
-%\subfigure[Proposed Implementation: Unknown Poses, low noise.]{\includegraphics[width=3in]{../FiguresAndMovies/Our-LowNoise}}\\
-%\subfigure[Howard Implementation: Unknown Poses, High noise.]{\includegraphics[width=3in]{../FiguresAndMovies/Howard-HighNoise}}
-%\subfigure[Proposed Implementation: Unknown Poses, High noise.]{\includegraphics[width=3in]{../FiguresAndMovies/Our-NoNoise}}
-%\caption{Comparison between Howard's implementation and the proposed implementation.}
-%\end{figure*}
+\begin{figure}[ht]
+\centering
+\subfigure[Known Poses]{\includegraphics[width=\columnwidth]{../FinalFigures/KnownPoses}}
+\subfigure[Pure Odometry]{\includegraphics[width=\columnwidth]{../FinalFigures/PureOdometry}}\\
+\subfigure[Howard Implementation: Unknown Poses, low noise.]{\includegraphics[width=\columnwidth]{../FinalFigures/HowardLowNoise}}
+\subfigure[Proposed Implementation: Unknown Poses, low noise.]{\includegraphics[width=\columnwidth]{../FinalFigures/OursLowNoise}}\\
+\subfigure[Howard Implementation: Unknown Poses, High noise.]{\includegraphics[width=\columnwidth]{../FinalFigures/HowardHighNoise}}
+\subfigure[Proposed Implementation: Unknown Poses, High noise.]{\includegraphics[width=\columnwidth]{../FinalFigures/OursLowNoise}}
+\caption{Comparison between Howard's implementation and the proposed implementation.}
+\end{figure}
 
 

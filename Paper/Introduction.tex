@@ -8,9 +8,19 @@ While SLAM is well known and has a rich history of successes using a single robo
 
 MRSLAM is as it sounds, SLAM using multiple exploring robots. This approach allows for the partition of the physical search space using different robots, typically decreasing the time it takes to map an area, and increasing the likelihood of full map coverage in the event of robot failure. This temporal exploration parallelism does, however, come at the cost of added complexity. The added complexity of MRSLAM comes in two major components: coordination of exploration using multiple search agents and merging the maps of these agents \cite{fox2006distributed}.  Coordinated exploration consists of planning the groups' search path, most often formulated to cover the most search space in minimum time or to optimize some other mapping cost criteria. The other major component, map merging, is the combination of individual robot's observations and maps into one cohesive global map estimate.
 
-In this paper we focus on the map merging aspect and discuss the encounter based MRSLAM technique of Howard's 2006 paper: ``Multi-Robot Simultaneous Localization and Mapping using Particle Filters \cite{howard2006multi}.’’ This paper is of particular interest as it presents a resource efficient online solution to the MRSLAM map merging problem given unknown initial robot poses. 
+In this paper we use the map merging algorithm presented in Howard's 2006 paper: ``Multi-Robot Simultaneous Localization and Mapping using Particle Filters'' \cite{howard2006multi}. This paper is of particular interest as it presents a resource efficient online solution to the MRSLAM map merging problem given unknown initial robot poses.  
 
-<Need figure:>
+The algorithm is an encounter-based algorithm.  Given that we start with one robot mapping (call this robot 1), when it encounters another robot (robot 2), the relative pose between the two robots is computed and robot 2's odometry and scan data is transmitted in reverse order to robot 1 and integrated to create a single map posterior.  
 
-The paper is structured as follows: In \S\ref{S:Back} some background about MRSLAM is provided, and the importance of \cite{howard2006multi} is presented.  In \S\ref{S:Alg} the algorithm of \cite{howard2006multi} is discussed, and in \S\ref{S:Exp} experimental results are provided for a simulated example and the Albert B data set \cite{Radish}.
+Fig. \ref{fig:HowardFig3} depicts the process with robot 1's triple $(x^1_t,u^1_{t-1},z^1_t)$, and robot 2's triple $(x^2_t,u^2_{t-1},z^2_t)$.
+When $t=2$, robot 1 observes robot 2 and determines the relative pose $\Delta$, then the past odometry and scan data is integrated in reverse order.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\columnwidth]{{{../FinalFigures/HowardFig3}}}
+\caption{Depiction of data integration. Taken from \cite{howard2006multi}.}
+\label{fig:HowardFig3}
+\end{figure}
+
+The paper is structured as follows: In \S\ref{S:Back} some background about MRSLAM is provided, the contribution of \cite{howard2006multi} is discussed and a modified scheme is presented.  In \S\ref{S:Alg} the algorithm of \cite{howard2006multi} is discussed, and in \S\ref{S:Exp} experimental results are provided for a simulated example and the Albert B data set \cite{Radish}.
 

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2014/Debian) (preloaded format=pdflatex 2014.10.2)  27 APR 2015 19:59
+This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2014/Debian) (preloaded format=pdflatex 2014.10.2)  27 APR 2015 21:22
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -103,6 +103,13 @@ LaTeX Font Info:    Font shape `OT1/ptm/bx/it' in size <24> not available
 )
 ** ATTENTION: Overriding command lockouts (line 9).
 ** ATTENTION: Overriding IEEE standard margins (line 12).
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/graphicx.sty
+Package: graphicx 2014/04/25 v1.0g Enhanced LaTeX Graphics (DPC,SPQR)
+
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/keyval.sty
+Package: keyval 2014/05/08 v1.15 key=value parser (DPC)
+\KV@toks@=\toks15
+)
 (/usr/share/texlive/texmf-dist/tex/latex/graphics/graphics.sty
 Package: graphics 2009/02/05 v1.0o Standard LaTeX Graphics (DPC,SPQR)
 
@@ -125,6 +132,9 @@ Package: ltxcmds 2011/11/09 v1.22 LaTeX kernel commands for general use (HO)
 )
 \Gread@gobject=\count91
 ))
+\Gin@req@height=\dimen113
+\Gin@req@width=\dimen114
+)
 (/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsmath.sty
 Package: amsmath 2013/01/14 v2.14 AMS math features
 \@mathmargin=\skip47
@@ -135,12 +145,12 @@ Package: amstext 2000/06/29 v2.01
 
 (/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsgen.sty
 File: amsgen.sty 1999/11/30 v2.0
-\@emptytoks=\toks15
-\ex@=\dimen113
+\@emptytoks=\toks16
+\ex@=\dimen115
 ))
 (/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsbsy.sty
 Package: amsbsy 1999/11/29 v1.2d
-\pmbraise@=\dimen114
+\pmbraise@=\dimen116
 )
 (/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsopn.sty
 Package: amsopn 1999/12/14 v2.01 operator names
@@ -157,7 +167,7 @@ LaTeX Info: Redefining \dots on input line 381.
 LaTeX Info: Redefining \cdots on input line 466.
 \Mathstrutbox@=\box27
 \strutbox@=\box28
-\big@size=\dimen115
+\big@size=\dimen117
 LaTeX Font Info:    Redeclaring font encoding OML on input line 566.
 LaTeX Font Info:    Redeclaring font encoding OMS on input line 567.
 \macc@depth=\count97
@@ -165,21 +175,21 @@ LaTeX Font Info:    Redeclaring font encoding OMS on input line 567.
 \dotsspace@=\muskip10
 \c@parentequation=\count99
 \dspbrk@lvl=\count100
-\tag@help=\toks16
+\tag@help=\toks17
 \row@=\count101
 \column@=\count102
 \maxfields@=\count103
-\andhelp@=\toks17
-\eqnshift@=\dimen116
-\alignsep@=\dimen117
-\tagshift@=\dimen118
-\tagwidth@=\dimen119
-\totwidth@=\dimen120
-\lineht@=\dimen121
-\@envbody=\toks18
+\andhelp@=\toks18
+\eqnshift@=\dimen118
+\alignsep@=\dimen119
+\tagshift@=\dimen120
+\tagwidth@=\dimen121
+\totwidth@=\dimen122
+\lineht@=\dimen123
+\@envbody=\toks19
 \multlinegap=\skip48
 \multlinetaggap=\skip49
-\mathdisplay@stack=\toks19
+\mathdisplay@stack=\toks20
 LaTeX Info: Redefining \[ on input line 2665.
 LaTeX Info: Redefining \] on input line 2666.
 )
@@ -220,9 +230,9 @@ Package subfigure Warning: Your document class has a bad definition
 
 \subfigtopskip=\skip50
 \subfigcapskip=\skip51
-\subfigcaptopadj=\dimen122
+\subfigcaptopadj=\dimen124
 \subfigbottomskip=\skip52
-\subfigcapmargin=\dimen123
+\subfigcapmargin=\dimen125
 \subfiglabelskip=\skip53
 \c@subfigure=\count104
 \c@lofdepth=\count105
@@ -252,16 +262,16 @@ LaTeX Font Info:    ... okay on input line 41.
 (/usr/share/texlive/texmf-dist/tex/context/base/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
 \scratchcounter=\count108
-\scratchdimen=\dimen124
+\scratchdimen=\dimen126
 \scratchbox=\box29
 \nofMPsegments=\count109
 \nofMParguments=\count110
-\everyMPshowfont=\toks20
+\everyMPshowfont=\toks21
 \MPscratchCnt=\count111
-\MPscratchDim=\dimen125
+\MPscratchDim=\dimen127
 \MPnumerator=\count112
 \makeMPintoPDFobject=\count113
-\everyMPtoPDFconversion=\toks21
+\everyMPtoPDFconversion=\toks22
 ) (/usr/share/texlive/texmf-dist/tex/generic/oberdiek/pdftexcmds.sty
 Package: pdftexcmds 2011/11/29 v0.20 Utility functions of pdfTeX for LuaTeX (HO
 )
@@ -291,10 +301,6 @@ Package: kvdefinekeys 2011/04/07 v1.3 Define keys (HO)
 (/usr/share/texlive/texmf-dist/tex/latex/oberdiek/kvoptions.sty
 Package: kvoptions 2011/06/30 v3.11 Key value format for package options (HO)
 
-(/usr/share/texlive/texmf-dist/tex/latex/graphics/keyval.sty
-Package: keyval 2014/05/08 v1.15 key=value parser (DPC)
-\KV@toks@=\toks22
-)
 (/usr/share/texlive/texmf-dist/tex/generic/oberdiek/kvsetkeys.sty
 Package: kvsetkeys 2012/04/25 v1.16 Key value parser (HO)
 
@@ -325,58 +331,108 @@ LaTeX Font Info:    Try loading font information for U+msb on input line 45.
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 ) (./Introduction.tex
-Missing character: There is no â in font ptmr7t!
-Missing character: There is no € in font ptmr7t!
-Missing character: There is no ™ in font ptmr7t!
-Missing character: There is no â in font ptmr7t!
-Missing character: There is no € in font ptmr7t!
-Missing character: There is no ™ in font ptmr7t!
-LaTeX Font Info:    Try loading font information for OMS+ptm on input line 15.
+Underfull \hbox (badness 5147) in paragraph at lines 15--17
+[]\OT1/ptm/m/n/10 Fig. 1[] de-picts the pro-cess with robot 1's triple
+ []
+
+<../FinalFigures/HowardFig3.pdf, id=1, 201.15167pt x 173.23239pt>
+File: ../FinalFigures/HowardFig3.pdf Graphic file (type pdf)
+
+<use ../FinalFigures/HowardFig3.pdf>
+Package pdftex.def Info: ../FinalFigures/HowardFig3.pdf used on input line 20.
+(pdftex.def)             Requested size: 245.71811pt x 211.6234pt.
+LaTeX Font Info:    Try loading font information for OMS+ptm on input line 25.
 
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/omsptm.fd
 File: omsptm.fd 
 )
 LaTeX Font Info:    Font shape `OMS/ptm/m/n' in size <10> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 15.
-) (./Background.tex)
-(./Algorithm.tex) (./Experiment.tex
-<../FinalFigures/Encounters.pdf, id=1, 357.335pt x 357.335pt>
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 25.
+) (./Background.tex
+[1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}
+
+
+ <../FinalFigures/HowardFig3.pdf>]) (./Algorithm.tex
+Missing character: There is no â in font ptmr7t!
+Missing character: There is no € in font ptmr7t!
+Missing character: There is no ™ in font ptmr7t!
+
+Overfull \hbox (56.56728pt too wide) detected at line 9
+\OML/cmm/m/it/10 p\OT1/cmr/m/n/10 (\OML/cmm/m/it/10 x[]; x[]; :::; x[]; m[]\OMS
+/cmsy/m/n/10 j\OML/cmm/m/it/10 x[]; z[]; u[]; \OT1/cmr/m/n/10 ^^A[]\OML/cmm/m/i
+t/10 ; z[]; u[]; \OT1/cmr/m/n/10 ^^A[]\OML/cmm/m/it/10 ; :::; \OT1/cmr/m/n/10 ^
+^A[]\OML/cmm/m/it/10 ; z[]; u[]\OT1/cmr/m/n/10 )
+ []
+
+) (./Experiment.tex
+<../FinalFigures/Encounters.pdf, id=34, 357.335pt x 357.335pt>
 File: ../FinalFigures/Encounters.pdf Graphic file (type pdf)
 
 <use ../FinalFigures/Encounters.pdf>
 Package pdftex.def Info: ../FinalFigures/Encounters.pdf used on input line 8.
-(pdftex.def)             Requested size: 357.33412pt x 357.33412pt.
+(pdftex.def)             Requested size: 245.71811pt x 245.72173pt.
 
-<../FinalFigures/EncountersTimes.pdf, id=2, 504.88625pt x 399.4925pt>
+<../FinalFigures/EncountersTimes.pdf, id=35, 504.88625pt x 399.4925pt>
 File: ../FinalFigures/EncountersTimes.pdf Graphic file (type pdf)
 
 <use ../FinalFigures/EncountersTimes.pdf>
 Package pdftex.def Info: ../FinalFigures/EncountersTimes.pdf used on input line
  9.
-(pdftex.def)             Requested size: 504.885pt x 399.49152pt.
+(pdftex.def)             Requested size: 245.71811pt x 194.42415pt.
 
-Overfull \hbox (111.61601pt too wide) in paragraph at lines 8--10
- [][] 
- []
+<../FinalFigures/KnownPoses.png, id=36, 578.16pt x 433.62pt>
+File: ../FinalFigures/KnownPoses.png Graphic file (type png)
+
+<use ../FinalFigures/KnownPoses.png>
+Package pdftex.def Info: ../FinalFigures/KnownPoses.png used on input line 34.
+(pdftex.def)             Requested size: 245.71811pt x 184.28275pt.
+
+<../FinalFigures/PureOdometry.png, id=37, 578.16pt x 433.62pt>
+File: ../FinalFigures/PureOdometry.png Graphic file (type png)
+
+<use ../FinalFigures/PureOdometry.png>
+Package pdftex.def Info: ../FinalFigures/PureOdometry.png used on input line 35
+.
+(pdftex.def)             Requested size: 245.71811pt x 184.28275pt.
+
+<../FinalFigures/HowardLowNoise.png, id=38, 578.16pt x 433.62pt>
+File: ../FinalFigures/HowardLowNoise.png Graphic file (type png)
+
+<use ../FinalFigures/HowardLowNoise.png>
+Package pdftex.def Info: ../FinalFigures/HowardLowNoise.png used on input line 
+36.
+(pdftex.def)             Requested size: 245.71811pt x 184.28275pt.
+
+<../FinalFigures/OursLowNoise.png, id=39, 578.16pt x 433.62pt>
+File: ../FinalFigures/OursLowNoise.png Graphic file (type png)
+
+<use ../FinalFigures/OursLowNoise.png>
+Package pdftex.def Info: ../FinalFigures/OursLowNoise.png used on input line 37
+.
+(pdftex.def)             Requested size: 245.71811pt x 184.28275pt.
+
+<../FinalFigures/HowardHighNoise.png, id=40, 578.16pt x 433.62pt>
+File: ../FinalFigures/HowardHighNoise.png Graphic file (type png)
+
+<use ../FinalFigures/HowardHighNoise.png>
+Package pdftex.def Info: ../FinalFigures/HowardHighNoise.png used on input line
+ 38.
+(pdftex.def)             Requested size: 245.71811pt x 184.28275pt.
+File: ../FinalFigures/OursLowNoise.png Graphic file (type png)
+
+<use ../FinalFigures/OursLowNoise.png>
+Package pdftex.def Info: ../FinalFigures/OursLowNoise.png used on input line 39
+.
+(pdftex.def)             Requested size: 245.71811pt x 184.28275pt.
 
 
-Overfull \hbox (259.16689pt too wide) in paragraph at lines 8--10
- [] 
- []
+LaTeX Warning: Float too large for page by 565.9639pt on input line 41.
 
-
-LaTeX Warning: Float too large for page by 110.2895pt on input line 10.
-
-
-Overfull \hbox (43.0216pt too wide) detected at line 28
-[] \OT1/cmr/m/n/10 = [] + []
- []
-
-) (./Conclusions.tex) (./root.bbl [1{/var/lib/texmf/fonts/map/pdftex/updmap/pdf
-tex.map}
-
-
-])
+) (./Conclusions.tex
+Missing character: There is no â in font ptmr7t!
+Missing character: There is no € in font ptmr7t!
+Missing character: There is no ™ in font ptmr7t!
+) (./root.bbl)
 
 ** Conference Paper **
 Before submitting the final camera ready copy, remember to:
@@ -388,13 +444,13 @@ Before submitting the final camera ready copy, remember to:
  uses only Type 1 fonts and that every step in the generation
  process uses the US letter (8.5in X 11in) paper size.
 
-[2 <../FinalFigures/Encounters.pdf> <../FinalFigures/EncountersTimes.pdf>]
+[2] [3 <../FinalFigures/Encounters.pdf> <../FinalFigures/EncountersTimes.pdf>]
 (./root.aux) ) 
 Here is how much of TeX's memory you used:
- 3122 strings out of 493104
- 44521 string characters out of 6136932
- 112271 words of memory out of 5000000
- 6525 multiletter control sequences out of 15000+600000
+ 3228 strings out of 493104
+ 46670 string characters out of 6136932
+ 113818 words of memory out of 5000000
+ 6622 multiletter control sequences out of 15000+600000
  42284 words of font info for 96 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  38i,9n,26p,960b,289s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -411,10 +467,10 @@ cmsy7.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr
 /share/texlive/texmf-dist/fonts/type1/urw/times/utmbi8a.pfb></usr/share/texlive
 /texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/share/texlive/texmf-dist/fon
 ts/type1/urw/times/utmri8a.pfb>
-Output written on root.pdf (2 pages, 142722 bytes).
+Output written on root.pdf (3 pages, 163547 bytes).
 PDF statistics:
- 74 PDF objects out of 1000 (max. 8388607)
- 52 compressed objects within 1 object stream
+ 98 PDF objects out of 1000 (max. 8388607)
+ 65 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
- 11 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 41 words of extra memory for PDF output out of 10000 (max. 10000000)
 
