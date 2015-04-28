@@ -4,7 +4,7 @@
 
 The automated exploration of unknown environments has become one of the foremost challenges in mobile robotics. For a robot to explore an environment, it must map the environment and concurrently localize itself within the environment.  The framework used to perform this task is known as simultaneous localization and mapping (SLAM) and has been well covered in the literature using a variety of techniques \cite{durrant2006simultaneous,bailey2006simultaneous}.
 
-While SLAM is well known and has a rich history of successes using a single robot, it can often be a slow process due to both constraints on the robot, such as speed and data processing, and lack of redundancy, i.e. robot failure \cite{thrun2001probabilistic,burgard2005coordinated}.  To address the speed of mapping and to add redundancy, coordinated or multi-robot SLAM (MRSLAM) was created.
+While SLAM is well known and has a rich history of successes using a single robot, it can often be a slow process due to both constraints on the robot, such as speed and data processing, and lack of redundancy, i.e. robot failure \cite{thrun2001probabilistic,burgard2005coordinated}.  To address the speed of mapping and to add redundancy, coordinated or multi-robot SLAM (MRSLAM) was proposed.
 
 MRSLAM is as it sounds, SLAM using multiple exploring robots. This approach allows for the partition of the physical search space using different robots, typically decreasing the time it takes to map an area, and increasing the likelihood of full map coverage in the event of robot failure. This temporal exploration parallelism does, however, come at the cost of added complexity. The added complexity of MRSLAM comes in two major components: coordination of exploration using multiple search agents and merging the maps of these agents \cite{fox2006distributed}.  Coordinated exploration consists of planning the groups' search path, most often formulated to cover the most search space in minimum time or to optimize some other mapping cost criteria. The other major component, map merging, is the combination of individual robot's observations and maps into one cohesive global map estimate.
 
@@ -13,7 +13,7 @@ In this paper we use the map merging algorithm presented in Howard's 2006 paper:
 The algorithm presented is an encounter-based algorithm.  Given that we start with one mapping robot (call this Robot 1), when it encounters another robot (Robot 2), the relative pose between the two robots is computed and Robot 2's odometry and scan data is transmitted in reverse order to Robot 1, where the data is integrated to create a single map posterior.
 
 Fig. \ref{fig:HowardFig3} depicts the process with robot 1's Pose-Actuator-Sensor triple $(x^1_t,u^1_{t-1},z^1_t)$ (PAS triple), and robot 2's PAS triple $(x^2_t,u^2_{t-1},z^2_t)$.
-When $t=2$, robot 1 observes robot 2 and determines the relative pose $\Delta$, then the past odometry and scan data is integrated in reverse order.
+When $t=2$, robot 1 observes robot 2 and determines the relative pose $\Delta$, then a virtual robot is created that integrate the past odometry and scan data in reverse order into the global map posterior.
 
 \begin{figure}[h]
 \centering
@@ -22,5 +22,7 @@ When $t=2$, robot 1 observes robot 2 and determines the relative pose $\Delta$, 
 \label{fig:HowardFig3}
 \end{figure}
 
-The paper is structured as follows: In \S\ref{S:Back} some background about MRSLAM is provided, the contribution of \cite{howard2006multi} and the modified algorithm is discussed .  In \S\ref{S:Alg} the algorithm of \cite{howard2006multi}, and its modification, is presented.  In \S\ref{S:Exp}, the two algorithms are compared qualitatively using a simulated data set. 
+While Howard's method is attractive for its speed, it only uses a single particle filter for all the robots which can result in undesired particle error and depletion.  In this paper we propose a modification of the algorithm to using independent particle filters for each robot, and demonstrate the efficacy of the technique on a simulated data set.  
+
+The paper is structured as follows: in \S\ref{S:Back} some background about MRSLAM is provided, the contribution of \cite{howard2006multi} and the modified algorithm is discussed.  In \S\ref{S:Alg} the algorithm of \cite{howard2006multi}, and its modification, is presented.  In \S\ref{S:Exp}, the two algorithms are compared qualitatively using a simulated data set. 
 

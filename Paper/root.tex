@@ -34,7 +34,7 @@
 \author{RB Choroszucha$^{1}$, C Hyman$^{2}$, and A Collier$^{3}$ % <-this % stops a space
 \thanks{$^{1}$ RB Choroszucha is with the School of Naval Architecture and Marine Engineering, University of Michigan.  E-mail: riboch{@}umich.edu}%
 \thanks{$^{2}$ C Hyman is with the School of Electrical Engineering and Computer Science, University of Michigan. E-mail: {hymanc}{@}umich.edu}
-\thanks{$^{3}$ A Collier is with the Robotics and Autonomous Vehicles Program, University of Michigan. E-mail: {amcollie}{@}umich.edu}
+\thanks{$^{3}$ A Collier is with the School of Electrical Engineering and Computer Science, University of Michigan. E-mail: {amcollie}{@}umich.edu}
 }
 
 
@@ -51,7 +51,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{abstract}
 
-In this paper we present and implement the algorithm in Howard's 2006 paper: ``Multi-robot simultaneous localization and mapping using particle filters.''  We also make a small modification to allow for each robot to use a particle filter and qualitatively demonstrate that this modified algorithm performs better than the current state of the art on a simulated data set.
+In this paper we present and implement the algorithm in Howard's 2006 paper: ``Multi-robot simultaneous localization and mapping using particle filters.''  While Howard's method is attractive for its speed, it only uses a single particle filter for all the robots which can result in undesired particle error and depletion.  In this paper we propose a modification of the algorithm to using independent particle filters for each robot, and demonstrate the efficacy of the technique on a simulated data set.  
 
 \end{abstract}
 
