@@ -49,7 +49,7 @@ Upon an encounter at time $s$ between robot $A$ in the mapping set with a pose $
 x_s^{B(i)} &= x_s^{A(i)} \oplus \Delta_s^{AB} \\
 \bar{x}_s^{B(i)} &= x_s^{A(i)} \oplus \Delta_s^{AB}
 \end{align*}
-Where $\oplus$ is the pose composition operator. <SSC reference?>
+Where $\oplus$ is the pose composition operator \cite{smithSelfCheeseman1990}.
 At this time, the stored data queue for robot B is also split into a causal queue $queue^B$ and acausal queue $\overline{queue}^B$.
 \begin{align*}
 \overline{queue}_{t+1:2t}^B = reverse(queue_{0:t-1}^B) \\
@@ -69,7 +69,7 @@ Figure \ref{fig:multiencounter} explains the joining process graphically. The sc
 %\caption{Example of Robot Encounters in this MRSLAM Implementation}
 %\end{figure}
 
-\newcommand{\codymult}{0.75}
+\newcommand{\codymult}{0.78}
 \begin{figure}[ht!]
 \centering
     \subfigure[Timstep 1]{\includegraphics[width=\codymult\columnwidth]{../FinalFigures/multiencounter_1.pdf}} \\
@@ -90,8 +90,12 @@ This process first applies an odometry prediction to each particle. This single 
 x_{t+1}^{r(i)} &= \hat{g}(x_{t}^{r(i)},u_{t+1}^{r(i)})~~\text{(Causal Prediction)}\\
 \bar{x}_{t+1}^{r(i)} &= \hat{g}_r(\bar{x}_t^{r(i)}, \bar{u}_{t+1}^{r(i)}) ~\text{(Acausal Preditiction)}
 \end{align*}
-Where $\hat{g}$ is a deterministic odometry model $g(x,u)$ corrupted by model dependent noise $\eta$.
-$$\hat{g}(x,u)=g(x,u)+\eta$$
+Where $\hat{g}$ and $\hat{g}_r$ consist of a deterministic odometry model $g(x,u)$ or $g_r(x,\bar{u})$ corrupted by model dependent noise $\eta$.
+\begin{align}
+\hat{g}(x,u)&=g(x,u)+\eta\\
+\hat{g}(x,\bar{u})&=g_r(x,\bar{u})+\eta
+\end{align}
+
 The chosen particle filter implementation allows for a wide choice of assumptions on the distribution of the noise model. Our choice of model used in testing is discussed in the later section on experimental validation.
 
 The odometry prediction step was followed by an occupancy grid map update for each real or virtual robot particle based on current or stored measurements. For each robot $R$, whether it represents causal or acausal particles, the next measurement in the queue, $z_t^R$ is removed and used to update the map for each particle according to a simplified occupancy grid measurement model.

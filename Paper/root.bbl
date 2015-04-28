@@ -1,4 +1,4 @@
-\begin{thebibliography}{1}
+\begin{thebibliography}{10}
 
 \bibitem{bailey2006simultaneous}
 Tim Bailey and Hugh Durrant-Whyte.
@@ -26,6 +26,12 @@ Dieter Fox, Jonathan Ko, Kurt Konolige, Benson Limketkai, Dirk Schulz, and
 \newblock Distributed multirobot exploration and mapping.
 \newblock {\em Proceedings of the IEEE}, 94(7):1325--1339, 2006.
 
+\bibitem{Grisetti2007}
+G.~Grisetti, C.~Stachniss, and W.~Burgard.
+\newblock Improved techniques for grid mapping with rao-blackwellized particle
+  filters.
+\newblock {\em Robotics, IEEE Transactions on}, 23(1):34--46, Feb 2007.
+
 \bibitem{howard2006multi}
 Andrew Howard.
 \newblock Multi-robot simultaneous localization and mapping using particle
@@ -33,9 +39,25 @@ Andrew Howard.
 \newblock {\em The International Journal of Robotics Research},
   25(12):1243--1256, 2006.
 
-\bibitem{Radish}
-Andrew Howard and Nicholas Roy.
-\newblock The robotics data set repository (radish), 2003.
+\bibitem{julia2012comparison}
+Miguel Juli{\'a}, Arturo Gil, and Oscar Reinoso.
+\newblock A comparison of path planning strategies for autonomous exploration
+  and mapping of unknown environments.
+\newblock {\em Autonomous Robots}, 33(4):427--444, 2012.
+
+\bibitem{lazaro2013multi}
+Maria~Teresa Lazaro, Lina~Mar{\'\i}a Paz, Pedro Pinies, Jos{\'e}~A Castellanos,
+  and G~Grisetti.
+\newblock Multi-robot slam using condensed measurements.
+\newblock In {\em Intelligent Robots and Systems (IROS), 2013 IEEE/RSJ
+  International Conference on}, pages 1069--1076. IEEE, 2013.
+
+\bibitem{smithSelfCheeseman1990}
+R.~Smith, M.~Self, and P.~Cheeseman.
+\newblock Estimating uncertain spatial relationships in robotics.
+\newblock In Ingemar~J. Cox and Gordon~T. Wilfong, editors, {\em Autonomous
+  Robot Vehicles}, pages 167--193. Springer-Verlag New York, Inc., New York,
+  NY, USA, 1990.
 
 \bibitem{thrun2001probabilistic}
 Sebastian Thrun.
