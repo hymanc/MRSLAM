@@ -103,3 +103,7 @@ $$w^{(i)}=p(z_t^{1(i)}|x_t^{1(i)},m_t)p(z_t^{2(i)}|x_t^{2(i)},m_t)...p(z_t^{M(i)
 We also implemented an algorithm that assigns an independent particle weighting for each independent pose particle set. For robot R, this weight was computed as:
 $$w^{R(i)}=p(z_t^{R(i)}|x_t^{R(i)},m_t)$$
 
+After the propagation and update, the FastSLAM algorithm performs stochastic universal resampling to generate an update set of uniform weight samples. All weights are normalized such that they sum to 1, a cumulative mass function is generated, and a random initial offset is chosen. From this initial offset, an identical number of samples equally spaced across the CMF are taken and the inverse CMF at each of those samples is used to create a new particle. The resulting weights of each particle are then set to a uniform value. 
+
+For our addition where each set of pose particles has independent weights, these weights are used to independently resample each pose set while leaving the map unchanged.
+
