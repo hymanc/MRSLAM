@@ -189,18 +189,6 @@ Table \ref{table:timing} provides the average amount of time it took to map 95\%
 \subsection{The Results}
 \label{S:Exp:Results}
 
-From Table \ref{table:timing} we see that there is a large drop-off when we increase the number of robots from 2$\rightarrow$3, 4$\rightarrow$5, and 7$\rightarrow$8.  Despite it has the highest average time, 5 robots nicely conveys the complexity that can be achieved; as such, 5 robots will be used to highlight the improvement of the proposed algorithm over Howard's.  
-
-To compare the two algorithms, we use two sets of sensor/actuator data: a low noise set and a high noise set. 
-\begin{description}
-\item[Low] The low noise set perturbs the actuator input by $\mathcal{N}(0,0.1)\ [m]$ on $\delta_t^{i}$, $\mathcal{N}(0,0.01)\ [m]$ on $\omega_t^{i}$, and $\mathcal{N}(0,0.5)\ [m]$ on $z_t^{i,k}$.  
-\item[High] The high noise set perturbs the actuator input by $\mathcal{N}(0,1)\ [m]$ on $\delta_t^{i}$, $\mathcal{N}(0,0.1)\ [m]$ on $\omega_t^{i}$, and $\mathcal{N}(0,1.5)\ [m]$ on $z_t^{i,k}$.
-\end{description}
-
-The qualitative results are presented in Fig. \ref{fig:Comp}.  Fig. \ref{subfig:pureodom} provides the occupancy grid if pure odometry was used, to contrast this the occupancy grid using known poses is given in Fig. \ref{subfig:knownpose}.  
-
-Fig. \ref{subfig:HowardLow}-\ref{subfig:OurHigh} provide the comparison between Howard's and the proposed algorithm.  Comparing Fig. \ref{subfig:HowardLow} and \ref{subfig:OurLow}, it is easy to see that the proposed implementation is almost as good as the occupancy grid with known poses (Fig. \ref{subfig:knownpose}).  Even in the high noise case, Fig. \ref{subfig:HowardHigh} and \ref{subfig:OurHigh}, we see less error with the proposed algorithm.  
-
 \newcommand{\multiplier}{7.25cm}
 \begin{figure*}[th]
 \centering
@@ -214,4 +202,29 @@ Fig. \ref{subfig:HowardLow}-\ref{subfig:OurHigh} provide the comparison between 
 \label{fig:Comp}
 \end{figure*}
 
+From Table \ref{table:timing} we see that there is a large drop-off when we increase the number of robots from 2$\rightarrow$3, 4$\rightarrow$5, and 7$\rightarrow$8.  Despite it having the highest average time, mapping with 5 robots adequately conveys the complexity that can be achieved; as such, 5 robots, each with 30 particles, will be used to highlight the improvement gained using the proposed algorithm.  
 
+To compare the two algorithms, we use two sets of sensor/actuator data: a low noise set and a high noise set. 
+\begin{description}
+\item[Low] The low noise set perturbs the actuator input by $\mathcal{N}(0,0.1)\ [m]$ on $\delta_t^{i}$, $\mathcal{N}(0,0.01)\ [m]$ on $\omega_t^{i}$, and $\mathcal{N}(0,0.5)\ [m]$ on $z_t^{i,k}$.  
+\item[High] The high noise set perturbs the actuator input by $\mathcal{N}(0,1)\ [m]$ on $\delta_t^{i}$, $\mathcal{N}(0,0.1)\ [m]$ on $\omega_t^{i}$, and $\mathcal{N}(0,1.5)\ [m]$ on $z_t^{i,k}$.
+\end{description}
+
+The qualitative results are presented in Fig. \ref{fig:Comp}.  Fig. \ref{subfig:pureodom} provides the occupancy grid if pure odometry was used, to contrast this the occupancy grid using known poses is given in Fig. \ref{subfig:knownpose}.  
+
+Fig. \ref{subfig:HowardLow}-\ref{subfig:OurHigh} provide the comparison between Howard's and the proposed algorithm.  Comparing Fig. \ref{subfig:HowardLow} and \ref{subfig:OurLow}, it is easy to see that the proposed implementation is almost as good as the occupancy grid with known poses (Fig. \ref{subfig:knownpose}).  Even in the high noise case, Fig. \ref{subfig:HowardHigh} and \ref{subfig:OurHigh}, we see less error with the proposed algorithm.  
+
+Over the number of particles, we define the minimum sum error:
+\begin{equation}
+\varepsilon_{t}=\min_{m} \sum_{i=1}^{n_{robots}} ||\textbf{x}_t^i-\hat{\textbf{x}}_t^{i,m}||_2
+\end{equation}
+where $m$ is the number of particles.  Using this measure, quantitative results demonstrating that the proposed algorithm has a smaller minimum sum error are provided in Fig. r\ref{fig:minsumerr}.  To note, for the first 100 seconds both techniques have about the same error, but for the high noise case the proposed algorithm dominates with less than half the error of Howard's algorithm.
+
+
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=\columnwidth]{../FinalFigures/MinSumError}
+\caption{Minimum sum error.}
+\label{fig:minsumerr}
+\end{figure}
