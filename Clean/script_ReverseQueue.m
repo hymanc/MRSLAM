@@ -25,5 +25,38 @@
 %                         plot(odomRevBarDiff(a2,:),'k');
 %                     end
         %revqueue(a1,revcounters(a1))=struct('scan',[],'pose',[],'u',[],'t',[]);
+        
+        % Check for acausal joins
+        enc = revqueue(a1,revcounters(a1)).encounter
+        if(size(enc,2)>1)
+            % Prior encounter, perform acausal join
+%             oldrob=robID(robotInds==mapEncounters(1,2));
+%             newrob=robID(robotInds==mapEncounters(1,3));
+% 
+%             counters(newrob)=counters(newrob)-1;%t-1.
+%             fprintf('Robot %d was invited by Robot %d.\n',mapEncounters(1,3),mapEncounters(1,2));
+%             joined=[joined;newrob];
+%             for a2=1:counters(newrob)
+%                 revqueue(newrob,a2)=queue(newrob,a2);
+%                 queue(newrob,a2)=struct('scan',[],'pose',[],'u',[],'t',[],'encounter',[]);
+%             end
+% 
+%             revcounters(newrob)=counters(newrob);
+%             counters(newrob)=1;
+% 
+%             relpose=mapEncounters(1,4:6);
+%             for a2=1:nParticles
+%                 robOdom(:,newrob,a2)=robOdom(:,oldrob,a2)+relpose';
+%                 robPoseMapFrame(:,t,newrob,a2)=world_to_map_coordinates(robOdom(1:2,newrob,a2), gridSize, offset);
+%                 robOdomReverse(:,newrob,a2)=robOdom(:,oldrob,a2)+relpose';
+%                 robPoseMapFrameReverse(:,t,newrob,a2)=world_to_map_coordinates(robOdomReverse(1:2,newrob,a2), gridSize, offset);
+%             end
+% 
+%             if (size(mapEncounters,1)>1)
+%                 mapEncounters=mapEncounters(2:end,1:end);
+%             else
+%                 mapEncounters=[];
+%             end    
+        end
         revcounters(a1)=revcounters(a1)-1;
     end

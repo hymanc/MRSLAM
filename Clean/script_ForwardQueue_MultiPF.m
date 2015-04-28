@@ -31,7 +31,7 @@
                 joined=[joined;newrob];
                 for a2=1:counters(newrob)
                     revqueue(newrob,a2)=queue(newrob,a2);
-                    queue(newrob,a2)=struct('scan',[],'pose',[],'u',[],'t',[]);
+                    queue(newrob,a2)=struct('scan',[],'pose',[],'u',[],'t',[],'encounter',[]);
                 end
 
                 revcounters(newrob)=counters(newrob);

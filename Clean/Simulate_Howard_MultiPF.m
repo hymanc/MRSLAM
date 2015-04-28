@@ -129,6 +129,15 @@
         %Appending data to queue.
         if (t<=maxT)
             for a1=1:nRobots
+                % Check for encounter
+                currentEncounter=0;
+                if (~isempty(mapEncounters))
+                    if (mapEncounters(1,1)==t)
+                       currentEncounter = mapEncounters(1,:);
+                    end 
+                end
+                queue(a1,counters(a1)).encounter=currentEncounter;
+                % Queue other data
                 queue(a1,counters(a1)).pose=data(robotInds(a1)).pose(:,t);
 %Low Noise
                 queue(a1,counters(a1)).scan=data(robotInds(a1)).ract{t};%1 is scan data

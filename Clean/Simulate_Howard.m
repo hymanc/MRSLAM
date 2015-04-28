@@ -108,9 +108,9 @@
     revcounters=counters;
     maxT=numel(data(1).r);
     
-    joined=[1];
+    joined=[1]; % Mapping set
     unjoined=setdiff(robotInds,joined);
-    mapEncounters=parseEncounters(mapEncounters,joined,robotInds);
+    mapEncounters=parseEncounters(mapEncounters,joined,robotInds); % Encounter measurements from dataset
     
     t=1;
     for a1=1:nRobots
@@ -128,6 +128,14 @@
         %Appending data to queue.
         if (t<=maxT)
             for a1=1:nRobots
+                % Check for encounters 
+                currentEncounter = 0;
+                if (~isempty(mapEncounters))
+                    if (mapEncounters(1,1)==t)
+                       currentEncounter = mapEncounters(1,:);
+                    end 
+                end
+                queue(a1,counters(a1)).encounter=currentEncounter;
                 queue(a1,counters(a1)).pose=data(robotInds(a1)).pose(:,t);
                 %queue(a1,counters(a1)).scan=data(robotInds(a1)).ract{t};%1 is scan data
                 %queue(a1,counters(a1)).u=data(robotInds(a1)).uact(:,t-1);R(2,2)*randn(1)];
