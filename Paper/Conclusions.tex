@@ -2,4 +2,10 @@
 \label{S:Conc}
 
 
-In this paper we have presented Howard’s algorithm from \cite{howard2006multi} for the integration of data from several independent robots, and demonstrated a successful implementation.  Further, we have modified the algorithm to use a particle filter for each robot and demonstrated that it can qualitatively 
+In this paper we motivated the use of multiple robots to decrease the time to map an environment and increase the likelihood that the mapping objective is completed.  We presented the background of MRSLAM, detailed discussion of the modification of Howard's algorithm \cite{howard2006multi} for map merging using the integration of data from several independent robots, as well as presented a modified algorithm using independently sampled robot weights.
+
+We qualitatively and quantitatively demonstrated that the independent resampling approach resulting in better occupancy grid without a significant change in computational complexity or memory, and decreased the minimum sum or squares error.  
+
+At face value, the independent particle filter approach should rapidly lead to particle depletion.  Nevertheless, the approach seems to provided not only better pose accuracy, but also a more accurate occupancy grid.
+
+Future work would include a more thorough literature review to see if this idea has been proposed, attempt to build even better proposal distributions, and use adaptive resampling to avoid rapid particle depletion \citep{Grisetti2007} that one would expect would plague this method.
