@@ -12,18 +12,14 @@ In the literature there are two problems that are often addressed when dealing w
 
 In the case where all relative robot poses are known, merging maps is a trivial problem using small modifications to existing SLAM techniques \cite{thrun2001probabilistic}. In the general MRSLAM problem, however, robots may start with unknown absolute and relative poses, and therefore merging of maps requires the discovery of relative relationships between different robot trajectories to build a single map. This is often a costly process, which in general can be solved for robots sharing a search space by estimating each robot's relative pose given a partial map, but this leads to exponential complexity with respect to the number of exploring robots \cite{fox2006distributed}. Nevertheless, several practical algorithms exist to circumvent this naive and inefficient approach,  including coarse topological matching and stitching techniques borrowed from computer vision \cite{birk2006merging}.
 
-To combat this a large majority of the MRSLAM papers employ a Rao-Blackwellized particle filter (RBPF) for building occupancy grids.
+In 2006 two schools of thought arouse about how to handle MRSLAM:
+\begin{enumerate}
+\item Let independent robots build individual maps, then at the end combine the maps together \cite{birk2006merging}.  This approach is particularly attractive for post processing because it requires multiple trial and error to maximize a score function. 
+\item On the other hand, there was \cite{howard2006multi}, which uses communication between robots, but requires precisely known relative poses to construct a single global map posterior.
+\end{enumerate}
+Both had their benefits: \cite{birk2006merging} does not require to know any global or relative poses, but \cite{howard2006multi} can be implemented in real-time.  Because of the real-time nature, and the desire to map as fast as possible, there has also been a great deal of research using \cite{howard2006multi}, but with limited communication \cite{lazaro2013multi}.
 
-
-\cite{howard2006multi,birk2006merging,lazaro2013multi,lee2012probabilistic}
-
-
--Where did it begin, what did it progress to?
-
-
-
-
-\subsection{\cite{howard2006multi} Extension to Original Work}
+\subsection{Extension of \cite{howard2006multi}}
 \label{SS:Back:Contributions}
 
 
@@ -33,7 +29,7 @@ w^i_t=p(z_{t,f}|x_{t,f}^i,m_{t-1,f}^i) p(z_{t,r}|x_{t,r}^i,m_{t-1,r}^i) w^i_{t-1
 \label{eq:combinedweight}
 \end{equation}
 
-In this formulation it is no stretch of the imagination that the highest weight $p(z_{t,f}|x_{t,f}^i,m_{t-1,f}^i) w^i_{t-1}$ can be quite large, denoting a good match to the data in the forward direction, yet the reverse direction sensor model, $p(z_{t,r}|x_{t,r}^i,m_{t-1,r}^i)$, could be small.  Thereby reducing the probability that the best forward direction
+In this formulation it is no stretch of the imagination that the forward sensor model and previous weight $p(z_{t,f}|x_{t,f}^i,m_{t-1,f}^i) w^i_{t-1}$ could be large, denoting a good match to the data in the forward direction, yet the reverse sensor model, $p(z_{t,r}|x_{t,r}^i,m_{t-1,r}^i)$, could be small.  Thereby reducing the probability that the best forward direction is resampled.  See for example Fig. \ref{fig:deplete}, particularly particle 1.
 
 
 In this work, we propose assuming that forward and reverse motions are independent, resulting in two particle filters with weights defined by:
@@ -43,7 +39,6 @@ w^i_{t,r}&=&p(z_{t,r}|x_{t,r}^i,m_{t-1}^i)  w^i_{t-1,r}
 \end{eqnarray}
 and with $\{x_{t,f}^i,m_{t-1}^i\}$ being resampled using $\{w^i_{t,f}\}$, and $\{x_{t,r}^i\}$ being resampled using $\{w^i_{t,r}\}$.  
 
-Fig. \ref{fig:deplete} is an example where the best forward and backward particles would be chosen independently; however, when the weights are combined as in \eqref{eq:combinedweight}, we see case where the best forward or reverse particles (e.g, particle 1) will mostly likely not be resampled.
 
 \begin{figure}[h]
 \centering
@@ -52,5 +47,5 @@ Fig. \ref{fig:deplete} is an example where the best forward and backward particl
 \label{fig:deplete}
 \end{figure}
 
-The contribution is two-fold, verifying that Howard's algorithm works, and creating a independent particle filters for each mapping robot in the aim to build a better occupancy grid, and obtain a better localization within the map.
+The contribution is two-fold, verifying that Howard's algorithm works, and creating a independent particle filters for each mapping robot in the aim to build a better occupancy grid, and obtain a better localization within the map while only marginally increasing the computational complexity.
 
