@@ -150,9 +150,9 @@ Then we define the percent mapped as
 \begin{equation}
 \zeta =\frac{\sum_{x,y}I_{edge}\wedge J}{\sum_{x,y}I_{edge}},
 \end{equation}
-and when $\zeta>0.95$, we say that the environment has been mapped.
+and when $\zeta\geq 0.95$, we say that the environment has been mapped.
 
-Table \ref{table:timing} provides the average amount of time it took to map 95\% of the environment using different number of robots using 100 samples.  To note is that the averages do tend to decrease as expected.  However, it should be noted that there is a large degree of uncertainty, at least until we get beyond 7 robots.  
+Using 100 different trials, Table \ref{table:timing} provides the average amount of time it took to map 95\% of the environment using different number of robots.  To note is that the averages do tend to decrease as expected.  However, it should be noted that there is a large degree of uncertainty, at least until we get beyond 7 robots.  
 
 \begin{table}
 \centering
@@ -192,18 +192,6 @@ Table \ref{table:timing} provides the average amount of time it took to map 95\%
 \subsection{The Results}
 \label{S:Exp:Results}
 
-From Table \ref{table:timing} we see that there is a large drop-off when we increase the number of robots from 2$\rightarrow$3, 4$\rightarrow$5, and 7$\rightarrow$8.  Despite it has the highest average time, 5 robots nicely conveys the complexity that can be achieved; as such, 5 robots will be used to highlight the improvement of the proposed algorithm over Howard's.  
-
-To compare the two algorithms, we use two sets of sensor/actuator data: a low noise set and a high noise set. 
-\begin{description}
-\item[Low] The low noise set perturbs the actuator input by $\mathcal{N}(0,0.1)\ [m]$ on $\delta_t^{i}$, $\mathcal{N}(0,0.01)\ [m]$ on $\omega_t^{i}$, and $\mathcal{N}(0,0.5)\ [m]$ on $z_t^{i,k}$.  
-\item[High] The high noise set perturbs the actuator input by $\mathcal{N}(0,1)\ [m]$ on $\delta_t^{i}$, $\mathcal{N}(0,0.1)\ [m]$ on $\omega_t^{i}$, and $\mathcal{N}(0,1.5)\ [m]$ on $z_t^{i,k}$.
-\end{description}
-
-The qualitative results are presented in Fig. \ref{fig:Comp}.  Fig. \ref{subfig:pureodom} provides the occupancy grid if pure odometry was used, to contrast this the occupancy grid using known poses is given in Fig. \ref{subfig:knownpose}.  
-
-Fig. \ref{subfig:HowardLow}-\ref{subfig:OurHigh} provide the comparison between Howard's and the proposed algorithm.  Comparing Fig. \ref{subfig:HowardLow} and \ref{subfig:OurLow}, it is easy to see that the proposed implementation is almost as good as the occupancy grid with known poses (Fig. \ref{subfig:knownpose}).  Even in the high noise case, Fig. \ref{subfig:HowardHigh} and \ref{subfig:OurHigh}, we see less error with the proposed algorithm.  
-
 \newcommand{\multiplier}{7.25cm}
 \begin{figure*}[th]
 \centering
@@ -217,4 +205,32 @@ Fig. \ref{subfig:HowardLow}-\ref{subfig:OurHigh} provide the comparison between 
 \label{fig:Comp}
 \end{figure*}
 
+From Table \ref{table:timing} we see that there is a large drop-off when we increase the number of robots from 2$\rightarrow$3, 4$\rightarrow$5, and 7$\rightarrow$8.  Despite it has the highest average time, 5 robots nicely conveys the complexity that can be achieved; as such, 5 robots, each with 30 particles, will be used to highlight the improvement of the independently sampled algorithm over Howard's using a 250 second simulation.  
 
+To compare the two algorithms, we use two sets of sensor/actuator data: a low noise set and a high noise set. 
+\begin{description}
+\item[\textbf{Low}] The low noise set perturbs the actuator input by $\mathcal{N}(0,0.1)\ [m]$ on $\delta_t^{R}$, $\mathcal{N}(0,0.01)\ [m]$ on $\omega_t^{R}$, and $\mathcal{N}(0,0.5)\ [m]$ on $z_t^{R,k}$.  
+\item[\textbf{High}] The high noise set perturbs the actuator input by $\mathcal{N}(0,1)\ [m]$ on $\delta_t^{R}$, $\mathcal{N}(0,0.1)\ [m]$ on $\omega_t^{R}$, and $\mathcal{N}(0,1.5)\ [m]$ on $z_t^{R,k}$.
+\end{description}
+
+The qualitative results are presented in Fig. \ref{fig:Comp}.  Fig. \ref{subfig:pureodom} provides the occupancy grid if pure odometry was used, to contrast the poor performance the occupancy grid using known poses is given in Fig. \ref{subfig:knownpose}.
+
+For Fig. \ref{subfig:HowardLow} and \ref{subfig:HowardHigh}, the solid and dashed line represent the best estimated trajectory in the causal and acausal directions.  Whereas, for Fig. \ref{subfig:OurLow} and \ref{subfig:OurHigh}, the solid and dashed lines represent the best estimated path for the causal and acausal data, respectively.
+
+Fig. \ref{subfig:HowardLow}-\ref{subfig:OurHigh} provide the comparison between Howard's and the proposed algorithm.  Comparing Fig. \ref{subfig:HowardLow} and \ref{subfig:OurLow}, it is easy to see that the proposed implementation is almost as good as the occupancy grid with known poses (Fig. \ref{subfig:knownpose}).  Even in the high noise case, Fig. \ref{subfig:HowardHigh} and \ref{subfig:OurHigh}, we see less error with the independently sampled algorithm.  
+
+Over the number of particles, we define the minimum sum of squares error (a.k.a. the least absolute deviation error):
+\begin{equation}
+\varepsilon=\min_{k\in\{1,\cdots,n\}}\sqrt{\sum_{R=1}^{M} ||\textbf{x}_{t}^R-\hat{\textbf{x}}^{R,k}_{t}||}
+\end{equation}
+where $n$ is the number of particles, $M$ is the number of robots, and $\hat{\textbf{x}}^{R,k}_{t}$ is pose of particle $k$.  Using this measure, Fig. \ref{fig:minsumerr} quantitatively demonstrates that the independently sampled algorithm provides a better estimate of the pose for nearly all time instants.  Note: for the first 100 seconds, both techniques have the same error, but for the high noise case, the independently sampled algorithm dominates with less than half the error of Howard's algorithm.  Enclosed are videos highlighting Fig. \ref{fig:Comp}.
+
+
+
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\columnwidth]{../FinalFigures/MinSumError}
+\caption{Minimum sum square error versus time.}
+\label{fig:minsumerr}
+\end{figure}

@@ -212,6 +212,18 @@
   Url                      = {http://dl.acm.org/citation.cfm?id=93002.93291}
 }
 
+@InCollection{smith1990estimating,
+  Title                    = {Estimating uncertain spatial relationships in robotics},
+  Author                   = {Smith, Randall and Self, Matthew and Cheeseman, Peter},
+  Booktitle                = {Autonomous robot vehicles},
+  Publisher                = {Springer},
+  Year                     = {1990},
+  Pages                    = {167--193},
+
+  Owner                    = {richard},
+  Timestamp                = {2015.04.28}
+}
+
 @Article{thrun2001probabilistic,
   Title                    = {A probabilistic on-line mapping algorithm for teams of mobile robots},
   Author                   = {Thrun, Sebastian},

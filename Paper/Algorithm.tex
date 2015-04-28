@@ -48,10 +48,11 @@ The storing of this data allows for either immediate use by particle filters for
 An encounter in this sense is defined as the observation of one robot by another mapping robot that produces a relative pose estimate between the robots of $\Delta$. For this implementation, it was assumed that the estimation of $\Delta$ was deterministic for the sake of demonstration and simplicity.
 
 Upon an encounter at time $s$ between Robot $A$ in the mapping set with pose $\textbf{x}_s^A$ and Robot $B$ not in the mapping set with a measured relative pose $\Delta_s^{AB}$, a reference frame pose for each particle $i$ of the newly observed robot is instantiated as the causal particle posterior $\textbf{x}_s^{B(i)}$, and acausal particle pose posterior $\bar{\textbf{x}}_s^{B(i)}$ as:
-\begin{align*}
+\begin{eqnarray}
 \textbf{x}_s^{B(i)} &= \textbf{x}_s^{A(i)} \oplus \Delta_s^{AB} \\
 \bar{\textbf{x}}_s^{B(i)} &= \textbf{x}_s^{A(i)} \oplus \Delta_s^{AB}
-\end{align*}
+\label{eq:relpose}
+\end{eqnarray}
 Where $\oplus$ is the pose composition operator \cite{smithSelfCheeseman1990}.
 At this time, the stored data queue for robot B is also split into a causal queue $queue^B$ and acausal queue $\overline{queue}^B$.
 \begin{align*}

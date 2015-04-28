@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2014/Debian) (preloaded format=pdflatex 2014.10.2)  28 APR 2015 10:52
+This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2014/Debian) (preloaded format=pdflatex 2014.10.2)  28 APR 2015 11:58
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -365,7 +365,7 @@ File: ../FinalFigures/ForwardBackward.pdf Graphic file (type pdf)
 
 <use ../FinalFigures/ForwardBackward.pdf>
 Package pdftex.def Info: ../FinalFigures/ForwardBackward.pdf used on input line
- 16.
+ 17.
 (pdftex.def)             Requested size: 245.71811pt x 56.86081pt.
  [3 <../FinalFigures/ForwardBackward.pdf>] <../FinalFigures/multiencounter_1.pd
 f, id=54, 244.66406pt x 142.28156pt>
@@ -373,7 +373,7 @@ File: ../FinalFigures/multiencounter_1.pdf Graphic file (type pdf)
 
 <use ../FinalFigures/multiencounter_1.pdf>
 Package pdftex.def Info: ../FinalFigures/multiencounter_1.pdf used on input lin
-e 75.
+e 79.
 (pdftex.def)             Requested size: 191.65982pt x 111.45895pt.
 
 <../FinalFigures/multiencounter_2.pdf, id=55, 289.83281pt x 220.57407pt>
@@ -381,7 +381,7 @@ File: ../FinalFigures/multiencounter_2.pdf Graphic file (type pdf)
 
 <use ../FinalFigures/multiencounter_2.pdf>
 Package pdftex.def Info: ../FinalFigures/multiencounter_2.pdf used on input lin
-e 76.
+e 80.
 (pdftex.def)             Requested size: 191.65982pt x 145.86205pt.
 
 <../FinalFigures/multiencounter_3.pdf, id=56, 289.83281pt x 220.57407pt>
@@ -389,7 +389,7 @@ File: ../FinalFigures/multiencounter_3.pdf Graphic file (type pdf)
 
 <use ../FinalFigures/multiencounter_3.pdf>
 Package pdftex.def Info: ../FinalFigures/multiencounter_3.pdf used on input lin
-e 77.
+e 81.
 (pdftex.def)             Requested size: 191.65982pt x 145.86205pt.
 
 <../FinalFigures/multiencounter_4.pdf, id=57, 289.83281pt x 220.57407pt>
@@ -397,7 +397,7 @@ File: ../FinalFigures/multiencounter_4.pdf Graphic file (type pdf)
 
 <use ../FinalFigures/multiencounter_4.pdf>
 Package pdftex.def Info: ../FinalFigures/multiencounter_4.pdf used on input lin
-e 78.
+e 82.
 (pdftex.def)             Requested size: 191.65982pt x 145.86205pt.
 
 
@@ -420,52 +420,46 @@ sion: multiple pdfs with page group included in a single page
 Missing character: There is no â in font ptmr7t!
 Missing character: There is no € in font ptmr7t!
 Missing character: There is no ™ in font ptmr7t!
- <../FinalFigures/invsensormodel.pdf, id=154, 229.60782pt x 258.9675pt>
+ <../FinalFigures/invsensormodel.pdf, id=155, 229.60782pt x 258.9675pt>
 File: ../FinalFigures/invsensormodel.pdf Graphic file (type pdf)
 
 <use ../FinalFigures/invsensormodel.pdf>
 Package pdftex.def Info: ../FinalFigures/invsensormodel.pdf used on input line 
-112.
+116.
 (pdftex.def)             Requested size: 245.71811pt x 277.15173pt.
 Missing character: There is no â in font ptmr7t!
 Missing character: There is no € in font ptmr7t!
 Missing character: There is no ™ in font ptmr7t!
 ) (./Experiment.tex [5 <../FinalFigures/invsensormodel.pdf>]
-Underfull \hbox (badness 1783) in paragraph at lines 25--26
-[]\OT1/ptm/m/n/10 Then $\OML/cmm/m/it/10 I[]$ \OT1/ptm/m/n/10 is in-ter-sected 
-with the ob-ject, $\OML/cmm/m/it/10 I[] \OT1/cmr/m/n/10 =
- []
-
-
-<../FinalFigures/RayCircleIntersection1.pdf, id=242, 186.7485pt x 264.85568pt>
+<../FinalFigures/RayCircleIntersection1.pdf, id=243, 186.7485pt x 264.85568pt>
 File: ../FinalFigures/RayCircleIntersection1.pdf Graphic file (type pdf)
 
 <use ../FinalFigures/RayCircleIntersection1.pdf>
 Package pdftex.def Info: ../FinalFigures/RayCircleIntersection1.pdf used on inp
 ut line 42.
-(pdftex.def)             Requested size: 98.28574pt x 139.39482pt.
+(pdftex.def)             Requested size: 80.24614pt x 113.81102pt.
 
-<../FinalFigures/RayCircleIntersection.pdf, id=243, 186.7485pt x 264.85568pt>
+<../FinalFigures/RayCircleIntersection.pdf, id=244, 186.7485pt x 264.85568pt>
 File: ../FinalFigures/RayCircleIntersection.pdf Graphic file (type pdf)
 
 <use ../FinalFigures/RayCircleIntersection.pdf>
 Package pdftex.def Info: ../FinalFigures/RayCircleIntersection.pdf used on inpu
 t line 43.
-(pdftex.def)             Requested size: 98.28574pt x 139.39482pt.
+(pdftex.def)             Requested size: 80.24614pt x 113.81102pt.
 
-<../FinalFigures/EncountersTimes.pdf, id=244, 504.88625pt x 399.4925pt>
+<../FinalFigures/EncountersTimes.pdf, id=245, 504.88625pt x 399.4925pt>
 File: ../FinalFigures/EncountersTimes.pdf Graphic file (type pdf)
 
 <use ../FinalFigures/EncountersTimes.pdf>
 Package pdftex.def Info: ../FinalFigures/EncountersTimes.pdf used on input line
- 119.
+ 122.
 (pdftex.def)             Requested size: 245.71811pt x 194.42415pt.
 
-<../FinalFigures/Encounters.pdf, id=245, 357.335pt x 360.34625pt>
+<../FinalFigures/Encounters.pdf, id=246, 357.335pt x 360.34625pt>
 File: ../FinalFigures/Encounters.pdf Graphic file (type pdf)
 
 <use ../FinalFigures/Encounters.pdf>
-Package pdftex.def Info: ../FinalFigures/Encounters.pdf used on input line 120.
+Package pdftex.def Info: ../FinalFigures/Encounters.pdf used on input line 123.
 
 (pdftex.def)             Requested size: 245.71811pt x 247.79242pt.
  [6 <../FinalFigures/RayCircleIntersection1.pdf> <../FinalFigures/RayCircleInte
@@ -473,66 +467,54 @@ rsection.pdf
 
 pdfTeX warning: pdflatex (file ../FinalFigures/RayCircleIntersection.pdf): PDF 
 inclusion: multiple pdfs with page group included in a single page
->] <../FinalFigures/PureOdometry.png, id=254, 791.95876pt x 767.86874pt>
+>] <../FinalFigures/PureOdometry.png, id=255, 791.95876pt x 767.86874pt>
 File: ../FinalFigures/PureOdometry.png Graphic file (type png)
 
 <use ../FinalFigures/PureOdometry.png>
 Package pdftex.def Info: ../FinalFigures/PureOdometry.png used on input line 19
-5.
+8.
 (pdftex.def)             Requested size: 206.28247pt x 200.00438pt.
 
-<../FinalFigures/KnownPoses.png, id=255, 783.92876pt x 767.86874pt>
+<../FinalFigures/KnownPoses.png, id=256, 783.92876pt x 767.86874pt>
 File: ../FinalFigures/KnownPoses.png Graphic file (type png)
 
 <use ../FinalFigures/KnownPoses.png>
-Package pdftex.def Info: ../FinalFigures/KnownPoses.png used on input line 196.
+Package pdftex.def Info: ../FinalFigures/KnownPoses.png used on input line 199.
 
 (pdftex.def)             Requested size: 206.28247pt x 202.05481pt.
 
-<../FinalFigures/HowardLowNoise.png, id=256, 793.96625pt x 767.86874pt>
+<../FinalFigures/HowardLowNoise.png, id=257, 793.96625pt x 767.86874pt>
 File: ../FinalFigures/HowardLowNoise.png Graphic file (type png)
 
 <use ../FinalFigures/HowardLowNoise.png>
 Package pdftex.def Info: ../FinalFigures/HowardLowNoise.png used on input line 
-197.
+200.
 (pdftex.def)             Requested size: 206.28247pt x 199.50056pt.
 
-<../FinalFigures/OursLowNoise.png, id=257, 793.96625pt x 767.86874pt>
+<../FinalFigures/OursLowNoise.png, id=258, 793.96625pt x 767.86874pt>
 File: ../FinalFigures/OursLowNoise.png Graphic file (type png)
 
 <use ../FinalFigures/OursLowNoise.png>
-Package pdftex.def Info: ../FinalFigures/OursLowNoise.png used on input line 19
-8.
+Package pdftex.def Info: ../FinalFigures/OursLowNoise.png used on input line 20
+1.
 (pdftex.def)             Requested size: 206.28247pt x 199.50056pt.
 
-<../FinalFigures/HowardHighNoise.png, id=258, 793.96625pt x 767.86874pt>
+<../FinalFigures/HowardHighNoise.png, id=259, 793.96625pt x 767.86874pt>
 File: ../FinalFigures/HowardHighNoise.png Graphic file (type png)
 
 <use ../FinalFigures/HowardHighNoise.png>
 Package pdftex.def Info: ../FinalFigures/HowardHighNoise.png used on input line
- 199.
+ 202.
 (pdftex.def)             Requested size: 206.28247pt x 199.50056pt.
 
-<../FinalFigures/OursHighNoise.png, id=259, 793.96625pt x 767.86874pt>
+<../FinalFigures/OursHighNoise.png, id=260, 793.96625pt x 767.86874pt>
 File: ../FinalFigures/OursHighNoise.png Graphic file (type png)
 
 <use ../FinalFigures/OursHighNoise.png>
 Package pdftex.def Info: ../FinalFigures/OursHighNoise.png used on input line 2
-00.
+03.
 (pdftex.def)             Requested size: 206.28247pt x 199.50056pt.
-
-<../FinalFigures/MinSumError.pdf, id=260, 501.875pt x 399.4925pt>
-File: ../FinalFigures/MinSumError.pdf Graphic file (type pdf)
-
-<use ../FinalFigures/MinSumError.pdf>
-Package pdftex.def Info: ../FinalFigures/MinSumError.pdf used on input line 229
-.
-(pdftex.def)             Requested size: 245.71811pt x 195.59454pt.
-) (./Conclusions.tex
-Missing character: There is no â in font ptmr7t!
-Missing character: There is no € in font ptmr7t!
-Missing character: There is no ™ in font ptmr7t!
-) [7 <../FinalFigures/EncountersTimes.pdf> <../FinalFigures/Encounters.pdf>]
+ [7 <../FinalFigures/EncountersTimes.pdf> <../FinalFigures/Encounters.pdf>]
 
 LaTeX Warning: Text page 8 contains only floats.
 
@@ -553,7 +535,15 @@ Overfull \vbox (12.03961pt too high) has occurred while \output is active []
 [8 <../FinalFigures/PureOdometry.png (PNG copy)> <../FinalFigures/KnownPoses.pn
 g (PNG copy)> <../FinalFigures/HowardLowNoise.png (PNG copy)> <../FinalFigures/
 OursLowNoise.png (PNG copy)> <../FinalFigures/HowardHighNoise.png (PNG copy)> <
-../FinalFigures/OursHighNoise.png (PNG copy)>] (./root.bbl)
+../FinalFigures/OursHighNoise.png (PNG copy)>]
+<../FinalFigures/MinSumError.pdf, id=279, 501.875pt x 399.4925pt>
+File: ../FinalFigures/MinSumError.pdf Graphic file (type pdf)
+
+<use ../FinalFigures/MinSumError.pdf>
+Package pdftex.def Info: ../FinalFigures/MinSumError.pdf used on input line 233
+.
+(pdftex.def)             Requested size: 245.71811pt x 195.59454pt.
+) (./Conclusions.tex) (./root.bbl)
 
 ** Conference Paper **
 Before submitting the final camera ready copy, remember to:
@@ -565,38 +555,37 @@ Before submitting the final camera ready copy, remember to:
  uses only Type 1 fonts and that every step in the generation
  process uses the US letter (8.5in X 11in) paper size.
 
-[9
-
- <../FinalFigures/MinSumError.pdf>] (./root.aux) ) 
+[9 <../FinalFigures/MinSumError.pdf>] (./root.aux) ) 
 Here is how much of TeX's memory you used:
- 3337 strings out of 493104
- 49454 string characters out of 6136932
- 116198 words of memory out of 5000000
- 6716 multiletter control sequences out of 15000+600000
+ 3338 strings out of 493104
+ 49466 string characters out of 6136932
+ 116208 words of memory out of 5000000
+ 6717 multiletter control sequences out of 15000+600000
  47848 words of font info for 102 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 38i,13n,26p,1335b,289s stack positions out of 5000i,500n,10000p,200000b,80000s
-{/usr/share/texlive/texmf-dis
-t/fonts/enc/dvips/base/8r.enc}</usr/share/texlive/texmf-dist/fonts/type1/public
-/amsfonts/cm/cmex10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfo
-nts/cm/cmmi10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm
-/cmmi5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.
-pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></u
-sr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/shar
-e/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texli
-ve/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/share/texlive/texmf
--dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/share/texlive/texmf-dist/fo
-nts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/texlive/texmf-dist/fonts/type
-1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/publ
-ic/amsfonts/cm/cmsy6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsf
-onts/cm/cmsy7.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmb8a.p
-fb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmbi8a.pfb></usr/share
-/texlive/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/share/texlive/texmf-
-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on root.pdf (9 pages, 834325 bytes).
+ 38i,13n,26p,1547b,289s stack positions out of 5000i,500n,10000p,200000b,80000s
+{/usr/share/texlive/texmf-d
+ist/fonts/enc/dvips/base/8r.enc}</usr/share/texlive/texmf-dist/fonts/type1/publ
+ic/amsfonts/cm/cmex10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/ams
+fonts/cm/cmmi10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/
+cm/cmmi5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi
+6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb><
+/usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/sh
+are/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/tex
+live/texmf-dist/fonts/type1/public/amsfonts/cm/cmr5.pfb></usr/share/texlive/tex
+mf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/share/texlive/texmf-dist/
+fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/share/texlive/texmf-dist/fonts/ty
+pe1/public/amsfonts/cm/cmr8.pfb></usr/share/texlive/texmf-dist/fonts/type1/publ
+ic/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/ams
+fonts/cm/cmsy6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/c
+m/cmsy7.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></u
+sr/share/texlive/texmf-dist/fonts/type1/urw/times/utmbi8a.pfb></usr/share/texli
+ve/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/share/texlive/texmf-dist/f
+onts/type1/urw/times/utmri8a.pfb>
+Output written on root.pdf (9 pages, 845089 bytes).
 PDF statistics:
- 345 PDF objects out of 1000 (max. 8388607)
- 280 compressed objects within 3 object streams
+ 349 PDF objects out of 1000 (max. 8388607)
+ 283 compressed objects within 3 object streams
  0 named destinations out of 1000 (max. 500000)
  96 words of extra memory for PDF output out of 10000 (max. 10000000)
 

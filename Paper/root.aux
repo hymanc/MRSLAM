@@ -32,7 +32,7 @@
 \@writefile{toc}{\contentsline {subsection}{\numberline {II-B}Extension of \cite  {howard2006multi}}{2}}
 \newlabel{SS:Back:Contributions}{{II-B}{2}}
 \newlabel{eq:combinedweight}{{1}{2}}
-\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Case where the best forward and reverse poses are not chosen. $w^i_{t,f}$ is the forward weight, $w^i_{t,r}$ is the reverse weight, and $w^i_t$ is the product of the weights.}}{2}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Case where the best forward and reverse poses are not chosen. $w^{f(i)}_{t}$ is the forward weight, $w^{r(i)}_{t}$ is the reverse weight, and $w^{(i)}_t$ is the product of the weights.}}{2}}
 \newlabel{fig:deplete}{{2}{2}}
 \@writefile{toc}{\contentsline {section}{\numberline {III}The Algorithm}{2}}
 \newlabel{S:Alg}{{III}{2}}
@@ -40,15 +40,16 @@
 \newlabel{SS:Alg:Overview}{{III-A}{2}}
 \citation{howard2006multi}
 \citation{smithSelfCheeseman1990}
-\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Causal and Acausal Virtual Robots Added on Encounter}}{3}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Causal and acausal virtual robots added on encounter.}}{3}}
 \newlabel{fig:forwardbackward}{{3}{3}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {III-B}Algorithm Details}{3}}
 \newlabel{SS:Alg:Details}{{III-B}{3}}
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {III-B.1}Data Queueing}{3}}
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {III-B.2}Encounters}{3}}
+\newlabel{eq:relpose}{{5}{3}}
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {III-B.3}FastSLAM Updates}{4}}
 \@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Example of Robot Encounters in this MRSLAM Implementation}}{4}}
-\@writefile{lof}{\contentsline {subfigure}{\numberline{(a)}{\ignorespaces {Timstep 1}}}{4}}
+\@writefile{lof}{\contentsline {subfigure}{\numberline{(a)}{\ignorespaces {Timestep 1}}}{4}}
 \@writefile{lof}{\contentsline {subfigure}{\numberline{(b)}{\ignorespaces {Timestep 2}}}{4}}
 \@writefile{lof}{\contentsline {subfigure}{\numberline{(c)}{\ignorespaces {Timestep 3}}}{4}}
 \@writefile{lof}{\contentsline {subfigure}{\numberline{(d)}{\ignorespaces {Timestep 4}}}{4}}
@@ -63,25 +64,24 @@
 \@writefile{toc}{\contentsline {subsection}{\numberline {IV-A}The Data Set}{5}}
 \newlabel{S:Exp:DataSet}{{IV-A}{5}}
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {IV-A.1}Ray-Circle Intersection}{6}}
-\newlabel{eq:Isemi}{{8}{6}}
-\newlabel{eq:ray}{{9}{6}}
+\newlabel{eq:Isemi}{{10}{6}}
+\newlabel{eq:ray}{{11}{6}}
 \newlabel{subfig:raycirc}{{6(a)}{6}}
 \newlabel{sub@subfig:raycirc}{{(a)}{6}}
 \newlabel{subfig:rstar}{{6(b)}{6}}
 \newlabel{sub@subfig:rstar}{{(b)}{6}}
-\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Visualization of Ray-Circle Intersection}}{6}}
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Visualization of ray-circle intersection algorithm.}}{6}}
 \@writefile{lof}{\contentsline {subfigure}{\numberline{(a)}{\ignorespaces {$I_{filled}$ and the intersection with the ray $\textbf {v}_k$.}}}{6}}
 \@writefile{lof}{\contentsline {subfigure}{\numberline{(b)}{\ignorespaces {The selection of $r_k^*$.}}}{6}}
 \newlabel{fig:raycirc}{{6}{6}}
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {IV-A.2}Wall Following}{6}}
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {IV-A.3}The Odometry Motion Model}{6}}
-\newlabel{eq:OdometryMotion}{{12}{6}}
-\newlabel{eq:ReverseOdometryMotion}{{15}{6}}
+\newlabel{eq:OdometryMotion}{{14}{6}}
+\newlabel{eq:ReverseOdometryMotion}{{17}{6}}
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {IV-A.4}Encounter Detection and Relative Pose}{6}}
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {IV-A.5}The Environment, Robot Trajectories, and Encounters}{6}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {IV-B}Timing}{6}}
 \newlabel{S:Exp:Timing}{{IV-B}{6}}
-\citation{howard2006multi}
 \newlabel{subfig:Encvst}{{7(a)}{7}}
 \newlabel{sub@subfig:Encvst}{{(a)}{7}}
 \newlabel{subfig:Enc}{{7(b)}{7}}
@@ -90,12 +90,10 @@
 \@writefile{lof}{\contentsline {subfigure}{\numberline{(a)}{\ignorespaces {Robot encounters versus time.}}}{7}}
 \@writefile{lof}{\contentsline {subfigure}{\numberline{(b)}{\ignorespaces {The test geometry, robot paths (colored lines), and encounters (dashed gray lines).}}}{7}}
 \newlabel{fig:EnvEnc}{{7}{7}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {IV-C}The Results}{7}}
-\newlabel{S:Exp:Results}{{IV-C}{7}}
 \@writefile{lot}{\contentsline {table}{\numberline {I}{\ignorespaces Time to map 95\% of the environment.}}{7}}
 \newlabel{table:timing}{{I}{7}}
-\@writefile{toc}{\contentsline {section}{\numberline {V}Conclusion}{7}}
-\newlabel{S:Conc}{{V}{7}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {IV-C}The Results}{7}}
+\newlabel{S:Exp:Results}{{IV-C}{7}}
 \newlabel{subfig:pureodom}{{8(a)}{8}}
 \newlabel{sub@subfig:pureodom}{{(a)}{8}}
 \newlabel{subfig:knownpose}{{8(b)}{8}}
@@ -116,6 +114,8 @@
 \@writefile{lof}{\contentsline {subfigure}{\numberline{(e)}{\ignorespaces {Howard Implementation: Unknown Poses, High noise.}}}{8}}
 \@writefile{lof}{\contentsline {subfigure}{\numberline{(f)}{\ignorespaces {Proposed Implementation: Unknown Poses, High noise.}}}{8}}
 \newlabel{fig:Comp}{{8}{8}}
+\citation{howard2006multi}
+\citation{Grisetti2007}
 \bibstyle{plain}
 \bibdata{Citations}
 \bibcite{bailey2006simultaneous}{1}
@@ -129,6 +129,8 @@
 \bibcite{lazaro2013multi}{9}
 \bibcite{smithSelfCheeseman1990}{10}
 \bibcite{thrun2001probabilistic}{11}
-\@writefile{lof}{\contentsline {figure}{\numberline {9}{\ignorespaces Minimum sum error.}}{9}}
+\@writefile{lof}{\contentsline {figure}{\numberline {9}{\ignorespaces Minimum sum square error versus time.}}{9}}
 \newlabel{fig:minsumerr}{{9}{9}}
+\@writefile{toc}{\contentsline {section}{\numberline {V}Conclusion}{9}}
+\newlabel{S:Conc}{{V}{9}}
 \@writefile{toc}{\contentsline {section}{References}{9}}
