@@ -50,9 +50,9 @@ x_s^{B(i)} &= x_s^{A(i)} \oplus \Delta_s^{AB} \\
 \bar{x}_s^{B(i)} &= x_s^{A(i)} \oplus \Delta_s^{AB}
 \end{align*}
 Where $\oplus$ is the pose composition operator. <SSC reference?>
-At this time, the stored data queue for robot B is also split into a causal queue $queue^B$ and acausal queue $\bar{queue}^B$.
+At this time, the stored data queue for robot B is also split into a causal queue $queue^B$ and acausal queue $\overline{queue}^B$.
 \begin{align*}
-\bar{queue_{t+1:}^B} = reverse(queue_{0:t-1}^B) \\
+\overline{queue}_{t+1:2t}^B = reverse(queue_{0:t-1}^B) \\
 queue^B = queue_{t+1:}^B
 \end{align*}
 
@@ -84,14 +84,24 @@ Figure \ref{fig:multiencounter} explains the joining process graphically. The sc
 \subsubsection{FastSLAM Updates}
 At each time-step, the pose posterior is updated for all pose states within the current mapping set are updated according to a modified Rao-Blackwellized particle filter. Both information from the causal and acausal queues is used to update the SLAM posterior in an almost identical fashion, save for a time-reversed odometry model. 
 
-This process first applies an odometry prediction to each particle. This single update applies to each causal robot particle a forward odometry change given an arbitrary non-linear and noisy forward odometry model $g(x,u)$. For each virtual robot traversing its path in reverse, the next stored point is popped off the corresponding stack and used with a noisy inverse odometry model $g_r(x,\bar{u})$
+This process first applies an odometry prediction to each particle. This single update applies to each causal robot particle a forward odometry change given an arbitrary non-linear and noisy forward odometry model $g(x,u)$. For each virtual robot traversing its path in reverse, the next stored point is popped off the corresponding stack and used with a noisy inverse odometry model $\hat{g}_r(x,\bar{u})$
 \begin{align*}
-x_{t+1}^{r(i)} &= g(x_{t}^{r(i)},u_{t+1}^{r(i)})\\
-\bar{x}_{t+1}^{r(i)} &= g_r(\bar{x}_t^{r(i)}, \bar{u}_{t+1}^{r(i)})
+\forall \textit{robots $r$} \\
+x_{t+1}^{r(i)} &= \hat{g}(x_{t}^{r(i)},u_{t+1}^{r(i)})~~\text{(Causal Prediction)}\\
+\bar{x}_{t+1}^{r(i)} &= \hat{g}_r(\bar{x}_t^{r(i)}, \bar{u}_{t+1}^{r(i)}) ~\text{(Acausal Preditiction)}
 \end{align*}
+Where $\hat{g}$ is a deterministic odometry model $g(x,u)$ corrupted by model dependent noise $\eta$.
+$$\hat{g}(x,u)=g(x,u)+\eta$$
+The chosen particle filter implementation allows for a wide choice of assumptions on the distribution of the noise model. Our choice of model used in testing is discussed in the later section on experimental validation.
+
 The odometry prediction step was followed by an occupancy grid map update for each real or virtual robot particle based on current or stored measurements. For each robot $R$, whether it represents causal or acausal particles, the next measurement in the queue, $z_t^R$ is removed and used to update the map for each particle according to a simplified occupancy grid measurement model.
 
-For each particle in $x_t^R$,  the particle's associated map $m_i$, and associated measurement $z_t^R$ is used with the simplified inverse sensor model to compute the log-odds of a particular cell’s occupancy. Our chosen model simulated a typical range,bearing LIDAR type sensor, with a fixed occupied (black) and free (white) probability and simple sensor cone model similar to the one shown in Figure \ref{fig:invsensor}.
+For each particle in $x_t^R$,  the particle's associated map $m_i$, and associated measurement $z_t^R$ is used with the simplified inverse sensor model to compute the log-odds of a particular cell’s occupancy. Our chosen model simulated a typical range,bearing LIDAR type sensor, with a fixed occupied (black) and free (white) probability $p_{occ}$ and $p_{free}$ respectively and simple sensor cone model similar to the one shown in Figure \ref{fig:invsensor}. This created the log-odds modifier at time $t$
+$$l_{sensor,t,i}=
+\begin{cases}
+\log\frac{p_{free}}{1-p_{free}} & \text{Cell free}\\ 
+\log\frac{p_{occ}}{1-p_{occ}} & \text{Cell Occupied}
+\end{cases}$$
 
 \begin{figure}[ht]
 \centering
@@ -103,13 +113,19 @@ For each particle in $x_t^R$,  the particle's associated map $m_i$, and associat
 For each cell augmented by the inverse sensor model, the log-odds was updated as:
 $$l_{t,i}=l_{t-1,i}+l_{sensor,t,i}-\log\frac{p(m_i)}{1-p(m_i)}$$
 
+All cells uneffected were left at their previous log-odds
+$$l_{t,i}=l_{t-1,i}$$
+
 After incorporating the the next measurement for all particles to each map particle, the last portion of the SLAM update consists of updating each pose particle’s weight and resampling to prevent weighting degeneracy.
 
 The weighting of each particle in this step was adjusted using the measurement likelihood given the robot's estimated pose and the current map 
-$$w^{(i)}=p(z_t^{1(i)}|x_t^{1(i)},m_t)p(z_t^{2(i)}|x_t^{2(i)},m_t)...p(z_t^{M(i)}|x_t^{M(i)},m_t)$$. 
+\begin{align}
+w^{(i)}=p(z_t^{1(i)}|x_t^{1(i)},m_t)&p(z_t^{2(i)}|x_t^{2(i)},m_t)...\\
+&p(z_t^{M(i)}|x_t^{M(i)},m_t)w^{(i)}
+\end{align}
 
 We also implemented an algorithm that assigns an independent particle weighting for each independent pose particle set. For robot R, this weight was computed as:
-$$w^{R(i)}=p(z_t^{R(i)}|x_t^{R(i)},m_t)$$
+$$w^{R(i)}=p(z_t^{R(i)}|x_t^{R(i)},m_t)w^{R(i)}$$
 
 After the propagation and update, the FastSLAM algorithm performs stochastic universal resampling to generate an update set of uniform weight samples. All weights are normalized such that they sum to 1, a cumulative mass function is generated, and a random initial offset is chosen. From this initial offset, an identical number of samples equally spaced across the CMF are taken and the inverse CMF at each of those samples is used to create a new particle. The resulting weights of each particle are then set to a uniform value. 
 
