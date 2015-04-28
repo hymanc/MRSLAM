@@ -1,7 +1,7 @@
 \section{Experimental Validation}
 \label{S:Exp}
 
-In this section we present how the data set, the time it takes to map 95\% of the environment, and the results using Howard's algorithm and the proposed algorithm.  
+In this section we present how the data set was generated, the time it takes to map 95\% of the environment, and a comparison between using Howard's algorithm and the independently sampled algorithm.  
 
 
 
@@ -9,28 +9,28 @@ In this section we present how the data set, the time it takes to map 95\% of th
 \subsection{The Data Set}
 \label{S:Exp:DataSet}
 
-The data set consists of PAS triple $(\textbf{x}^i_t,u^i_t,z^i_t)$, where $i$ denotes the robot ID, and $t$ denotes the time.  The pose, $x^i_t$, is comprised of the $x_t^i$-$y^i_t$ position, as well as the orientation $\theta^i_t$.  The input, $u^i_t$, is composed of the position deflection, $\delta^i_t$, and the angular deflection, $\omega_t$.  Finally, the measurements, $z^i_t$, contains scan data for rays cast out at $1^\circ$ intervals from $[-90^\circ,90^\circ]$, to simulate a laser scan.  
+The data set consists of PAS triple $(\textbf{x}^{R(i)}_t,u^{R(i)}_t,z^{R(i)}_t)$, where $R$ denotes the robot ID, and $t$ denotes the time.  The pose, $\textbf{x}^{(i)}_t$, is comprised of the $x_t^R$-$y^R_t$ position, as well as the orientation $\theta^R_t$.  The input, $u^R_t$, is composed of the position deflection, $\delta^R_t$, and the angular deflection, $\omega_t$.  Finally, the measurements, $z^R_t$, contains scan data for rays cast out at $1^\circ$ intervals from $[-90^\circ,90^\circ]$, to simulate a laser scan.  
 
-To obtain the measurements we use a ray-circle intersection algorithm.
+To obtain the measurements a binary map, $I$, and the ray-circle intersection algorithm.
 
 \subsubsection{Ray-Circle Intersection}
 
 The scan data is constructed using ray-circle intersection of a binary image, $I$ (like that of Fig. \ref{subfig:Enc} without the paths).  The idea of ray-circle intersection is to find all the object pixels within a region of interest (ROI), in this case the shaded pixels in the semi-circle, $I_{semi}$, as seen in Fig. \ref{subfig:raycirc}, 
 \begin{equation}
-I_{semi}=\left\{I_{xy}\in I |\  ||I_xy-I_{\textbf{x}_t^i}||_2^2<r^2 \right\},
+I_{semi}=\left\{I_{xy}\in I |\  ||I_{xy}-I_{\textbf{x}_t^R}||_2^2<r^2 \right\},
 \label{eq:Isemi}
 \end{equation}
-where $I_{\textbf{x}_t^i}$ is the position of the robot $i$ in the map.
+where $I_{\textbf{x}_t^R}$ is the position of the robot $R$ in the map, and $I_{xy}$ denotes the pixels $(x,y)$.
 
-Then $I_{semi}$ is intersected with the object, $I_{obj}={I_{xy}\in I | \ I_{xy}=1}$ (the filled squares in Fig. \ref{subfig:raycirc}, to get $I_{filled}$.  A ray is then defined by 
+Then $I_{semi}$ is intersected with the object, $I_{obj}=\{I_{xy}\in I | \ I_{xy}=1\}$ (the filled squares in Fig. \ref{subfig:raycirc}, to get $I_{filled}$.  A ray is then defined by 
 \begin{equation}
 \textbf{v}_k=\begin{bmatrix}
-I_{x_t^i}+r_k^j \cos(\phi_k)\\
-I_{y_t^i}+r_k^j \sin(\phi_k)\\
+I_{x_t^R}+r_k^j \cos(\phi_k)\\
+I_{y_t^R}+r_k^j \sin(\phi_k)\\
 \end{bmatrix}, 
 \label{eq:ray}
 \end{equation}
-where $r_k^j>0$ is some partitioning of the length of the ray up to the maximum range of the sensor.  This ray is intersected with $I_{filled}$ to get $I_{ray}$ (colored in orange in Fig. \ref{subfig:raycirc}).  Finally, the minimum distance to the object, $r_{k}^*$ , is selected (the $r_k^j$ corresponding the blue square in Fig. \ref{subfig:rstar}) to get the distance measurement $z_t^{i,k}$ of the object to the robot.  
+where $r_k^j>0$ is some partitioning of the length of the ray up to the maximum range of the sensor.  This ray is intersected with $I_{filled}$ to get $I_{ray}$ (colored in orange in Fig. \ref{subfig:raycirc}).  Finally, the minimum distance to the object, $r_{k}^*$ , is selected (the $r_k^j$ corresponding the blue square in Fig. \ref{subfig:rstar}) to get the distance measurement $z_t^{R,k}$ of the object to the robot.  
 
 \begin{equation}
 r_k^*=\min_{j} r_{k}^j
@@ -41,11 +41,11 @@ r_k^*=\min_{j} r_{k}^j
 \centering
 \subfigure[$I_{filled}$ and the intersection with the ray $\textbf{v}_k$.]{\includegraphics[height=4cm]{../FinalFigures/RayCircleIntersection1}\label{subfig:raycirc}}
 \subfigure[The selection of $r_k^*$.]{\includegraphics[height=4cm]{../FinalFigures/RayCircleIntersection}\label{subfig:rstar}}
-\caption{Visualization of Ray-Circle Intersection}
+\caption{Visualization of ray-circle intersection algorithm.}
 \label{fig:raycirc}
 \end{figure}
 
-We introduce zero mean, additive Gaussian noise with variance $Q$ to $z_t^{i,k}$ to get noisy measurements $\hat{z}_t^{i,k}$:
+To obtain experimental-like We introduce zero mean, additive Gaussian noise with variance $Q$ to $z_t^{i,k}$ to get noisy measurements $\hat{z}_t^{i,k}$:
 \begin{equation}
 \hat{z}_t^{i,k}=z_t^{i,k}+\mathcal{N}(0,Q).
 \end{equation}
