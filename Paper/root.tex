@@ -24,7 +24,6 @@
 
 \usepackage{subfigure}
 
-
 \title{Encounter Based Multi Robot Simultaneous Localization and Occupancy Grid Mapping}
 
 
@@ -51,15 +50,18 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{abstract}
 
-In this paper we present and implement the algorithm in Howard's 2006 paper: ``Multi-robot simultaneous localization and mapping using particle filters.''  While Howard's method is attractive for its speed, it only uses a single particle filter for all the robots which can result in undesired particle error and depletion.  In this paper we propose a modification of the algorithm to using independent particle filters for each robot, and demonstrate the efficacy of the technique on a simulated data set.  
+In this paper we present and implement the algorithm in Howard's 2006 paper: ``Multi-robot simultaneous localization and mapping using particle filters.''  While Howard's method is attractive for its speed, it combines the forward and reverse particle weights, which can result in undesired particle error.  In this paper we propose a modification of the algorithm by using independent particle filters for each robot, and demonstrate that the modified algorithm provides a qualitatively better map, and a more accurate pose estimate.
+
 
 \end{abstract}
 
 \input{Introduction}
 
+
 \input{Background}
 
 \input{Algorithm}
+
 
 \input{Experiment}
 

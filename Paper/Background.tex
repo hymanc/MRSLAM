@@ -15,37 +15,40 @@ In the case where all relative robot poses are known, merging maps is a trivial 
 In 2006 two schools of thought arouse about how to handle MRSLAM:
 \begin{enumerate}
 \item Let independent robots build individual maps, then at the end combine the maps together \cite{birk2006merging}.  This approach is particularly attractive for post processing because it requires multiple trial and error to maximize a score function. 
-\item On the other hand, there was \cite{howard2006multi}, which uses communication between robots, but requires precisely known relative poses to construct a single global map posterior.
+\item On the other hand, there was Howard's paper \cite{howard2006multi}, which uses communication between robots, but requires precisely known relative poses to construct a single global map posterior.
 \end{enumerate}
-Both had their benefits: \cite{birk2006merging} does not require to know any global or relative poses, but \cite{howard2006multi} can be implemented in real-time.  Because of the real-time nature, and the desire to map as fast as possible, there has also been a great deal of research using \cite{howard2006multi}, but with limited communication \cite{lazaro2013multi}.
+Both had their benefits: \cite{birk2006merging} does not require knowledge of any global or relative poses, but \cite{howard2006multi} can be implemented in real-time.  Because of the real-time nature, and the desire to map as fast as possible, there has also been a great deal of research using \cite{howard2006multi}, but with the added constraint of limited communication \cite{lazaro2013multi}.
+
+In the following subsection we will propose yet another extension to \cite{howard2006multi}.
 
 \subsection{Extension of \cite{howard2006multi}}
 \label{SS:Back:Contributions}
 
 
-Define the weights for a particle filter: $w_t^i$, and the sensor model, $p(z_t|x_t,u_{t-1})$ for the forward and reverse model.  In \cite{howard2006multi}, Howard follows the typical RBPF formulation and defines the un-normalized weight update to be:
+Define the weights for a particle filter: $w_t^i$, and the sensor model, $p(z_t|\textbf{x}_t,u_{t-1})$ for the forward and reverse model.  In \cite{howard2006multi}, Howard follows the typical RBPF formulation and defines the un-normalized weight update to be:
 \begin{equation}
-w^i_t=p(z_{t,f}|x_{t,f}^i,m_{t-1,f}^i) p(z_{t,r}|x_{t,r}^i,m_{t-1,r}^i) w^i_{t-1}.
+w^{(i)}_t=p(z_{t}^{f}|\textbf{x}_{t}^{f(i)},m_{t-1}^{(i)}) p(z_{t}^r|\textbf{x}_{t}^{r(i)},m_{t-1}^{(i)}) w^{(i)}_{t-1},
 \label{eq:combinedweight}
 \end{equation}
+where $\bullet^{f(i)}$ and $\bullet^{r(i)}$ denote the forward and reverse elements of particle $(i)$, $\textbf{x}_{t}$ denotes the pose, $z_{t}$ denotes the measurement, and $m_{t-1}$ denotes the map..
 
-In this formulation it is no stretch of the imagination that the forward sensor model and previous weight $p(z_{t,f}|x_{t,f}^i,m_{t-1,f}^i) w^i_{t-1}$ could be large, denoting a good match to the data in the forward direction, yet the reverse sensor model, $p(z_{t,r}|x_{t,r}^i,m_{t-1,r}^i)$, could be small.  Thereby reducing the probability that the best forward direction is resampled.  See for example Fig. \ref{fig:deplete}, particularly particle 1.
+In this formulation it is no stretch of the imagination that the forward sensor model and previous weight $p(z_{t}^{f}|\textbf{x}_{t}^{f(i)},m_{t-1}^{(i)}) w^{(i)}_{t-1}$ could be large, denoting a good match to the data in the forward direction, yet the reverse sensor model, $p(z_{t}^{r}|\textbf{x}_{t}^{r(i)},m_{t-1}^{(i)})$, could be small.  Thereby reducing the probability that the best forward direction is resampled.  See for example Fig. \ref{fig:deplete}, particularly particle 1.
 
 
-In this work, we propose assuming that forward and reverse motions are independent, resulting in two particle filters with weights defined by:
+Because of this, we propose assuming that the noisy forward and reverse motions are independent, motivates using two particle filters with weights defined by:
 \begin{eqnarray}
-w^i_{t,f}&=&p(z_{t,f}|x_{t,f}^i,m_{t-1}^i)  w^i_{t-1,f}\\
-w^i_{t,r}&=&p(z_{t,r}|x_{t,r}^i,m_{t-1}^i)  w^i_{t-1,r}
+w^{f(i)}_{t}&=&p(z_{t}^f|\textbf{x}_{t}^{f(i)},m_{t-1}^i)  w^{f(i)}_{t-1}\\
+w^{r(i)}_{t}&=&p(z_{t}^r|\textbf{x}_{t}^{r(i)},m_{t-1}^i)  w^{r(i)}_{t-1}
 \end{eqnarray}
-and with $\{x_{t,f}^i,m_{t-1}^i\}$ being resampled using $\{w^i_{t,f}\}$, and $\{x_{t,r}^i\}$ being resampled using $\{w^i_{t,r}\}$.  
+and with $\{\textbf{x}_{t}^{f(i)},m_{t-1}^i\}$ being resampled using $\{w^{f(i)}_{t}\}$, and $\{\textbf{x}_{t}^{r(i)}\}$ being resampled using $\{w^{r(i)}_{t}\}$.  
 
 
 \begin{figure}[h]
 \centering
 \includegraphics[width=\columnwidth]{../FinalFigures/Depletion}
-\caption{Case where the best forward and reverse poses are not chosen. $w^i_{t,f}$ is the forward weight, $w^i_{t,r}$ is the reverse weight, and $w^i_t$ is the product of the weights.}
+\caption{Case where the best forward and reverse poses are not chosen. $w^{f(i)}_{t}$ is the forward weight, $w^{r(i)}_{t}$ is the reverse weight, and $w^{(i)}_t$ is the product of the weights.}
 \label{fig:deplete}
 \end{figure}
 
-The contribution is two-fold, verifying that Howard's algorithm works, and creating a independent particle filters for each mapping robot in the aim to build a better occupancy grid, and obtain a better localization within the map while only marginally increasing the computational complexity.
+Our contribution is two-fold, verifying that Howard's algorithm works, and creating independently sampled particle filters for each mapping robot in the aim to build a more accurate occupancy grid, and obtain a better localization within the map while only marginally increasing the computational complexity.
 
