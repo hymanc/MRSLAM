@@ -57,6 +57,7 @@ function plotConnectivity(MAP,mapEncounters,data)
         hold on;
         for a2=1:numel(data)
             plot(data(a2).pose(2,:),data(a2).pose(1,:),'Color',colours(a2,:))
+            text(data(a2).pose(2,1),data(a2).pose(1,1),sprintf('%d',a2))
             hold on;
         end
         
@@ -65,6 +66,14 @@ function plotConnectivity(MAP,mapEncounters,data)
             y=[data(mapEncounters(a1,2)).pose(2,mapEncounters(a1,1)) data(mapEncounters(a1,3)).pose(2,mapEncounters(a1,1))];
             plot(y,x,'--','Color',[0.5 0.5 0.5])
         end
+        from=parseEncounters(mapEncounters,1);
+        for a1=1:size(from,1)
+            x=[data(from(a1,2)).pose(1,from(a1,1)) data(from(a1,3)).pose(1,from(a1,1))];
+            y=[data(from(a1,2)).pose(2,from(a1,1)) data(from(a1,3)).pose(2,from(a1,1))];
+           plot(y,x,'o--','Color',[0.5 0.5 0.5],'LineWidth',2);
+        end
+        
+        
         hold off;
         print(gcf,sprintf('Encounters.png'),'-dpng');
         cropBackground(sprintf('Encounters.png'));
@@ -72,10 +81,15 @@ function plotConnectivity(MAP,mapEncounters,data)
         
         
     figure(105)
+        
         plot([mapEncounters(1,1) mapEncounters(1,1)],[mapEncounters(1,2) mapEncounters(1,3)],'k');
         hold on;
         for a1=2:size(mapEncounters,1)
             plot([mapEncounters(a1,1) mapEncounters(a1,1)],[mapEncounters(a1,2) mapEncounters(a1,3)],'k');
+        end
+        mapEncounters=parseEncounters(mapEncounters,1);
+        for a1=1:size(mapEncounters,1)
+            plot([mapEncounters(a1,1) mapEncounters(a1,1)],[mapEncounters(a1,2) mapEncounters(a1,3)],'o-k','LineWidth',2);
         end
         hold off;
         set(gca,'FontSize',fontsize,'FontName',fontname);
@@ -86,7 +100,7 @@ function plotConnectivity(MAP,mapEncounters,data)
         print(gcf,sprintf('EncountersTimes.eps'),'-depsc');
         
     
-    mapEncounters=parseEncounters(mapEncounters,1);
+    
         
     figure(106)
         imagesc(1-MAP)
