@@ -221,9 +221,9 @@ Fig. \ref{subfig:HowardLow}-\ref{subfig:OurHigh} provide the comparison between 
 
 Over the number of particles, we define the minimum sum of squares error (a.k.a. the least absolute deviation error):
 \begin{equation}
-\varepsilon=\min_{k\in\{1,\cdots,n\}}\sqrt{\sum_{R=1}^{M} ||\textbf{x}_{t}^R-\hat{\textbf{x}}^{R,k}_{t}||}
+\varepsilon=\min_{k\in\{1,\cdots,n\}}\sqrt{\sum_{R=1}^{M} ||\textbf{x}_{t}^R-\hat{\textbf{x}}^{R,k}_{t}||^2_2}
 \end{equation}
-where $n$ is the number of particles, $M$ is the number of robots, and $\hat{\textbf{x}}^{R,k}_{t}$ is pose of particle $k$.  Using this measure, Fig. \ref{fig:minsumerr} quantitatively demonstrates that the independently sampled algorithm provides a better estimate of the pose for nearly all time instants.  Note: for the first 100 seconds, both techniques have the same error, but for the high noise case, the independently sampled algorithm dominates with less than half the error of Howard's algorithm.  Enclosed are videos highlighting Fig. \ref{fig:Comp}.
+where $n$ is the number of particles, $M$ is the number of robots, and $\textbf{x}_t^R$ is the known pose, $\hat{\textbf{x}}^{R,k}_{t}$ is pose of particle $k$ in the global frame.  Using this measure, Fig. \ref{fig:minsumerr} quantitatively demonstrates that the independently sampled algorithm provides a better estimate of the pose for nearly all time instants.  Note: for the first 100 seconds, both techniques have the same error, but for the high noise case, the independently sampled algorithm dominates with less than half the error of Howard's algorithm.  Enclosed are videos highlighting Fig. \ref{fig:Comp}.
 
 
 
