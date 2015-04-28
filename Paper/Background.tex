@@ -12,14 +12,11 @@ In the literature there are two problems that are often addressed when dealing w
 
 In the case where all relative robot poses are known, merging maps is a trivial problem using small modifications to existing SLAM techniques \cite{thrun2001probabilistic}. In the general MRSLAM problem, however, robots may start with unknown absolute and relative poses, and therefore merging of maps requires the discovery of relative relationships between different robot trajectories to build a single map. This is often a costly process, which in general can be solved for robots sharing a search space by estimating each robot's relative pose given a partial map, but this leads to exponential complexity with respect to the number of exploring robots \cite{fox2006distributed}. Nevertheless, several practical algorithms exist to circumvent this naive and inefficient approach,  including coarse topological matching and stitching techniques borrowed from computer vision \cite{birk2006merging}.
 
-
-A majority of the papers employ a Rao-Blackwellized particle filter (RBPF) for building occupancy grids.  
+To combat this a large majority of the MRSLAM papers employ a Rao-Blackwellized particle filter (RBPF) for building occupancy grids.
 
 
 \cite{howard2006multi,birk2006merging,lazaro2013multi,lee2012probabilistic}
 
-
--What does the literature cover?
 
 -Where did it begin, what did it progress to?
 
@@ -29,17 +26,31 @@ A majority of the papers employ a Rao-Blackwellized particle filter (RBPF) for b
 \subsection{\cite{howard2006multi} Extension to Original Work}
 \label{SS:Back:Contributions}
 
-\[
-w_3^i=w_2^i w_1^i
-\]
 
+Define the weights for a particle filter: $w_t^i$, and the sensor model, $p(z_t|x_t,u_{t-1})$ for the forward and reverse model.  In \cite{howard2006multi}, Howard follows the typical RBPF formulation and defines the un-normalized weight update to be:
+\begin{equation}
+w^i_t=p(z_{t,f}|x_{t,f}^i,m_{t-1,f}^i) p(z_{t,r}|x_{t,r}^i,m_{t-1,r}^i) w^i_{t-1}.
+\label{eq:combinedweight}
+\end{equation}
+
+In this formulation it is no stretch of the imagination that the highest weight $p(z_{t,f}|x_{t,f}^i,m_{t-1,f}^i) w^i_{t-1}$ can be quite large, denoting a good match to the data in the forward direction, yet the reverse direction sensor model, $p(z_{t,r}|x_{t,r}^i,m_{t-1,r}^i)$, could be small.  Thereby reducing the probability that the best forward direction
+
+
+In this work, we propose assuming that forward and reverse motions are independent, resulting in two particle filters with weights defined by:
+\begin{eqnarray}
+w^i_{t,f}&=&p(z_{t,f}|x_{t,f}^i,m_{t-1}^i)  w^i_{t-1,f}\\
+w^i_{t,r}&=&p(z_{t,r}|x_{t,r}^i,m_{t-1}^i)  w^i_{t-1,r}
+\end{eqnarray}
+and with $\{x_{t,f}^i,m_{t-1}^i\}$ being resampled using $\{w^i_{t,f}\}$, and $\{x_{t,r}^i\}$ being resampled using $\{w^i_{t,r}\}$.  
+
+Fig. \ref{fig:deplete} is an example where the best forward and backward particles would be chosen independently; however, when the weights are combined as in \eqref{eq:combinedweight}, we see case where the best forward or reverse particles (e.g, particle 1) will mostly likely not be resampled.
 
 \begin{figure}[h]
 \centering
-\subfigure[Case where the peak weights are chosen, instead only mediocre points get the highest weighting.]{\includegraphics[width=\columnwidth]{../FinalFigures/Depletion}}
-\subfigure[Forward (black) and reverse (red) model.  Simple pendulum with two different particle filters: the single particle filter that draws from  (circles), and the independent particle filters (squares).]{\includegraphics[width=\columnwidth]{../FinalFigures/IndependentlySampled}}
-\caption{Example where the mediocre points of each set get chosen causing .}
+\includegraphics[width=\columnwidth]{../FinalFigures/Depletion}
+\caption{Case where the best forward and reverse poses are not chosen. $w^i_{t,f}$ is the forward weight, $w^i_{t,r}$ is the reverse weight, and $w^i_t$ is the product of the weights.}
 \label{fig:deplete}
 \end{figure}
 
-While \cite{howard2006multi}
+The contribution is two-fold, verifying that Howard's algorithm works, and creating a independent particle filters for each mapping robot in the aim to build a better occupancy grid, and obtain a better localization within the map.
+
