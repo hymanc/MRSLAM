@@ -16,7 +16,7 @@
 
     switch lower(OdometryModel)
         case 'odometrymotion'
-            alphas =[1*[0.05 0.05] 10*[0.01 0.01]].^2;%Noise properties from Table 5.6 of ProbRob
+            alphas =[1*[0.05 0.01] 2*[0.01 0.001]].^2;%Noise properties from Table 5.6 of ProbRob
         case 'velocitymotion'
             alphas = [0.05 0.01 0.01 0.02 0.01 0.05].^2;%Noise properties from Table 5.3 of ProbRob
     end
@@ -45,7 +45,7 @@
     plotStuff.mapfig=103;
     plotStuff.mapvisible='off';
     
-    plotStuff.weight=true;
+    plotStuff.weight=false;
     plotStuff.weightfig=102;
     plotStuff.weightvisible='on';
     
@@ -129,20 +129,23 @@
         %Appending data to queue.
         if (t<=maxT)
             for a1=1:nRobots
-                queue(a1,counters(a1)).scan=data(robotInds(a1)).r{t};%1 is scan data
                 queue(a1,counters(a1)).pose=data(robotInds(a1)).pose(:,t);
-                queue(a1,counters(a1)).u=data(robotInds(a1)).u(:,t-1);
+%Low Noise
+                queue(a1,counters(a1)).scan=data(robotInds(a1)).ract{t};%1 is scan data
+                queue(a1,counters(a1)).u=data(robotInds(a1)).uact(:,t-1);
+%High Noise                
+%                 queue(a1,counters(a1)).scan=data(robotInds(a1)).r{t};%1 is scan data
+%                 queue(a1,counters(a1)).u=data(robotInds(a1)).u(:,t-1);
                 queue(a1,counters(a1)).t=t;
                 counters(a1)=counters(a1)+1;
             end
         end
-        
-        for a1=1:nRobots
+       
+        for a1=nRobots:-1:1  %Try figuring that one out.
             script_ForwardQueue_MultiPF;
             script_ReverseQueue_MultiPF;
         end
-        
-        
+            
         script_PFResample_MultiPF;
         
         

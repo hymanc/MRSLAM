@@ -7,7 +7,7 @@
     mkdir plots
     more off
     close all
-    clear all
+%    clear all
 
 %Load Data
     load('../CustomMapAndModel/CustomData1.mat')
@@ -16,21 +16,20 @@
 
     switch lower(OdometryModel)
         case 'odometrymotion'
-            alphas =[1.5*[0.05 0.01] 2*[0.01 0.001]].^2;%Noise properties from Table 5.6 of ProbRob
-            %alphas =[3*[0.05 0.01] 2*[0.01 0.001]].^2;%Noise properties from Table 5.6 of ProbRob
+            alphas =[2*[0.05 0.05] 10*[0.01 0.001]].^2;%Noise properties from Table 5.6 of ProbRob
         case 'velocitymotion'
             alphas = [0.05 0.01 0.01 0.02 0.01 0.05].^2;%Noise properties from Table 5.3 of ProbRob
     end
 
-    nParticles=1;                      %The number of particles
+    nParticles=30;                      %The number of particles
     robotInds=[1 2 3 4 5]% 2 3 4 5];%:numel(data);            %Allows us to only take a subset of the robots.
     nRobots=numel(robotInds);           %Number of robots
     robID=1:nRobots;
     
     useOdometry=true;
     
-    
     colours=lines(nRobots);
+    
     plotStuff.fontsize=14;
     plotStuff.fontname='Times';
     
@@ -78,7 +77,7 @@
 
 %Map Properties
     gridSize=1;% Map grid size in meters. Decrease for better resolution.
-    border=50;SENSOR.RADIUS;  % Set up map boundaries and initialize map.
+    border=10;SENSOR.RADIUS;  % Set up map boundaries and initialize map.
     [pose,robXMin,robXMax,robYMin,robYMax,mapBox,offsetX,offsetY,mapSizeMeters,mapSize]=getMapParameters(useOdometry,plotStuff,data,robotInds,nRobots,border,gridSize,alphas,OdometryModel);
 
     % The occupancy value of each cell in the map is initialized with the prior.
@@ -102,6 +101,8 @@
     robPoseMapFrame=NaN([2 size(data(1).pose,2) nRobots nParticles]);
     robPoseMapFrameReverse=NaN([2 size(data(1).pose,2) nRobots nParticles]);
     weight=1/nParticles*ones(nParticles,nRobots);
+    weightReverse=1/nParticles*ones(nParticles,nRobots);
+    
     
     DONE=false;
     counters=ones(nRobots,1);
@@ -129,28 +130,24 @@
         if (t<=maxT)
             for a1=1:nRobots
                 queue(a1,counters(a1)).pose=data(robotInds(a1)).pose(:,t);
-                %queue(a1,counters(a1)).scan=data(robotInds(a1)).ract{t};%1 is scan data
-                %queue(a1,counters(a1)).u=data(robotInds(a1)).uact(:,t-1);R(2,2)*randn(1)];
                 
-%Low Noise
-%                 queue(a1,counters(a1)).scan=data(robotInds(a1)).ract{t}+Q(1,1)*randn(180,1);%1 is scan data
-%                 queue(a1,counters(a1)).u=data(robotInds(a1)).uact(:,t-1)+[R(1,1)*randn(1);R(2,2)*randn(1)];
-%High Noise                
-                queue(a1,counters(a1)).scan=data(robotInds(a1)).ract{t}+4*Q(1,1)*randn(180,1);%1 is scan data
-                queue(a1,counters(a1)).u=data(robotInds(a1)).uact(:,t-1)+4*[R(1,1)*randn(1);R(2,2)*randn(1)];
-
+                queue(a1,counters(a1)).scan=data(robotInds(a1)).r{t};%1 is scan data
+                queue(a1,counters(a1)).u=data(robotInds(a1)).u(:,t-1);
+                
+%                 queue(a1,counters(a1)).scan=data(robotInds(a1)).ract{t};%1 is scan data
+%                 queue(a1,counters(a1)).u=data(robotInds(a1)).uact(:,t-1);
                 queue(a1,counters(a1)).t=t;
                 counters(a1)=counters(a1)+1;
             end
         end
         
-        for a1=nRobots:-1:1
-            script_ForwardQueue;
-            script_ReverseQueue;
+        for a1=1:nRobots
+            script_ForwardQueue_MultiPF;
+            script_ReverseQueue_MultiPF;
         end
         
         
-        script_PFResample;
+        script_PFResample_MultiPF;
         
         
         %Check if all the data has been integrated.

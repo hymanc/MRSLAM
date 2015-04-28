@@ -12,9 +12,9 @@
                 else
                     robOdom(:,a1,a2)=data(robotInds(a1)).pose(:,t);                     
                 end
-                [mapUpdate, robPoseMapFrame(:,t,a1,a2), laserEndPntsMapFrameInter] = inv_sensor_model(map(:,:,a2), sc, robOdom(:,a1,a2), gridSize, offset, probPrior, probOcc, probFree,1.1*SENSOR.RADIUS);
-                map(:,:,a2)=map(:,:,a2)+mapUpdate;
-                weight(a2)=weight(a2)*measurement_model_prob(sc,robOdom(:,a1,a2),map(:,:,a2),SENSOR,Q,R,gridSize,offset);
+                [mapUpdate, robPoseMapFrame(:,t,a1,a2), laserEndPntsMapFrameInter] = inv_sensor_model(map(:,:,a2), sc, robOdom(:,a1,a2), gridSize, offset, probPrior, probOcc, probFree,SENSOR.RADIUS);
+                map(:,:,a1,a2)=map(:,:,a1,a2)+mapUpdate;
+                weight(a2,a1)=weight(a2,a1)*measurement_model_prob(sc,robOdom(:,a1,a2),meanMap(:,:,a2)+mapUpdate,SENSOR,Q,R,gridSize,offset);
             end
 
             counters(a1)=counters(a1)-1;

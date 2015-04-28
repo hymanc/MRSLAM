@@ -6,7 +6,7 @@ function plotConnectivity(MAP,mapEncounters,data)
     %close all
 
     if (nargin==0)
-        load('CustomData1')
+        load('CustomData1.mat')
         [MAP,PIXDIM]=getTheMAP(THEIMAGE);
     end
 
@@ -45,27 +45,30 @@ function plotConnectivity(MAP,mapEncounters,data)
         hold off;
         title(sprintf('Starting with robot %d.',a2))
     end
+        
     
         
     figure(103)
         colours=lines(numel(data));
-        imagesc(1-MAP')
+        imagesc(1-MAP)
         axis image;
         axis off
         colormap gray;
         hold on;
         for a2=1:numel(data)
-            plot(data(a2).pose(1,:),data(a2).pose(2,:),'Color',colours(a2,:))
+            plot(data(a2).pose(2,:),data(a2).pose(1,:),'Color',colours(a2,:))
             hold on;
         end
         
         for a1=1:size(mapEncounters)
             x=[data(mapEncounters(a1,2)).pose(1,mapEncounters(a1,1)) data(mapEncounters(a1,3)).pose(1,mapEncounters(a1,1))];
             y=[data(mapEncounters(a1,2)).pose(2,mapEncounters(a1,1)) data(mapEncounters(a1,3)).pose(2,mapEncounters(a1,1))];
-            plot(x,y,'--','Color',[0.5 0.5 0.5])
+            plot(y,x,'--','Color',[0.5 0.5 0.5])
         end
         hold off;
-        print(gcf,sprintf('Connectivity/Title.png'),'-dpng');
+        print(gcf,sprintf('Encounters.png'),'-dpng');
+        cropBackground(sprintf('Encounters.png'));
+        print(gcf,sprintf('Encounters.eps'),'-depsc');
         
         
     figure(105)
@@ -78,6 +81,32 @@ function plotConnectivity(MAP,mapEncounters,data)
         set(gca,'FontSize',fontsize,'FontName',fontname);
         xlabel('Time [s]')
         ylabel('Encounter')
+        print(gcf,sprintf('EncountersTimes.png'),'-dpng');
+        cropBackground(sprintf('EncountersTimes.png'));
+        print(gcf,sprintf('EncountersTimes.eps'),'-depsc');
+        
+    
+    mapEncounters=parseEncounters(mapEncounters,1);
+        
+    figure(106)
+        imagesc(1-MAP)
+        axis image;
+        axis off
+        colormap gray;
+        hold on;
+        for a1=1:size(mapEncounters,1)
+            t=(mapEncounters(a1,1)-1):(mapEncounters(a1,1)+1);
+            oldrob=mapEncounters(a1,2);
+            newrob=mapEncounters(a1,3);
+            relpos=mapEncounters(a1,4:5);
+            
+            plot(data(newrob).pose(2,t),data(newrob).pose(1,t),'Color',colours(a1,:))
+            plot(data(oldrob).pose(2,t(2))+relpos(2),data(oldrob).pose(1,t(2))+relpos(1),'o','Color',colours(a1,:))
+            plot([data(oldrob).pose(2,t(2)) data(oldrob).pose(2,t(2))+relpos(2)],[data(oldrob).pose(1,t(2)) data(oldrob).pose(1,t(2))+relpos(1)],'-s','Color',colours(a1,:))
+        end
+        hold off;
+        
+        
         
     return;    
     figure(104)
