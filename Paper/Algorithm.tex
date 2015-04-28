@@ -17,7 +17,6 @@ As further encounters occur between any robot, real or virtual, in the mapping s
 
 This algorithm relies on a number of assumptions that are requisite for it to effectively solve the MRSLAM problem. Firstly, for all explored regions to count towards the map, each mapping robot must have encountered a robot that is an element of the mapping set in order to make a fully connected graph of robot poses, and therefore maximally complete map. Additionally, each robot pose trajectory is independent of all other trajectories such that motion or observation from one robot does not affect another outside of encounter events \cite{howard2006multi}.
 
-	
 \subsection{Algorithm Details}
 \label{SS:Alg:Details}
 Howard’s MRSLAM algorithm follows the basic structure of the below steps that perform data queueing, robot encounter management, and SLAM filter updates.
@@ -29,12 +28,12 @@ Howard’s MRSLAM algorithm follows the basic structure of the below steps that 
 \item If data includes a prior encounter with a robot not in the mapping set, instantiate a new set of particle for this robot and its acausal virtual self at its location and split the queue for that robot into a causal and acausal queues
 \item Repeat until all data is consumed
 \end{enumerate}
-
+\vspace{0.1in}
 \subsubsection{Data Queueing}
 As each robot $R$ collects data, its current odometry $u_t^R$ and measurements $z_t^R$ are added to a running queue data structure before processing. An encounter flag $E_t^R$ and relative pose $\Delta_t^R$, if available, are also added to this queue. 
 $$queue_{0:t}^R = append(queue_{0:t-1}^R, \{ u_t^R, z_t^R, E_t^R, \Delta_t^R \})$$
 The storing of this data allows for either immediate use by particle filters for robots in the mapping set, or later joining or SLAM filtering after a future encounter with a mapping robot.
-
+\vspace{0.1in}
 \subsubsection{Encounters}
 An encounter in this sense is defined as the observation of one robot by another mapping robot that produces a relative pose estimate between the robots of $\Delta$. For this implementation, it was assumed that the estimation of $\Delta$ was deterministic for the sake of demonstration and simplicity.
 
@@ -63,7 +62,12 @@ The following figure explains the joining process graphically. The scenario star
 \caption{Example of Robot Encounters in this MRSLAM Implementation}
 \end{figure}
 
-
-
+\vspace{0.1in}
 \subsubsection{FastSLAM Updates}
+At each time-step, the pose posterior is updated for all pose states within the current mapping set are updated according to a modified Rao-Blackwellized particle filter. This process first applies an odometry prediction to each particle. This single update applies to each causal robot particle a forward odometry change given an arbitrary non-linear and noisy forward odometry model $g(x,u)$. For each virtual robot traversing its path in reverse, the next stored point is popped off the corresponding stack and used with a noisy inverse odometry model $g_r(x,\bar{u})$
+
+\begin{align*}
+x_{t+1}^{r(i)} &= g(x_{t}^{r(i)},u_{t+1}^{r(i)})\\
+\bar{x}_{t+1}^{r(i)} &= g_r(\bar{x}_t^{r(i)}, \bar{u}_{t+1}^{r(i)})
+\end{align*}
 
